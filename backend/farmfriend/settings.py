@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     # 'billing',
-    # 'farmers',
+    'farmers',
     # 'storage',
     # 'rentals',
     # 'consultations',
