@@ -1,0 +1,87 @@
+.blog-section {
+  padding: 80px 0;
+}
+
+.blog-section .heading-section h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.blog-entry {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.blog-entry:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.blog-entry .block-20 {
+  display: block;
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.3s ease;
+}
+
+.blog-entry .block-20:hover {
+  opacity: 0.9;
+}
+
+.blog-entry .text {
+  padding: 25px;
+}
+
+.blog-entry .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 15px;
+}
+
+.blog-entry .meta a {
+  color: #999;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.blog-entry .meta a:hover {
+  color: #28a745;
+}
+
+.blog-entry .meta-chat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.blog-entry .heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.blog-entry .heading:hover {
+  color: #28a745;
+}
+
+@media (max-width: 768px) {
+  .blog-section {
+    padding: 40px 0;
+  }
+
+  .blog-entry .block-20 {
+    height: 200px;
+  }
+}

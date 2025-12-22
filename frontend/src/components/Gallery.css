@@ -1,0 +1,94 @@
+.gallery-section {
+  padding: 80px 0;
+  background-color: #fff;
+}
+
+.gallery-section .heading-section h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+.work {
+  height: 350px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.work:hover {
+  transform: scale(1.02);
+}
+
+.work::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
+}
+
+.work .icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  text-decoration: none;
+  color: #333;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.work:hover .icon {
+  opacity: 1;
+}
+
+.work .icon .fa-expand {
+  font-size: 1.2rem;
+}
+
+.work .desc {
+  position: relative;
+  z-index: 2;
+}
+
+.work .desc .text span {
+  color: #28a745;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.work .desc .text h2 {
+  font-size: 1.25rem;
+  margin-top: 10px;
+}
+
+.work .desc .text h2 a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.work .desc .text h2 a:hover {
+  color: #28a745;
+}
+
+@media (max-width: 768px) {
+  .work {
+    height: 250px;
+  }
+
+  .gallery-section {
+    padding: 40px 0;
+  }
+}

@@ -1,0 +1,151 @@
+.login-page {
+  min-height: 100vh;
+}
+
+.login-background {
+  min-height: 100vh;
+  background-image: url('../assets/images/loinbg.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 80px;
+  position: relative;
+}
+
+.login-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(104, 102, 102, 0.3);
+}
+
+/* Glass effect container */
+.login-container {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 60px 50px;
+  width: 380px;
+  min-height: 500px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.login-container h2 {
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  color: #333;
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #333;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-container input::placeholder {
+  color: #333;
+}
+
+.login-container input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+.login-container button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #fff;
+  background: linear-gradient(to right, #28a745, #1e7e34);
+  border: none;
+  border-radius: 8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-weight: 600;
+}
+
+.login-container button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5);
+}
+
+.login-container button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  margin: 18px 0;
+  font-size: 1rem;
+}
+
+.toggle input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.toggle label {
+  cursor: pointer;
+  color: #333;
+}
+
+.login-container .options {
+  margin-top: 20px;
+}
+
+.login-container .options p {
+  margin: 10px 0;
+  color: #333;
+}
+
+.login-container .options a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-container .options a:hover {
+  text-decoration: underline;
+  color: #28a745;
+}
+
+@media (max-width: 600px) {
+  .login-container {
+    width: 90%;
+    padding: 30px 40px;
+  }
+
+  .login-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .login-container input,
+  .login-container button {
+    font-size: 0.9rem;
+  }
+}

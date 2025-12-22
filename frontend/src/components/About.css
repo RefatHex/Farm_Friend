@@ -1,0 +1,129 @@
+#about-3 {
+  padding: 60px 0;
+  background-color: #f9f9f9;
+}
+
+#about-3 .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#about-3 .content-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+#about-3 p {
+  font-size: 1.125rem;
+  color: #666;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+#about-3 .list-check {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+#about-3 .list-check li {
+  font-size: 1rem;
+  color: #555;
+  padding-left: 1.5rem;
+  margin-bottom: 10px;
+  position: relative;
+  text-align: justify;
+}
+
+#about-3 .list-check li::before {
+  content: '\2713';
+  position: absolute;
+  left: 0;
+  color: #28a745;
+  font-size: 1rem;
+}
+
+#about-3 .btn-cta {
+  display: inline-block;
+  padding: 12px 30px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out;
+}
+
+#about-3 .btn-cta:hover {
+  background-color: #218838;
+}
+
+#about-3 .img-fluid {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+#about-3 .position-relative {
+  position: relative;
+}
+
+#about-3 .pulsating-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+  animation: pulse 1.5s infinite;
+  text-decoration: none;
+}
+
+#about-3 .pulsating-play-btn:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+#about-3 .pulsating-play-btn .play {
+  font-size: 1.5rem;
+  color: #28a745;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 991px) {
+  #about-3 .row {
+    text-align: center;
+  }
+
+  #about-3 .col-lg-5 {
+    margin-bottom: 30px;
+  }
+
+  #about-3 .content-title {
+    font-size: 2rem;
+  }
+}

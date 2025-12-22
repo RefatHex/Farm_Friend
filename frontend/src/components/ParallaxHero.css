@@ -1,0 +1,108 @@
+/* Parallax Section */
+.parallax {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.parallax-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.parallax-background img {
+  position: absolute;
+  width: 100%;
+  pointer-events: none;
+}
+
+#hill1 {
+  z-index: 1;
+  bottom: 0;
+}
+
+#hill2 {
+  z-index: 2;
+  bottom: 0;
+}
+
+#hill3 {
+  z-index: 3;
+  bottom: 0;
+}
+
+#hill4 {
+  z-index: 4;
+  bottom: 0;
+}
+
+#hill5 {
+  z-index: 5;
+  bottom: 0;
+}
+
+#tree {
+  z-index: 6;
+  bottom: 0;
+}
+
+#leaf {
+  position: absolute;
+  z-index: 7;
+  top: 0;
+  left: 0;
+  width: auto;
+  max-width: 200px;
+  pointer-events: none;
+}
+
+#plant {
+  position: absolute;
+  z-index: 8;
+  bottom: 0;
+  right: 0;
+  width: auto;
+  max-width: 300px;
+  pointer-events: none;
+}
+
+#text {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: #fff;
+}
+
+.intro-text {
+  text-align: center;
+}
+
+.intro-text h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .intro-text h1 {
+    font-size: 2rem;
+  }
+
+  #leaf {
+    max-width: 100px;
+  }
+
+  #plant {
+    max-width: 150px;
+  }
+}

@@ -1,0 +1,115 @@
+.ftco-appointment {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 80px 0;
+}
+
+.ftco-appointment .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.ftco-appointment .container {
+  position: relative;
+  z-index: 2;
+}
+
+.ftco-appointment h2 {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.appointment {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.select-wrap {
+  position: relative;
+}
+
+.select-wrap .icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #999;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap .icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+.input-wrap input {
+  padding-left: 45px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #28a745;
+}
+
+select.form-control {
+  appearance: none;
+  cursor: pointer;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.btn-primary {
+  background-color: #28a745;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #218838;
+}
+
+@media (max-width: 768px) {
+  .appointment {
+    padding: 20px;
+  }
+
+  .ftco-appointment h2 {
+    font-size: 1.5rem;
+  }
+}

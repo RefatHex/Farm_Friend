@@ -1,0 +1,91 @@
+.blender-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: rgb(46, 186, 214);
+  padding: 20px 10px;
+  text-align: center;
+  height: 90px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.blender-section h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.blender-section p {
+  font-size: 1rem;
+  font-weight: bold;
+  max-width: 500px;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.blender-section span {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.hero-wrap-multi {
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  padding: 60px 0;
+}
+
+.hero-wrap-multi::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.hero-wrap-multi > section {
+  position: relative;
+  z-index: 2;
+}
+
+.img-video {
+  min-height: 400px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+}
+
+.heading-section .white-text {
+  color: white;
+}
+
+.services-2 {
+  margin-bottom: 20px;
+}
+
+.services-2 .text h4 {
+  color: #fff;
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.services-2 .text .dark-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .img-video {
+    min-height: 250px;
+  }
+
+  .blender-section h2 {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,143 @@
+.about-page {
+  padding-top: 80px;
+}
+
+.inner-banner {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  padding: 80px 0;
+}
+
+.inner-w3-title {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.inner-page-para {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+}
+
+.A-banner-agency {
+  background-color: #f9f9f9;
+}
+
+.radius-image {
+  border-radius: 10px;
+}
+
+.title-subw3hny {
+  color: #28a745;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.title-A {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.btn-style {
+  padding: 12px 30px;
+  border-radius: 5px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #218838;
+}
+
+.btn-outline-dark {
+  background: transparent;
+  border: 2px solid #333;
+  color: #333;
+}
+
+.btn-outline-dark:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.A-blog-se-3 {
+  background-color: #fff;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  height: 100%;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-text {
+  color: #666;
+  line-height: 1.8;
+}
+
+.A-team {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.team-grids {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.team-grids:hover {
+  transform: translateY(-5px);
+}
+
+.team-grids img {
+  border-radius: 50%;
+}
+
+.team-grids h4 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 15px;
+}
+
+.team-grids h6 {
+  color: #28a745;
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .inner-w3-title {
+    font-size: 1.8rem;
+  }
+
+  .title-A {
+    font-size: 1.5rem;
+  }
+
+  .inner-banner {
+    padding: 60px 0;
+  }
+}
