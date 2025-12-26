@@ -1,0 +1,271 @@
+.signup-page {
+  min-height: 100vh;
+}
+
+.signup-background {
+  min-height: 100vh;
+  background-image: url('../assets/images/loinbg.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px 40px;
+  position: relative;
+}
+
+.signup-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(104, 102, 102, 0.3);
+}
+
+/* Glass effect container */
+.signup-container {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 40px 50px;
+  width: 100%;
+  max-width: 550px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.signup-container h2 {
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  color: #333;
+}
+
+.signup-container input[type="text"],
+.signup-container input[type="password"],
+.signup-container input[type="email"],
+.signup-container input[type="tel"],
+.signup-container input[type="date"],
+.signup-container input[type="number"],
+.signup-container textarea,
+.signup-container select {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #333;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.signup-container input::placeholder,
+.signup-container textarea::placeholder {
+  color: #555;
+}
+
+.signup-container input:focus,
+.signup-container textarea:focus,
+.signup-container select:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+.signup-container textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.signup-container button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #fff;
+  background: linear-gradient(to right, #28a745, #1e7e34);
+  border: none;
+  border-radius: 8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-weight: 600;
+}
+
+.signup-container button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5);
+}
+
+.signup-container button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Input Group for side-by-side inputs */
+.input-group {
+  display: flex;
+  gap: 12px;
+}
+
+.input-group input {
+  flex: 1;
+}
+
+/* File Upload */
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+}
+
+.file-upload label {
+  color: #333;
+  font-weight: 500;
+}
+
+.file-upload input[type="file"] {
+  margin: 0;
+  padding: 8px;
+}
+
+/* Role Selection */
+.role-selection {
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.role-selection h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  color: #333;
+  font-weight: 500;
+}
+
+.checkbox-group label:hover {
+  background: rgba(40, 167, 69, 0.3);
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Role Specific Fields */
+.role-fields {
+  margin: 15px 0;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  border-left: 4px solid #28a745;
+  text-align: left;
+}
+
+.role-fields h4 {
+  color: #1e7e34;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.role-specific-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Login Link */
+.signup-container .options {
+  margin-top: 20px;
+}
+
+.signup-container .options p {
+  margin: 10px 0;
+  color: #333;
+}
+
+.signup-container .options a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.signup-container .options a:hover {
+  text-decoration: underline;
+  color: #28a745;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .signup-background {
+    padding: 90px 15px 30px;
+  }
+
+  .signup-container {
+    padding: 30px 25px;
+  }
+
+  .signup-container h2 {
+    font-size: 1.4rem;
+  }
+
+  .input-group {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .checkbox-group {
+    flex-direction: column;
+  }
+
+  .checkbox-group label {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .signup-container input,
+  .signup-container button,
+  .signup-container select,
+  .signup-container textarea {
+    font-size: 0.9rem;
+  }
+}

@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import WeatherUpdatePage from './pages/WeatherUpdatePage';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route path="/weather" element={<WeatherUpdatePage />} />
         </Routes>
       </div>

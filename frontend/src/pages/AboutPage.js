@@ -1,10 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import './AboutPage.css';
 import banner2 from '../assets/images/banner2.jpg';
 import team5 from '../assets/images/team5.jpg';
-import team3 from '../assets/images/team3.jpg';
+import Nabiul_08 from '../assets/images/Nabiul_08.jpg';
 import team2 from '../assets/images/team2.jpg';
 
 const AboutPage = () => {
@@ -40,12 +41,12 @@ const AboutPage = () => {
                 <h6 className="title-subw3hny">আমাদের সম্পর্কে</h6>
                 <h3 className="title-A">কৃষি ও ফার্ম-ফ্রেন্ড</h3>
                 <div className="w3banner-content-btns">
-                  <a href="/about" className="btn btn-style btn-primary mt-lg-5 mt-4 me-2">
+                  <Link to="/about" className="btn btn-style btn-primary mt-lg-5 mt-4 me-2">
                     আরও পড়ুন <i className="fas fa-arrow-right ms-2"></i>
-                  </a>
-                  <a href="/contact" className="btn btn-style btn-outline-dark mt-lg-5 mt-4">
+                  </Link>
+                  <Link to="/signup" className="btn btn-style btn-outline-dark mt-lg-5 mt-4">
                     যোগাযোগ করুন <i className="fas fa-arrow-right ms-2"></i>
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="col-lg-6 text-left ps-lg-5 mt-lg-0 mt-md-5 mt-4">
@@ -125,9 +126,9 @@ const AboutPage = () => {
                   প্রযুক্তির সাথে পরিচিত হতে এবং কৃষিতে উদ্ভাবন যোগ করবে। মাসব্যাপী গবেষণা এবং আপনার সমর্থনের মাধ্যমে,
                   আমরা এই সাফল্য অর্জন করতে সক্ষম হয়েছি।
                 </p>
-                <a className="btn btn-style btn-primary mt-md-5 mt-4" href="#">
+                <Link className="btn btn-style btn-primary mt-md-5 mt-4" to="/signup">
                   আমাদের টিমে যোগ দিন <span className="fas fa-arrow-right ms-2"></span>
-                </a>
+                </Link>
               </div>
             </div>
             <div className="col-md-6">
@@ -141,7 +142,7 @@ const AboutPage = () => {
                 </div>
                 <div className="col-md-12 text-center mt-4">
                   <div className="team-grids">
-                    <img src={team3} className="img-fluid mb-3" alt="Team Member" style={{ width: '200px', height: 'auto' }} />
+                    <img src={Nabiul_08} className="img-fluid mb-3" alt="Team Member" style={{ width: '200px', height: 'auto' }} />
                     <h4>S.M. Nabiul Islam</h4>
                     <h6>Project Manager & Full Stack Developer</h6>
                   </div>

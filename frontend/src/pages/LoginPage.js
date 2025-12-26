@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Alert from '../components/Alert';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -11,6 +12,20 @@ const LoginPage = () => {
     remember: false
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState({
+    isOpen: false,
+    type: 'info',
+    title: '',
+    message: ''
+  });
+
+  const showAlert = (type, title, message) => {
+    setAlert({ isOpen: true, type, title, message });
+  };
+
+  const closeAlert = () => {
+    setAlert(prev => ({ ...prev, isOpen: false }));
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -67,9 +82,6 @@ const LoginPage = () => {
       if (response.ok) {
         const data = await response.json();
 
-        // Show success message
-        alert(`লগ ইন সফল! স্বাগতম, ${formData.username}!`);
-
         // Save user ID and session ID in cookies
         setCookie("userId", data.id, 7);
 
@@ -100,16 +112,21 @@ const LoginPage = () => {
           }
         });
 
-        // Navigate to home or dashboard
-        navigate('/');
+        // Show success message
+        showAlert('success', 'লগ ইন সফল!', `স্বাগতম, ${formData.username}!`);
+        
+        // Navigate to home after a short delay
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
 
       } else {
         const errorData = await response.json();
-        alert(`লগ ইন ব্যর্থ! ${errorData.error || 'অনুগ্রহ করে আবার চেষ্টা করুন।'}`);
+        showAlert('error', 'লগ ইন ব্যর্থ!', errorData.error || 'অনুগ্রহ করে আবার চেষ্টা করুন।');
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("সার্ভারের সাথে সংযোগ করতে ব্যর্থ হয়েছে।");
+      showAlert('error', 'সংযোগ ত্রুটি!', 'সার্ভারের সাথে সংযোগ করতে ব্যর্থ হয়েছে।');
     } finally {
       setIsLoading(false);
     }
@@ -118,6 +135,14 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <Navbar />
+      
+      <Alert 
+        isOpen={alert.isOpen}
+        onClose={closeAlert}
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+      />
       
       <div className="login-background">
         <div className="login-container">

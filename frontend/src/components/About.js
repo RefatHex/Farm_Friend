@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './About.css';
 import banner1 from '../assets/images/banner1.jpg';
 
@@ -38,7 +39,7 @@ const About = () => {
               ))}
             </ul>
             <p>
-              <a href="/login" className="btn-cta" aria-label="ফার্ম-ফ্রেন্ডের সাথে যোগাযোগ করুন">যোগ দিন</a>
+              <Link to="/signup" className="btn-cta" aria-label="ফার্ম-ফ্রেন্ডের সাথে যোগাযোগ করুন">যোগ দিন</Link>
             </p>
           </div>
         </div>
