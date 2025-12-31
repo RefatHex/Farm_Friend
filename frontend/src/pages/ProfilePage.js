@@ -6,7 +6,8 @@ import Alert from '../components/Alert';
 import './ProfilePage.css';
 
 // Set to true to use mock data for testing (set to false in production)
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
+
 
 // Demo/Mock data for testing
 const MOCK_ROLE_DETAILS = {

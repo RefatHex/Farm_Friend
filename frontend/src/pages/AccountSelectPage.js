@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './AccountSelectPage.css';
 
 // Set to true to use mock data for testing (set to false in production)
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 // Demo mock roles for testing (simulates user with multiple roles)
 const MOCK_ROLES = ['farmersId', 'agronomistsId'];
