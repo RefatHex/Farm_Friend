@@ -1,11 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
+import FarmerNavbar from '../components/FarmerNavbar';
 import Footer from '../components/Footer';
 import './WeatherUpdatePage.css';
 
-// API endpoints (adjust as needed)
+
 const CURRENT_WEATHER_API_URL = 'http://127.0.0.1:8000/api/current-weather/?city=Dhaka';
 const HISTORICAL_RAINFALL_API_URL = 'http://127.0.0.1:8000/api/historical-rainfall/?city=Dhaka';
+
+
+const USE_MOCK_DATA = false;
+
+
+const MOCK_WEATHER_DATA = {
+  temperature: 28,
+  humidity: 75,
+  precipitation: 12,
+  warnings: ['আজ বিকেলে হালকা বৃষ্টির সম্ভাবনা', 'তাপমাত্রা স্বাভাবিকের চেয়ে বেশি']
+};
+
+const MOCK_RAINFALL_DATA = {
+  total_rainfall_last_year: 2150
+};
 
 const WeatherUpdatePage = () => {
   const [weatherData, setWeatherData] = useState({
@@ -23,6 +38,21 @@ const WeatherUpdatePage = () => {
       try {
         setLoading(true);
         setError(null);
+
+        // Use mock data if enabled
+        if (USE_MOCK_DATA) {
+          // Simulate API delay
+          await new Promise(resolve => setTimeout(resolve, 500));
+          setWeatherData({
+            temperature: MOCK_WEATHER_DATA.temperature,
+            humidity: MOCK_WEATHER_DATA.humidity,
+            precipitation: MOCK_WEATHER_DATA.precipitation,
+            warnings: MOCK_WEATHER_DATA.warnings
+          });
+          setHistoricalRainfall(MOCK_RAINFALL_DATA.total_rainfall_last_year);
+          setLoading(false);
+          return;
+        }
 
         // Fetch current weather
         const weatherResponse = await fetch(CURRENT_WEATHER_API_URL);
@@ -58,7 +88,7 @@ const WeatherUpdatePage = () => {
 
   return (
     <div className="weather-page">
-      <Navbar />
+      <FarmerNavbar />
       <div className="weather-background">
         <div className="weather-container">
           {/* Weather Update Card */}

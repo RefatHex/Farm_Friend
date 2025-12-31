@@ -44,31 +44,6 @@
   position: relative;
 }
 
-.select-wrap .icon {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: #999;
-}
-
-.input-wrap {
-  position: relative;
-}
-
-.input-wrap .icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #999;
-}
-
-.input-wrap input {
-  padding-left: 45px;
-}
-
 .form-control {
   width: 100%;
   padding: 15px 16px;

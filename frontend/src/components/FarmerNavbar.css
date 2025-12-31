@@ -1,0 +1,188 @@
+/* Farmer Navbar Styling */
+.farmer-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: hsla(0, 0%, 85%, 0.8);
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  z-index: 1000;
+  justify-content: space-between;
+  transform: translateY(0);
+  transition: transform 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+.farmer-navbar.hidden {
+  transform: translateY(-100%);
+}
+
+.farmer-navbar.visible {
+  transform: translateY(0);
+}
+
+/* Left side container for logo and nav links */
+.farmer-navbar .navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.farmer-navbar .logo img {
+  height: 40px;
+  width: auto;
+  margin-right: 10px;
+}
+
+.farmer-navbar .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.farmer-navbar .nav-links a {
+  color: black;
+  padding: 14px 20px;
+  text-decoration: none;
+  text-align: center;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+}
+
+.farmer-navbar .nav-links a::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background-color: #4caf50;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: width 0.3s ease-in-out;
+}
+
+.farmer-navbar .nav-links a:hover::before {
+  width: 100%;
+}
+
+.farmer-navbar .nav-links a:hover {
+  color: #4caf50;
+}
+
+/* Logout button */
+.farmer-navbar .logout-btn {
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin-left: 10px;
+}
+
+.farmer-navbar .logout-btn:hover {
+  background: #b71c1c;
+  transform: translateY(-2px);
+}
+
+/* Decorated Container */
+.farmer-navbar .decorated-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+/* Brand badge */
+.farmer-navbar .brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #0b6b3e 0%, #137a4a 50%, #24b085 100%);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 8px 30px rgba(6, 40, 20, 0.18), inset 0 -2px 6px rgba(255,255,255,0.04);
+  transition: transform 200ms cubic-bezier(.2,.9,.2,1), box-shadow 200ms ease;
+}
+
+.farmer-navbar .brand-badge:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 40px rgba(5, 45, 20, 0.18);
+}
+
+.farmer-navbar .badge-icon {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #1aa260, #3ecf9b);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.farmer-navbar .brand-text { 
+  display: flex; 
+  flex-direction: column; 
+  line-height: 1; 
+}
+
+.farmer-navbar .brand-name { 
+  font-weight: 900; 
+  font-size: 16px; 
+  color: #ffffff; 
+  letter-spacing: 0.6px; 
+  text-shadow: 0 1px 2px rgba(0,0,0,0.45); 
+}
+
+.farmer-navbar .brand-tag { 
+  font-size: 11px; 
+  color: rgba(255,255,255,0.92); 
+  opacity: 0.95; 
+  margin-top: 2px; 
+}
+
+@media (max-width: 768px) {
+  .farmer-navbar {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .farmer-navbar .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .farmer-navbar .nav-links a {
+    padding: 10px 15px;
+  }
+
+  .farmer-navbar .brand-badge { 
+    padding: 8px 12px; 
+    border-radius: 10px; 
+  }
+  
+  .farmer-navbar .badge-icon { 
+    width: 30px; 
+    height: 30px; 
+    min-width: 30px; 
+  }
+  
+  .farmer-navbar .brand-name { 
+    font-size: 14px; 
+  }
+  
+  .farmer-navbar .brand-tag { 
+    display: none; 
+  }
+}

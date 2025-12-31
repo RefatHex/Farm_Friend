@@ -115,9 +115,28 @@ const LoginPage = () => {
         // Show success message
         showAlert('success', 'লগ ইন সফল!', `স্বাগতম, ${formData.username}!`);
         
-        // Navigate to home after a short delay
+        // Determine where to redirect based on roles
+        const roleCount = results.filter(r => r !== null).length;
+        
         setTimeout(() => {
-          navigate('/');
+          if (roleCount > 1) {
+            // Multiple roles - go to account select page
+            navigate('/account-select');
+          } else if (data.is_farmer) {
+            // Single farmer role - go to farmer dashboard
+            setCookie("selectedRole", "farmersId", 7);
+            navigate('/farmer-dashboard');
+          } else if (roleCount === 1) {
+            // Single other role - go to profile
+            const role = results.find(r => r !== null);
+            if (role) {
+              setCookie("selectedRole", `${role.type}Id`, 7);
+            }
+            navigate('/profile');
+          } else {
+            // No role - go to home
+            navigate('/');
+          }
         }, 2000);
 
       } else {

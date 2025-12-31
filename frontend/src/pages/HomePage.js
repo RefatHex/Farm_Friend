@@ -30,7 +30,6 @@ const HomePage = () => {
       <Blog />
       <Consultation />
       <Footer />
-      <EquipmentList />
     </div>
   );
 };

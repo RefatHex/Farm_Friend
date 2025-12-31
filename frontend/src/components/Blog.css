@@ -1,5 +1,12 @@
 .blog-section {
   padding: 80px 0;
+  background: #f0f7f0;
+}
+
+.blog-section .container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
 }
 
 .blog-section .heading-section h2 {
@@ -8,14 +15,30 @@
   color: #333;
 }
 
+/* Blog Grid Layout - Single Row */
+.blog-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: nowrap;
+}
+
+.blog-card {
+  flex: 1;
+  max-width: 320px;
+  min-width: 0;
+}
+
 .blog-entry {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: 100%;
-  margin-bottom: 30px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .blog-entry:hover {
@@ -23,29 +46,81 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.blog-entry .block-20 {
-  display: block;
-  height: 250px;
-  background-size: cover;
-  background-position: center;
-  transition: opacity 0.3s ease;
+/* Achievement Badges */
+.achievement-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.blog-entry .block-20:hover {
+.achievement-badge.champion {
+  background: linear-gradient(135deg, #ffd700, #ffb300);
+  color: #333;
+}
+
+.achievement-badge.runner-up {
+  background: linear-gradient(135deg, #cd7f32, #b87333);
+  color: #fff;
+}
+
+.achievement-badge.finalist {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: #fff;
+}
+
+/* Featured cards styling */
+.blog-entry.champion {
+  border: 3px solid #ffd700;
+}
+
+.blog-entry.runner-up {
+  border: 3px solid #cd7f32;
+}
+
+.blog-entry.finalist {
+  border: 3px solid #4caf50;
+}
+
+/* Blog Image */
+.blog-img-link {
+  display: block;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.blog-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  max-height: 200px;
+  background: #f8f9fa;
+}
+
+.blog-img-link:hover .blog-img {
   opacity: 0.9;
 }
 
 .blog-entry .text {
-  padding: 25px;
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .blog-entry .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  font-size: 0.85rem;
+  gap: 10px;
+  font-size: 0.75rem;
   color: #999;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .blog-entry .meta a {
@@ -65,10 +140,10 @@
 }
 
 .blog-entry .heading {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #333;
-  line-height: 1.5;
+  line-height: 1.4;
   margin: 0;
 }
 
@@ -76,12 +151,29 @@
   color: #28a745;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
+  .blog-grid {
+    flex-wrap: wrap;
+  }
+  
+  .blog-card {
+    flex: 0 0 calc(50% - 15px);
+    max-width: calc(50% - 15px);
+  }
+}
+
+@media (max-width: 600px) {
   .blog-section {
     padding: 40px 0;
   }
 
-  .blog-entry .block-20 {
-    height: 200px;
+  .blog-card {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .achievement-badge {
+    font-size: 0.7rem;
+    padding: 5px 10px;
   }
 }

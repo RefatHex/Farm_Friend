@@ -60,7 +60,7 @@ const Consultation = () => {
                   <div className="form-group">
                     <div className="form-field">
                       <div className="select-wrap">
-                        <div className="icon"><span className="fa fa-chevron-down">▼</span></div>
+
                         <select 
                           name="service" 
                           className="form-control"
@@ -79,66 +79,54 @@ const Consultation = () => {
                 </div>
                 <div className="col-md-6">
                   <div className="form-group">
-                    <div className="input-wrap">
-                      <div className="icon"><span className="fa fa-user">👤</span></div>
-                      <input 
-                        type="text" 
-                        name="name"
-                        className="form-control" 
-                        placeholder="আপনার নাম"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
+                    <input 
+                      type="text" 
+                      name="name"
+                      className="form-control" 
+                      placeholder="আপনার নাম"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="form-group">
-                    <div className="input-wrap">
-                      <div className="icon"><span className="fa fa-paper-plane">✉</span></div>
-                      <input 
-                        type="email" 
-                        name="email"
-                        className="form-control" 
-                        placeholder="ইমেইল ঠিকানা"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
+                    <input 
+                      type="email" 
+                      name="email"
+                      className="form-control" 
+                      placeholder="ইমেইল ঠিকানা"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="form-group">
-                    <div className="input-wrap">
-                      <div className="icon"><span className="fa fa-calendar">📅</span></div>
-                      <input 
-                        type="date" 
-                        name="date"
-                        className="form-control" 
-                        placeholder="তারিখ"
-                        value={formData.date}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
+                    <input 
+                      type="date" 
+                      name="date"
+                      className="form-control" 
+                      placeholder="তারিখ"
+                      value={formData.date}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="form-group">
-                    <div className="input-wrap">
-                      <div className="icon"><span className="fa fa-clock-o">🕐</span></div>
-                      <input 
-                        type="time" 
-                        name="time"
-                        className="form-control" 
-                        placeholder="সময়"
-                        value={formData.time}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
+                    <input 
+                      type="time" 
+                      name="time"
+                      className="form-control" 
+                      placeholder="সময়"
+                      value={formData.time}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="col-md-12">

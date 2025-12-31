@@ -11,6 +11,9 @@ import EquipmentPage from './pages/EquipmentPage';
 import EquipmentListPage from './pages/EquipmentListPage';
 import EquipmentPostForm from './components/EquipmentPostForm';
 import AdminEquipmentApprovalPage from './pages/AdminEquipmentApprovalPage';
+import ProfilePage from './pages/ProfilePage';
+import AccountSelectPage from './pages/AccountSelectPage';
+import FarmerLandingPage from './pages/FarmerLandingPage';
 
 function App() {
   return (
@@ -27,6 +30,9 @@ function App() {
           <Route path="/post-equipment" element={<EquipmentPostForm />} />
           <Route path="/admin-approval" element={<AdminEquipmentApprovalPage />} />
           <Route path="/equipment/:id" element={<EquipmentPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/account-select" element={<AccountSelectPage />} />
+          <Route path="/farmer-dashboard" element={<FarmerLandingPage />} />
         </Routes>
       </div>
     </Router>

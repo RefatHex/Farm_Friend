@@ -1,6 +1,6 @@
 .gallery-section {
   padding: 80px 0;
-  background-color: #fff;
+  background: linear-gradient(180deg, #f5f9f5 0%, #e8f0e8 100%);
 }
 
 .gallery-section .heading-section h2 {
