@@ -12,7 +12,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.18); /* lighter overlay */
 }
 
 .ftco-intro .container {
@@ -81,4 +81,163 @@
   .services {
     padding: 20px;
   }
+}
+
+/* Modern services grid */
+.modern-services .lead {
+  color: rgba(255,255,255,0.95);
+  margin-top: 8px;
+  margin-bottom: 28px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  align-items: stretch;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.service-card {
+  /* refreshed initial green gradient (softer, modern) */
+  background: linear-gradient(180deg, rgba(27,138,62,0.18) 0%, rgba(46,184,111,0.18) 100%); /* transparent green */
+  opacity: 0.82; /* reduce opacity */
+  backdrop-filter: blur(6px) saturate(110%);
+  -webkit-backdrop-filter: blur(6px) saturate(110%);
+  border: 1px solid rgba(20,120,60,0.10);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: rgba(255,255,255,0.98);
+  min-height: 150px;
+  position: relative;
+  transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, background 220ms ease, color 220ms ease;
+}
+
+.service-card:hover,
+.service-card.active {
+  transform: translateY(-6px);
+  /* reverted to previous green gradient */
+  background: linear-gradient(135deg, #1b8a3e 0%, #2eb86f 100%);
+  color: #ffffff; /* keep text white for contrast */
+  box-shadow: 0 28px 80px rgba(9,30,15,0.12);
+}
+
+.card-media {
+  position: relative;
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+}
+
+.icon-circle {
+  position: absolute;
+  bottom: -22px;
+  left: 20px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  border: 3px solid rgba(255,255,255,0.9);
+}
+
+.icon-circle img { width: 36px; height: 36px; object-fit: contain; }
+.icon-circle.emoji { font-size: 28px; }
+
+.card-body {
+  padding: 26px 22px 36px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 auto;
+}
+
+
+.card-title {
+  font-size: 1.08rem;
+  margin: 0 0 6px 0;
+  font-weight: 800;
+  color: rgba(255,255,255,0.98);
+  line-height: 1.2;
+}
+
+.card-short { margin:0; color: rgba(255,255,255,0.95); font-weight:600; }
+.card-long { margin:0; max-height:0; opacity:0; transition: max-height 320ms ease, opacity 260ms ease; overflow:hidden; color: inherit; }
+
+/* enforce readable initial colors preventing other styles from overriding */
+.services-grid .service-card .card-title,
+.services-grid .service-card .card-short,
+.services-grid .service-card .card-long {
+  color: rgba(255,255,255,0.98) !important;
+}
+
+.service-card.is-open .card-long { max-height: 260px; opacity:1; margin-top:8px; }
+
+.card-actions { display:flex; gap:10px; align-items:center; margin-top:auto; }
+.btn-learn { background: transparent; border: none; color: rgba(255,255,255,0.95); padding: 8px 12px; cursor:pointer; font-weight:600; }
+.btn-cta { background: rgba(255,255,255,0.95); color: #0b582d; padding: 10px 14px; border-radius: 8px; text-decoration:none; font-weight:600; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+/* circular chevron */
+
+.card-circle {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffd24a; /* initial yellow */
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.14);
+  color: #114422; /* dark green chevron on yellow */
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 220ms ease, color 220ms ease, transform 220ms ease;
+}
+
+.circle-icon { display:block; }
+.circle-icon path { stroke: currentColor; }
+
+/* when card is hovered or active, circle becomes green and icon becomes white */
+.service-card:hover .card-circle,
+.service-card.active .card-circle {
+  background: #ffffff; /* invert to white */
+  color: #1b8a3e; /* chevron becomes green to match hover */
+  transform: translateY(-3px);
+}
+
+/* ensure title and text remain readable on all states */
+.service-card:hover .card-title,
+.service-card.active .card-title,
+.service-card:hover .card-short,
+.service-card.active .card-short,
+.service-card:hover .card-long,
+.service-card.active .card-long {
+  color: #ffffff !important;
+  text-shadow: 0 2px 10px rgba(2,8,4,0.25);
+}
+
+/* make only the title blue on hover/active (override white) */
+.service-card:hover .card-title,
+.service-card.active .card-title {
+  color: #ffd24a!important;
+  text-shadow: none;
+}
+
+@media (max-width: 992px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 680px) {
+  .services-grid { grid-template-columns: 1fr; gap: 16px; }
+  .card-circle { right: 14px; bottom: 14px; width:40px; height:40px; }
 }

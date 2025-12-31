@@ -1,0 +1,83 @@
+.admin-approval-container {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  padding: 32px 28px 24px 28px;
+}
+.admin-approval-container h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #2e7d32;
+}
+.admin-approval-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.admin-approval-card {
+  display: flex;
+  gap: 24px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 18px 20px;
+  align-items: center;
+}
+.admin-approval-img {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.admin-approval-info {
+  flex: 1;
+}
+.admin-approval-info h3 {
+  margin: 0 0 6px 0;
+  color: #388e3c;
+}
+.admin-approval-meta {
+  font-size: 0.98rem;
+  color: #555;
+  margin: 8px 0 12px 0;
+  display: flex;
+  gap: 18px;
+}
+.admin-approval-actions button {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.admin-approval-actions .approve {
+  background: #43a047;
+  color: #fff;
+}
+.admin-approval-actions .approve:hover {
+  background: #2e7d32;
+}
+.admin-approval-actions .reject {
+  background: #e53935;
+  color: #fff;
+}
+.admin-approval-actions .reject:hover {
+  background: #b71c1c;
+}
+.admin-action-message {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 8px;
+}
+.admin-action-message.approved {
+  color: #388e3c;
+}
+.admin-action-message.rejected {
+  color: #b71c1c;
+}

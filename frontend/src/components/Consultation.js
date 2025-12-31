@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Consultation.css';
-import banner14 from '../assets/images/banner14.jpg';
+import banner19 from '../assets/images/banner19.jpg';
 
 const Consultation = () => {
   const [formData, setFormData] = useState({
@@ -47,7 +47,7 @@ const Consultation = () => {
   return (
     <section 
       className="ftco-appointment ftco-section ftco-no-pt ftco-no-pb img"
-      style={{ backgroundImage: `url(${banner14})` }}
+      style={{ backgroundImage: `url(${banner19})` }}
     >
       <div className="overlay"></div>
       <div className="container">

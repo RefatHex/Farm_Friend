@@ -11,6 +11,8 @@ import Gallery from '../components/Gallery';
 import Blog from '../components/Blog';
 import Consultation from '../components/Consultation';
 import Footer from '../components/Footer';
+import EquipmentList from '../components/EquipmentList';
+import '../components/EquipmentList.css';
 
 const HomePage = () => {
   return (
@@ -18,6 +20,7 @@ const HomePage = () => {
       <Navbar />
       <ParallaxHero />
       <WhyChooseUs />
+      <div style={{ marginTop: '40px' }}></div>
       <Counter />
       <Services />
       <ServiceTabs />
@@ -27,6 +30,7 @@ const HomePage = () => {
       <Blog />
       <Consultation />
       <Footer />
+      <EquipmentList />
     </div>
   );
 };

@@ -45,7 +45,15 @@ const Navbar = () => {
         <Link to="/signup">সাইন আপ</Link>
       </div>
       <div className="decorated-container">
-        <span className="decorated-text" id="farmfriend">FARMFRIEND</span>
+        <div className="brand-badge" id="farmfriend" role="img" aria-label="FarmFriend">
+          <div className="badge-icon" aria-hidden="true">
+            <img src={logo} alt="FarmFriend Logo" style={{ width: '28px', height: '28px', objectFit: 'contain', borderRadius: '6px' }} />
+          </div>
+          <div className="brand-text">
+            <span className="brand-name">FarmFriend</span>
+            <span className="brand-tag">Modern Farming</span>
+          </div>
+        </div>
       </div>
     </nav>
   );

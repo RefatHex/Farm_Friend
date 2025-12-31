@@ -7,6 +7,10 @@ import ServicesPage from './pages/ServicesPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import WeatherUpdatePage from './pages/WeatherUpdatePage';
+import EquipmentPage from './pages/EquipmentPage';
+import EquipmentListPage from './pages/EquipmentListPage';
+import EquipmentPostForm from './components/EquipmentPostForm';
+import AdminEquipmentApprovalPage from './pages/AdminEquipmentApprovalPage';
 
 function App() {
   return (
@@ -19,6 +23,10 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/weather" element={<WeatherUpdatePage />} />
+          <Route path="/equipment-list" element={<EquipmentListPage />} />
+          <Route path="/post-equipment" element={<EquipmentPostForm />} />
+          <Route path="/admin-approval" element={<AdminEquipmentApprovalPage />} />
+          <Route path="/equipment/:id" element={<EquipmentPage />} />
         </Routes>
       </div>
     </Router>

@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   background: #ffffff;
-  color: rgb(46, 186, 214);
+  color: rgb(79,170,155);
   padding: 20px 10px;
   text-align: center;
   height: 90px;
@@ -45,12 +45,89 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .hero-wrap-multi > section {
   position: relative;
+  z-index: 5;
+}
+.left-decor {
+  position: absolute;
+  left: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34%;
+  max-width: 520px;
+  height: 68%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2; /* behind content (section z-index:5) */
+}
+
+.collage {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.tile {
+  position: absolute;
+  width: 62%;
+  height: 62%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  box-shadow: 0 18px 40px rgba(8,32,12,0.45);
+  border: 8px solid rgba(255,255,255,0.92);
+  transition: transform 300ms cubic-bezier(.2,.9,.2,1), box-shadow 300ms ease, left 300ms ease, right 300ms ease, top 300ms ease, bottom 300ms ease, width 300ms ease, height 300ms ease;
+  will-change: transform, left, right, top, bottom, width, height;
+}
+
+.tile-1 {
+  left: 4%;
+  top: 6%;
+  transform: rotate(-4deg);
+  z-index: 3;
+}
+
+.tile-2 {
+  right: 2%;
+  top: 26%;
+  width: 58%;
+  height: 58%;
+  transform: rotate(6deg);
   z-index: 2;
+}
+
+.tile-3 {
+  left: 14%;
+  bottom: 6%;
+  width: 48%;
+  height: 48%;
+  transform: rotate(-8deg);
+  z-index: 1;
+  opacity: 0.98;
+}
+
+.tile:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 34px 70px rgba(8,32,12,0.6);
+}
+
+@media (max-width: 1200px) {
+  .left-decor {
+    width: 32%;
+    height: 62%;
+    left: 3.5%;
+  }
+}
+
+@media (max-width: 992px) {
+  .left-decor { display: none; }
+  .hero-wrap-multi > section { z-index: 4; }
 }
 
 .img-video {

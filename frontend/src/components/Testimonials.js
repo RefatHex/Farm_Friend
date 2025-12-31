@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Testimonials.css';
+import demoVideo from '../assets/video/demo2.mp4';
 import farmer1 from '../assets/images/farmer1.jpg';
 import farmer2 from '../assets/images/farmer2.jpg';
 import expert2 from '../assets/images/expert2.jpg';
@@ -75,7 +76,12 @@ const Testimonials = () => {
 
   return (
     <section className="ftco-section testimony-section bg-light">
-      <div className="overlay"></div>
+      <div className="video-bg">
+        <video autoPlay loop muted playsInline className="testimony-video">
+          <source src={demoVideo} type="video/mp4" />
+        </video>
+        <div className="overlay"></div>
+      </div>
       <div className="container">
         <div className="row justify-content-center pb-5">
           <div className="col-md-7 heading-section text-center ftco-animate">
@@ -88,7 +94,7 @@ const Testimonials = () => {
               <button className="carousel-btn prev" onClick={handlePrev}>
                 <span className="fa fa-chevron-left">‹</span>
               </button>
-              <div className="testimony-wrap d-flex">
+              <div className="testimony-wrap d-flex transparent-grassy">
                 <div 
                   className="user-img" 
                   style={{ backgroundImage: `url(${testimonials[currentIndex].image})` }}

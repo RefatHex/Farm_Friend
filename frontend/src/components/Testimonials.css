@@ -1,3 +1,25 @@
+.video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+.testimony-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+.testimony-section {
+  position: relative;
+  z-index: 1;
+}
 .testimony-section {
   padding: 80px 0;
   background-color: #f8f9fa;
@@ -19,12 +41,22 @@
 }
 
 .testimony-wrap {
-  background: #fff;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1.5px solid rgba(255,255,255,0.22);
+  box-shadow: 0 12px 40px rgba(40,167,69,0.13);
   padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 18px;
   max-width: 800px;
   width: 100%;
+  z-index: 2;
+}
+.transparent-grassy {
+  background: rgba(255,255,255,0.32);
+  opacity: 1;
+  border: 2px solid rgba(255,255,255,0.85);
+  box-shadow: 0 12px 40px rgba(40,167,69,0.13);
 }
 
 .user-img {
@@ -39,6 +71,8 @@
 .testimony-wrap .text {
   padding-left: 30px;
   flex: 1;
+  color: #222;
+  text-shadow: none;
 }
 
 .testimony-wrap .quote {
@@ -65,22 +99,25 @@
 }
 
 .testimony-wrap .quote-text {
-  font-size: 1.1rem;
-  color: #555;
+  font-size: 1.13rem;
+  color: #222;
   line-height: 1.8;
   font-style: italic;
   margin-bottom: 20px;
+  text-shadow: none;
 }
 
 .testimony-wrap .name {
   font-weight: bold;
-  color: #333;
+  color: #ffffff;
   margin-bottom: 5px;
+  text-shadow: none;
 }
 
 .testimony-wrap .position {
-  color: #28a745;
-  font-size: 0.9rem;
+  color: #000000;
+  font-size: 0.98rem;
+  text-shadow: none;
 }
 
 .carousel-btn {
