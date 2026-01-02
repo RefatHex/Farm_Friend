@@ -6,8 +6,12 @@ class Farmer(models.Model):
     name = models.CharField(max_length=255)
     dob = models.DateField()
     address = models.CharField(max_length=255)
+    contact = models.CharField(max_length=20, blank=True, null=True)
     field_size = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     average_rating = models.FloatField(default=0.0)
+
+    class Meta:
+        ordering = ['id']
 
 
 class FarmerGigs(models.Model):

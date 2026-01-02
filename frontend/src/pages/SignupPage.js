@@ -1,43 +1,43 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Alert from '../components/Alert';
-import './SignupPage.css';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Alert from "../components/Alert";
+import "./SignupPage.css";
 
 const SignupPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({
     isOpen: false,
-    type: 'info',
-    title: '',
-    message: ''
+    type: "info",
+    title: "",
+    message: "",
   });
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    dob: '',
-    address: '',
-    contact: '',
-    profilePicture: null
+    firstName: "",
+    lastName: "",
+    email: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    dob: "",
+    address: "",
+    contact: "",
+    profilePicture: null,
   });
-  
+
   const [selectedRoles, setSelectedRoles] = useState({
     farmer: false,
     agronomist: false,
     storage_owner: false,
-    rent_owner: false
+    rent_owner: false,
   });
 
   const [roleSpecificData, setRoleSpecificData] = useState({
-    field_size: '',
-    storage_capacity: '',
-    specialty: '',
-    years_of_experience: ''
+    field_size: "",
+    storage_capacity: "",
+    specialty: "",
+    years_of_experience: "",
   });
 
   const showAlert = (type, title, message, callback = null) => {
@@ -46,37 +46,37 @@ const SignupPage = () => {
 
   const closeAlert = () => {
     const callback = alert.callback;
-    setAlert(prev => ({ ...prev, isOpen: false }));
+    setAlert((prev) => ({ ...prev, isOpen: false }));
     if (callback) callback();
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleFileChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      profilePicture: e.target.files[0]
+      profilePicture: e.target.files[0],
     }));
   };
 
   const handleRoleChange = (role) => {
-    setSelectedRoles(prev => ({
+    setSelectedRoles((prev) => ({
       ...prev,
-      [role]: !prev[role]
+      [role]: !prev[role],
     }));
   };
 
   const handleRoleDataChange = (e) => {
     const { name, value } = e.target;
-    setRoleSpecificData(prev => ({
+    setRoleSpecificData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -86,30 +86,30 @@ const SignupPage = () => {
       name: `${formData.firstName} ${formData.lastName}`,
       dob: formData.dob,
       address: formData.address,
-      contact: formData.contact
+      contact: formData.contact,
     };
 
     switch (role) {
-      case 'farmer':
+      case "farmer":
         return {
           ...basePayload,
-          field_size: parseFloat(roleSpecificData.field_size)
+          field_size: parseFloat(roleSpecificData.field_size),
         };
-      case 'storage_owner':
+      case "storage_owner":
         return {
           ...basePayload,
-          storage_capacity: parseFloat(roleSpecificData.storage_capacity)
+          storage_capacity: parseFloat(roleSpecificData.storage_capacity),
         };
-      case 'rent_owner':
+      case "rent_owner":
         return {
           ...basePayload,
-          no_of_deals: 0
+          no_of_deals: 0,
         };
-      case 'agronomist':
+      case "agronomist":
         return {
           ...basePayload,
           specialty: roleSpecificData.specialty,
-          years_of_experience: parseInt(roleSpecificData.years_of_experience)
+          years_of_experience: parseInt(roleSpecificData.years_of_experience),
         };
       default:
         return basePayload;
@@ -118,26 +118,30 @@ const SignupPage = () => {
 
   const getRoleUrl = (role) => {
     const urlMap = {
-      farmer: 'http://localhost:8000/farmers/farmers/',
-      storage_owner: 'http://localhost:8000/storage/storage-owners/',
-      rent_owner: 'http://localhost:8000/rentals/rent-owners/',
-      agronomist: 'http://localhost:8000/consultations/agronomists/'
+      farmer: "http://127.0.0.1:8000/api/farmers/farmers/",
+      // storage_owner, rent_owner, and agronomist endpoints are not yet available
     };
     return urlMap[role];
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const activeRoles = Object.entries(selectedRoles).filter(([_, isSelected]) => isSelected);
-    
+
+    const activeRoles = Object.entries(selectedRoles).filter(
+      ([_, isSelected]) => isSelected
+    );
+
     if (activeRoles.length === 0) {
-      showAlert('error', 'একাউন্টের ধরন প্রয়োজন', 'অনুগ্রহ করে কমপক্ষে একটি একাউন্টের ধরন নির্বাচন করুন');
+      showAlert(
+        "error",
+        "একাউন্টের ধরন প্রয়োজন",
+        "অনুগ্রহ করে কমপক্ষে একটি একাউন্টের ধরন নির্বাচন করুন"
+      );
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      showAlert('error', 'পাসওয়ার্ড মিলছে না', 'পাসওয়ার্ডগুলি মিলছে না');
+      showAlert("error", "পাসওয়ার্ড মিলছে না", "পাসওয়ার্ডগুলি মিলছে না");
       return;
     }
 
@@ -145,45 +149,49 @@ const SignupPage = () => {
 
     // Create FormData for user creation
     const userFormData = new FormData();
-    userFormData.append('username', formData.username);
-    userFormData.append('email', formData.email);
-    userFormData.append('password', formData.password);
-    userFormData.append('name', `${formData.firstName} ${formData.lastName}`);
+    userFormData.append("username", formData.username);
+    userFormData.append("email", formData.email);
+    userFormData.append("password", formData.password);
+    userFormData.append("name", `${formData.firstName} ${formData.lastName}`);
 
     if (formData.profilePicture) {
-      userFormData.append('profile_picture', formData.profilePicture);
+      userFormData.append("profile_picture", formData.profilePicture);
     }
 
     // Add role flags
     activeRoles.forEach(([role]) => {
-      userFormData.append(`is_${role}`, 'true');
+      userFormData.append(`is_${role}`, "true");
     });
 
     try {
       // Create user account
-      const userResponse = await fetch('http://localhost:8000/users/user-info/', {
-        method: 'POST',
-        body: userFormData
-      });
+      const userResponse = await fetch(
+        "http://127.0.0.1:8000/api/users/user-info/",
+        {
+          method: "POST",
+          body: userFormData,
+        }
+      );
 
       if (!userResponse.ok) {
-        throw new Error('Failed to create user account');
+        throw new Error("Failed to create user account");
       }
 
       const userData = await userResponse.json();
       const userId = userData.id;
 
-      // Create role-specific accounts
-      const rolePromises = activeRoles.map(async ([role]) => {
+      // Create role-specific accounts (only for roles that have endpoints)
+      const supportedRoles = activeRoles.filter(([role]) => getRoleUrl(role));
+      const rolePromises = supportedRoles.map(async ([role]) => {
         const rolePayload = createRolePayload(role, userId);
         const roleUrl = getRoleUrl(role);
 
         const response = await fetch(roleUrl, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(rolePayload)
+          body: JSON.stringify(rolePayload),
         });
 
         if (!response.ok) {
@@ -192,16 +200,17 @@ const SignupPage = () => {
         return response.json();
       });
 
-      await Promise.all(rolePromises);
+      if (supportedRoles.length > 0) {
+        await Promise.all(rolePromises);
+      }
 
-      showAlert('success', 'সফল!', 'অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!');
+      showAlert("success", "সফল!", "অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
       setTimeout(() => {
-        navigate('/login');
+        navigate("/login");
       }, 2000);
-
     } catch (error) {
-      console.error('Error:', error);
-      showAlert('error', 'ভুল হয়েছে!', error.message);
+      console.error("Error:", error);
+      showAlert("error", "ভুল হয়েছে!", error.message);
     } finally {
       setIsLoading(false);
     }
@@ -229,52 +238,13 @@ const SignupPage = () => {
     }
 
     if (selectedRoles.storage_owner) {
-      fields.push(
-        <div key="storage_owner" className="role-fields" data-role="storage_owner">
-          <h4>গুদামঘর মালিক বিবরণ:</h4>
-          <div className="role-specific-fields">
-            <input
-              type="number"
-              name="storage_capacity"
-              placeholder="গুদাম ঘরের ধারণক্ষমতা (টন এ)"
-              value={roleSpecificData.storage_capacity}
-              onChange={handleRoleDataChange}
-              required
-            />
-          </div>
-        </div>
-      );
+      // Storage owner role not yet supported
+      return;
     }
 
     if (selectedRoles.agronomist) {
-      fields.push(
-        <div key="agronomist" className="role-fields" data-role="agronomist">
-          <h4>কৃষিবিদ বিবরণ:</h4>
-          <div className="role-specific-fields">
-            <select
-              name="specialty"
-              value={roleSpecificData.specialty}
-              onChange={handleRoleDataChange}
-              required
-            >
-              <option value="">বিশেষত্ব নির্বাচন করুন</option>
-              <option value="crop_management">ফসল ব্যবস্থাপনা</option>
-              <option value="soil_science">মাটি বিজ্ঞান</option>
-              <option value="pest_control">পোকামাকড় নিয়ন্ত্রণ</option>
-              <option value="other">অন্যান্য</option>
-            </select>
-            <input
-              type="number"
-              name="years_of_experience"
-              placeholder="অভিজ্ঞতার বছর"
-              value={roleSpecificData.years_of_experience}
-              onChange={handleRoleDataChange}
-              min="0"
-              required
-            />
-          </div>
-        </div>
-      );
+      // Agronomist role not yet supported
+      return;
     }
 
     return fields;
@@ -283,15 +253,15 @@ const SignupPage = () => {
   return (
     <div className="signup-page">
       <Navbar />
-      
-      <Alert 
+
+      <Alert
         isOpen={alert.isOpen}
         onClose={closeAlert}
         type={alert.type}
         title={alert.title}
         message={alert.message}
       />
-      
+
       <div className="signup-background">
         <div className="signup-container">
           <h2>সাইন আপ</h2>
@@ -395,7 +365,7 @@ const SignupPage = () => {
                   <input
                     type="checkbox"
                     checked={selectedRoles.farmer}
-                    onChange={() => handleRoleChange('farmer')}
+                    onChange={() => handleRoleChange("farmer")}
                   />
                   কৃষক
                 </label>
@@ -403,41 +373,44 @@ const SignupPage = () => {
                   <input
                     type="checkbox"
                     checked={selectedRoles.agronomist}
-                    onChange={() => handleRoleChange('agronomist')}
+                    onChange={() => handleRoleChange("agronomist")}
+                    disabled
                   />
-                  কৃষিবিদ
+                  কৃষিবিদ (শীঘ্রই উপলব্ধ হবে)
                 </label>
                 <label>
                   <input
                     type="checkbox"
                     checked={selectedRoles.storage_owner}
-                    onChange={() => handleRoleChange('storage_owner')}
+                    onChange={() => handleRoleChange("storage_owner")}
+                    disabled
                   />
-                  গুদামঘর মালিক
+                  গুদামঘর মালিক (শীঘ্রই উপলব্ধ হবে)
                 </label>
                 <label>
                   <input
                     type="checkbox"
                     checked={selectedRoles.rent_owner}
-                    onChange={() => handleRoleChange('rent_owner')}
+                    onChange={() => handleRoleChange("rent_owner")}
+                    disabled
                   />
-                  কৃষি সরঞ্জাম ভাড়া প্রদানকারী
+                  কৃষি সরঞ্জাম ভাড়া প্রদানকারী (শীঘ্রই উপলব্ধ হবে)
                 </label>
               </div>
             </div>
 
             {/* Additional Fields Container */}
-            <div id="additional-fields">
-              {renderRoleSpecificFields()}
-            </div>
+            <div id="additional-fields">{renderRoleSpecificFields()}</div>
 
             <button type="submit" disabled={isLoading}>
-              {isLoading ? 'লোড হচ্ছে...' : 'সাইন আপ'}
+              {isLoading ? "লোড হচ্ছে..." : "সাইন আপ"}
             </button>
           </form>
 
           <div className="options">
-            <p>ইতিমধ্যে অ্যাকাউন্ট আছে? <Link to="/login">লগইন করুন</Link></p>
+            <p>
+              ইতিমধ্যে অ্যাকাউন্ট আছে? <Link to="/login">লগইন করুন</Link>
+            </p>
           </div>
         </div>
       </div>

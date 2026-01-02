@@ -4,7 +4,7 @@ from .models import Farmer, FarmerGigs, Crops
 class FarmerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Farmer
-        fields = ['id', 'user', 'name', 'dob', 'address', 'field_size', 'average_rating']
+        fields = ['id', 'user', 'name', 'dob', 'address', 'contact', 'field_size', 'average_rating']
 
 
 class FarmerGigsSerializer(serializers.ModelSerializer):

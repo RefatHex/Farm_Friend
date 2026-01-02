@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './AccountSelectPage.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./AccountSelectPage.css";
 
 // Set to true to use mock data for testing (set to false in production)
 const USE_MOCK_DATA = false;
 
 // Demo mock roles for testing (simulates user with multiple roles)
-const MOCK_ROLES = ['farmersId', 'agronomistsId'];
+const MOCK_ROLES = ["farmersId", "agronomistsId"];
 
 const AccountSelectPage = () => {
   const navigate = useNavigate();
@@ -36,7 +36,9 @@ const AccountSelectPage = () => {
     for (let i = 0; i < cookies.length; i++) {
       let cookie = cookies[i].trim();
       if (cookie.indexOf(nameEQ) === 0) {
-        return decodeURIComponent(cookie.substring(nameEQ.length, cookie.length));
+        return decodeURIComponent(
+          cookie.substring(nameEQ.length, cookie.length)
+        );
       }
     }
     return null;
@@ -49,7 +51,9 @@ const AccountSelectPage = () => {
       date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
       expires = "; expires=" + date.toUTCString();
     }
-    document.cookie = `${name}=${encodeURIComponent(value || "")}${expires}; path=/`;
+    document.cookie = `${name}=${encodeURIComponent(
+      value || ""
+    )}${expires}; path=/`;
   };
 
   useEffect(() => {
@@ -77,7 +81,7 @@ const AccountSelectPage = () => {
 
     if (found.length === 0) {
       // No roles found, redirect to home
-      navigate('/');
+      navigate("/");
       return;
     }
 
@@ -91,7 +95,7 @@ const AccountSelectPage = () => {
     // Multiple roles found, show popup
     setFoundRoles(found);
     setShowPopup(true);
-  }, [navigate]);
+  }, [navigate, roleRedirects]);
 
   const handleRoleSelect = (role) => {
     setCookie("selectedRole", role, 7);
@@ -100,7 +104,7 @@ const AccountSelectPage = () => {
 
   const handleClose = () => {
     setShowPopup(false);
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -108,8 +112,13 @@ const AccountSelectPage = () => {
       <div className="account-select-background">
         <div className="account-select-container">
           <h1 className="welcome-title">স্বাগতম!</h1>
-          <p>আপনার একাধিক অ্যাকাউন্ট আছে, দয়া করে কোনটি ব্যবহার করতে চান তা নির্বাচন করুন।</p>
-          <p><em>অন্যথায়, আপনাকে স্বয়ংক্রিয়ভাবে পুনর্নির্দেশিত করা হবে।</em></p>
+          <p>
+            আপনার একাধিক অ্যাকাউন্ট আছে, দয়া করে কোনটি ব্যবহার করতে চান তা
+            নির্বাচন করুন।
+          </p>
+          <p>
+            <em>অন্যথায়, আপনাকে স্বয়ংক্রিয়ভাবে পুনর্নির্দেশিত করা হবে।</em>
+          </p>
         </div>
 
         {showPopup && (

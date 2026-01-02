@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Alert from '../components/Alert';
-import './LoginPage.css';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Alert from "../components/Alert";
+import "./LoginPage.css";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    remember: false
+    username: "",
+    password: "",
+    remember: false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({
     isOpen: false,
-    type: 'info',
-    title: '',
-    message: ''
+    type: "info",
+    title: "",
+    message: "",
   });
 
   const showAlert = (type, title, message) => {
@@ -24,14 +24,14 @@ const LoginPage = () => {
   };
 
   const closeAlert = () => {
-    setAlert(prev => ({ ...prev, isOpen: false }));
+    setAlert((prev) => ({ ...prev, isOpen: false }));
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -47,12 +47,14 @@ const LoginPage = () => {
 
   const fetchDetails = async (endpoint, userId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/${endpoint}/?user=${userId}`);
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/${endpoint}/?user=${userId}`
+      );
       if (response.ok) {
         const data = await response.json();
-        if (data.length > 0) {
-          const typeName = endpoint.split('/').pop();
-          return { type: typeName, id: data[0].id };
+        if (data.results && data.results.length > 0) {
+          const typeName = endpoint.split("/").pop();
+          return { type: typeName, id: data.results[0].id };
         }
       }
     } catch (error) {
@@ -71,7 +73,7 @@ const LoginPage = () => {
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/users/login/", {
+      const response = await fetch("http://127.0.0.1:8000/api/users/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -101,7 +103,9 @@ const LoginPage = () => {
           detailsToFetch.push(fetchDetails("storage/storage-owners", data.id));
         }
         if (data.is_agronomist) {
-          detailsToFetch.push(fetchDetails("consultations/agronomists", data.id));
+          detailsToFetch.push(
+            fetchDetails("consultations/agronomists", data.id)
+          );
         }
 
         const results = await Promise.all(detailsToFetch);
@@ -113,39 +117,46 @@ const LoginPage = () => {
         });
 
         // Show success message
-        showAlert('success', 'লগ ইন সফল!', `স্বাগতম, ${formData.username}!`);
-        
+        showAlert("success", "লগ ইন সফল!", `স্বাগতম, ${formData.username}!`);
+
         // Determine where to redirect based on roles
-        const roleCount = results.filter(r => r !== null).length;
-        
+        const roleCount = results.filter((r) => r !== null).length;
+
         setTimeout(() => {
           if (roleCount > 1) {
             // Multiple roles - go to account select page
-            navigate('/account-select');
+            navigate("/account-select");
           } else if (data.is_farmer) {
             // Single farmer role - go to farmer dashboard
             setCookie("selectedRole", "farmersId", 7);
-            navigate('/farmer-dashboard');
+            navigate("/farmer-dashboard");
           } else if (roleCount === 1) {
             // Single other role - go to profile
-            const role = results.find(r => r !== null);
+            const role = results.find((r) => r !== null);
             if (role) {
               setCookie("selectedRole", `${role.type}Id`, 7);
             }
-            navigate('/profile');
+            navigate("/profile");
           } else {
             // No role - go to home
-            navigate('/');
+            navigate("/");
           }
         }, 2000);
-
       } else {
         const errorData = await response.json();
-        showAlert('error', 'লগ ইন ব্যর্থ!', errorData.error || 'অনুগ্রহ করে আবার চেষ্টা করুন।');
+        showAlert(
+          "error",
+          "লগ ইন ব্যর্থ!",
+          errorData.error || "অনুগ্রহ করে আবার চেষ্টা করুন।"
+        );
       }
     } catch (error) {
       console.error("Login error:", error);
-      showAlert('error', 'সংযোগ ত্রুটি!', 'সার্ভারের সাথে সংযোগ করতে ব্যর্থ হয়েছে।');
+      showAlert(
+        "error",
+        "সংযোগ ত্রুটি!",
+        "সার্ভারের সাথে সংযোগ করতে ব্যর্থ হয়েছে।"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -154,39 +165,39 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <Navbar />
-      
-      <Alert 
+
+      <Alert
         isOpen={alert.isOpen}
         onClose={closeAlert}
         type={alert.type}
         title={alert.title}
         message={alert.message}
       />
-      
+
       <div className="login-background">
         <div className="login-container">
           <h2>লগইন</h2>
           <form onSubmit={handleSubmit}>
-            <input 
-              type="text" 
-              name="username" 
-              placeholder="ইউজারনেম" 
+            <input
+              type="text"
+              name="username"
+              placeholder="ইউজারনেম"
               value={formData.username}
               onChange={handleChange}
-              required 
+              required
             />
-            <input 
-              type="password" 
-              name="password" 
-              placeholder="পাসওয়ার্ড" 
+            <input
+              type="password"
+              name="password"
+              placeholder="পাসওয়ার্ড"
               value={formData.password}
               onChange={handleChange}
-              required 
+              required
             />
             <div className="toggle">
-              <input 
-                type="checkbox" 
-                id="remember" 
+              <input
+                type="checkbox"
+                id="remember"
                 name="remember"
                 checked={formData.remember}
                 onChange={handleChange}
@@ -194,13 +205,17 @@ const LoginPage = () => {
               <label htmlFor="remember">আমাকে মনে রাখুন</label>
             </div>
             <button type="submit" disabled={isLoading}>
-              {isLoading ? 'লোড হচ্ছে...' : 'লগইন'}
+              {isLoading ? "লোড হচ্ছে..." : "লগইন"}
             </button>
           </form>
 
           <div className="options">
-            <p>আপনি নন? <a href="#">অ্যাকাউন্ট পরিবর্তন করুন</a></p>
-            <p>অ্যাকাউন্ট নেই? <Link to="/signup">সাইন আপ করুন</Link></p>
+            <p>
+              আপনি নন? <span>অ্যাকাউন্ট পরিবর্তন করুন</span>
+            </p>
+            <p>
+              অ্যাকাউন্ট নেই? <Link to="/signup">সাইন আপ করুন</Link>
+            </p>
           </div>
         </div>
       </div>

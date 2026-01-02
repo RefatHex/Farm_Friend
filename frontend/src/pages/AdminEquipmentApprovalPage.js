@@ -1,35 +1,34 @@
-import React, { useState } from 'react';
-import './AdminEquipmentApprovalPage.css';
+import React, { useState } from "react";
+import "./AdminEquipmentApprovalPage.css";
 
-// Demo data for pending equipment posts
 const pendingPosts = [
   {
     id: 1,
-    name: 'Tractor',
-    description: 'Powerful tractor for field work.',
+    name: "Tractor",
+    description: "Powerful tractor for field work.",
     price: 120,
-    user: 'Rahim',
-    image: require('../assets/images/tractor.jpg'),
+    user: "Rahim",
+    image: require("../assets/images/tractor.jpg"),
   },
   {
     id: 2,
-    name: 'Seeder',
-    description: 'Seeder for fast and uniform seed planting.',
+    name: "Seeder",
+    description: "Seeder for fast and uniform seed planting.",
     price: 60,
-    user: 'Karim',
-    image: require('../assets/images/seeder.jpg'),
+    user: "Karim",
+    image: require("../assets/images/seeder.jpg"),
   },
 ];
 
 function AdminEquipmentApprovalPage() {
-  const [posts, setPosts] = useState(pendingPosts);
+  const [posts] = useState(pendingPosts);
   const [action, setAction] = useState({});
 
   const handleApprove = (id) => {
-    setAction({ ...action, [id]: 'approved' });
+    setAction({ ...action, [id]: "approved" });
   };
   const handleReject = (id) => {
-    setAction({ ...action, [id]: 'rejected' });
+    setAction({ ...action, [id]: "rejected" });
   };
 
   return (
@@ -39,9 +38,13 @@ function AdminEquipmentApprovalPage() {
         <p>No pending posts.</p>
       ) : (
         <div className="admin-approval-list">
-          {posts.map(post => (
+          {posts.map((post) => (
             <div className="admin-approval-card" key={post.id}>
-              <img src={post.image} alt={post.name} className="admin-approval-img" />
+              <img
+                src={post.image}
+                alt={post.name}
+                className="admin-approval-img"
+              />
               <div className="admin-approval-info">
                 <h3>{post.name}</h3>
                 <p>{post.description}</p>
@@ -50,11 +53,23 @@ function AdminEquipmentApprovalPage() {
                   <span>৳{post.price}/day</span>
                 </div>
                 {action[post.id] ? (
-                  <div className={`admin-action-message ${action[post.id]}`}>{action[post.id].toUpperCase()}</div>
+                  <div className={`admin-action-message ${action[post.id]}`}>
+                    {action[post.id].toUpperCase()}
+                  </div>
                 ) : (
                   <div className="admin-approval-actions">
-                    <button className="approve" onClick={() => handleApprove(post.id)}>Approve</button>
-                    <button className="reject" onClick={() => handleReject(post.id)}>Reject</button>
+                    <button
+                      className="approve"
+                      onClick={() => handleApprove(post.id)}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      className="reject"
+                      onClick={() => handleReject(post.id)}
+                    >
+                      Reject
+                    </button>
                   </div>
                 )}
               </div>
