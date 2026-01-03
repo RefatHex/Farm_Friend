@@ -16,6 +16,10 @@ import AccountSelectPage from "./pages/AccountSelectPage";
 import FarmerLandingPage from "./pages/FarmerLandingPage";
 import RentalOrdersPage from "./pages/RentalOrdersPage";
 import MyRentalsPage from "./pages/MyRentalsPage";
+import RentalAdminDashboard from "./pages/RentalAdminDashboard";
+import RentGigActions from "./pages/RentGigActions";
+import FertilizerRecommendationPage from "./pages/FertilizerRecommendationPage";
+import CropRecommendationPage from "./pages/CropRecommendationPage";
 
 function App() {
   return (
@@ -40,6 +44,10 @@ function App() {
           <Route path="/farmer-dashboard" element={<FarmerLandingPage />} />
           <Route path="/my-rentals" element={<RentalOrdersPage />} />
           <Route path="/manage-rentals" element={<MyRentalsPage />} />
+          <Route path="/rental-admin" element={<RentalAdminDashboard />} />
+          <Route path="/rent-gig-actions" element={<RentGigActions />} />
+          <Route path="/fertilizer" element={<FertilizerRecommendationPage />} />
+          <Route path="/crop-advice" element={<CropRecommendationPage />} />
         </Routes>
       </div>
     </Router>

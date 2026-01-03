@@ -130,6 +130,13 @@ const LoginPage = () => {
             // Single farmer role - go to farmer dashboard
             setCookie("selectedRole", "farmersId", 7);
             navigate("/farmer-dashboard");
+          } else if (data.is_rent_owner) {
+            // Single rent_owner role - go to rental admin dashboard
+            const rentOwnerResult = results.find((r) => r && r.type === "rent-owners");
+            if (rentOwnerResult) {
+              setCookie("selectedRole", "rent-ownersId", 7);
+            }
+            navigate("/rental-admin");
           } else if (roleCount === 1) {
             // Single other role - go to profile
             const role = results.find((r) => r !== null);

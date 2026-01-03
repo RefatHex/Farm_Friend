@@ -8,6 +8,54 @@ const FarmerNavbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  // Get cookie helper
+  const getCookie = (name) => {
+    const nameEQ = name + "=";
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      let cookie = cookies[i].trim();
+      if (cookie.indexOf(nameEQ) === 0) {
+        return decodeURIComponent(cookie.substring(nameEQ.length));
+      }
+    }
+    return null;
+  };
+
+  // Determine home path based on selected role
+  const getHomePath = () => {
+    const selectedRole = getCookie("selectedRole");
+    switch (selectedRole) {
+      case "rent-ownersId":
+        return "/rental-admin";
+      case "storage-ownersId":
+        return "/storage-dashboard"; // Future dashboard
+      case "agronomistsId":
+        return "/agronomist-dashboard"; // Future dashboard
+      case "farmersId":
+      default:
+        return "/farmer-dashboard";
+    }
+  };
+
+  // Get dashboard label based on role
+  const getDashboardLabel = () => {
+    const selectedRole = getCookie("selectedRole");
+    switch (selectedRole) {
+      case "rent-ownersId":
+        return "ভাড়া ড্যাশবোর্ড";
+      case "storage-ownersId":
+        return "স্টোরেজ ড্যাশবোর্ড";
+      case "agronomistsId":
+        return "কৃষি বিশেষজ্ঞ ড্যাশবোর্ড";
+      case "farmersId":
+      default:
+        return "কৃষক ড্যাশবোর্ড";
+    }
+  };
+
+  const homePath = getHomePath();
+  const dashboardLabel = getDashboardLabel();
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY) {
@@ -51,12 +99,12 @@ const FarmerNavbar = () => {
     <nav id="farmer-navbar" className={`farmer-navbar ${isVisible ? 'visible' : 'hidden'}`}>
       <div className="navbar-left">
         <div className="logo">
-          <Link to="/farmer-dashboard">
+          <Link to={homePath}>
             <img src={logo} alt="লোগো" />
           </Link>
         </div>
         <div className="nav-links">
-          <Link to="/farmer-dashboard">হোম</Link>
+          <Link to={homePath}>হোম</Link>
           <Link to="/profile">প্রোফাইল</Link>
           <button className="logout-btn" onClick={handleLogout}>লগআউট</button>
         </div>
@@ -68,7 +116,7 @@ const FarmerNavbar = () => {
           </div>
           <div className="brand-text">
             <span className="brand-name">FarmFriend</span>
-            <span className="brand-tag">কৃষক ড্যাশবোর্ড</span>
+            <span className="brand-tag">{dashboardLabel}</span>
           </div>
         </div>
       </div>

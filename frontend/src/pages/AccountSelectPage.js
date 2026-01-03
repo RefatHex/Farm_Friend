@@ -8,26 +8,26 @@ const USE_MOCK_DATA = false;
 // Demo mock roles for testing (simulates user with multiple roles)
 const MOCK_ROLES = ["farmersId", "agronomistsId"];
 
+// Role redirects mapping - defined outside component to avoid recreation
+const ROLE_REDIRECTS = {
+  farmersId: "/farmer-dashboard",
+  "rent-ownersId": "/rental-admin",
+  "storage-ownersId": "/profile",
+  agronomistsId: "/profile",
+};
+
+// Role labels in Bengali
+const ROLE_LABELS = {
+  farmersId: "কৃষক",
+  "rent-ownersId": "ভাড়া মালিক",
+  "storage-ownersId": "স্টোরেজ মালিক",
+  agronomistsId: "কৃষি বিশেষজ্ঞ",
+};
+
 const AccountSelectPage = () => {
   const navigate = useNavigate();
   const [foundRoles, setFoundRoles] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-
-  // Role redirects mapping - farmers go to farmer dashboard, others to profile
-  const roleRedirects = {
-    farmersId: "/farmer-dashboard",
-    "rent-ownersId": "/profile",
-    "storage-ownersId": "/profile",
-    agronomistsId: "/profile",
-  };
-
-  // Role labels in Bengali
-  const roleLabels = {
-    farmersId: "কৃষক",
-    "rent-ownersId": "ভাড়া মালিক",
-    "storage-ownersId": "স্টোরেজ মালিক",
-    agronomistsId: "কৃষি বিশেষজ্ঞ",
-  };
 
   // Cookie helper functions
   const getCookie = (name) => {
@@ -88,18 +88,20 @@ const AccountSelectPage = () => {
     if (found.length === 1) {
       // Only one role, auto-redirect
       setCookie("selectedRole", found[0], 7);
-      navigate(roleRedirects[found[0]]);
+      navigate(ROLE_REDIRECTS[found[0]]);
       return;
     }
 
     // Multiple roles found, show popup
     setFoundRoles(found);
     setShowPopup(true);
-  }, [navigate, roleRedirects]);
+  }, [navigate]);
 
   const handleRoleSelect = (role) => {
+    console.log("Role selected:", role);
+    console.log("Redirecting to:", ROLE_REDIRECTS[role]);
     setCookie("selectedRole", role, 7);
-    navigate(roleRedirects[role]);
+    navigate(ROLE_REDIRECTS[role]);
   };
 
   const handleClose = () => {
@@ -129,7 +131,7 @@ const AccountSelectPage = () => {
                 {foundRoles.map((role) => (
                   <li key={role} onClick={() => handleRoleSelect(role)}>
                     <button className="account-btn">
-                      {roleLabels[role]} হিসাবে প্রবেশ করুন
+                      {ROLE_LABELS[role]} হিসাবে প্রবেশ করুন
                     </button>
                   </li>
                 ))}

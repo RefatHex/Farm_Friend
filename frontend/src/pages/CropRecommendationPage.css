@@ -1,0 +1,188 @@
+/* Crop Recommendation Page Styles */
+.crop-recommendation-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.crop-background {
+  flex: 1;
+  background: url("../assets/images/banner14.jpg") no-repeat center center fixed;
+  background-size: cover;
+  padding: 100px 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crop-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.crop-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.crop-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px);
+}
+
+.crop-card .card-header {
+  background: linear-gradient(20deg, #ffdf0085, #cf981d);
+  padding: 20px;
+  text-align: center;
+}
+
+.crop-card .card-header h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.crop-card .card-body {
+  padding: 30px;
+}
+
+/* Form Styles */
+.crop-recommendation-page .form-group {
+  margin-bottom: 20px;
+}
+
+.crop-recommendation-page .form-group label {
+  display: block;
+  color: #212529;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.crop-recommendation-page .form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.crop-recommendation-page .form-group input:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(207, 152, 29, 0.5);
+  border-color: #cf981d;
+  transform: scale(1.02);
+}
+
+.crop-recommendation-page .form-group input:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: #cf981d;
+}
+
+.crop-recommendation-page .form-group input::placeholder {
+  color: #888;
+}
+
+/* Submit Button */
+.crop-recommendation-page .submit-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #cf981d;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.crop-recommendation-page .submit-btn:hover:not(:disabled) {
+  background-color: #b8860b;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.crop-recommendation-page .submit-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Weather Info Section */
+.crop-recommendation-page .weather-info {
+  background: rgba(255, 223, 0, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 25px;
+  border: 1px solid rgba(207, 152, 29, 0.3);
+}
+
+.crop-recommendation-page .weather-info h5 {
+  color: #212529;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.crop-recommendation-page .weather-info p {
+  color: #212529;
+  margin: 8px 0;
+  font-size: 0.95rem;
+}
+
+.crop-recommendation-page .weather-info .loading-text {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+/* Response Alert */
+.crop-recommendation-page .response-alert {
+  margin-top: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.crop-recommendation-page .response-alert.success {
+  background-color: rgba(40, 167, 69, 0.9);
+  color: #ffffff;
+  border: 1px solid #28a745;
+}
+
+.crop-recommendation-page .response-alert.error {
+  background-color: rgba(220, 53, 69, 0.9);
+  color: #ffffff;
+  border: 1px solid #dc3545;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .crop-background {
+    padding: 80px 15px 30px;
+  }
+
+  .crop-card .card-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .crop-card .card-body {
+    padding: 20px;
+  }
+
+  .crop-recommendation-page .form-group input {
+    padding: 10px 12px;
+  }
+}

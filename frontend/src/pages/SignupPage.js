@@ -119,7 +119,8 @@ const SignupPage = () => {
   const getRoleUrl = (role) => {
     const urlMap = {
       farmer: "http://127.0.0.1:8000/api/farmers/farmers/",
-      // storage_owner, rent_owner, and agronomist endpoints are not yet available
+      rent_owner: "http://127.0.0.1:8000/api/rentals/rent-owners/",
+      // storage_owner and agronomist endpoints are not yet available
     };
     return urlMap[role];
   };
@@ -237,14 +238,54 @@ const SignupPage = () => {
       );
     }
 
+    if (selectedRoles.rent_owner) {
+      fields.push(
+        <div key="rent_owner" className="role-fields" data-role="rent_owner">
+          <h4>ভাড়া প্রদানকারী বিবরণ:</h4>
+          <p className="role-info">আপনি কৃষি সরঞ্জাম ভাড়া দিতে পারবেন।</p>
+        </div>
+      );
+    }
+
     if (selectedRoles.storage_owner) {
-      // Storage owner role not yet supported
-      return;
+      fields.push(
+        <div key="storage_owner" className="role-fields" data-role="storage_owner">
+          <h4>গুদামঘর মালিক বিবরণ:</h4>
+          <div className="role-specific-fields">
+            <input
+              type="number"
+              name="storage_capacity"
+              placeholder="গুদামঘরের ধারণক্ষমতা (টন)"
+              value={roleSpecificData.storage_capacity}
+              onChange={handleRoleDataChange}
+            />
+          </div>
+        </div>
+      );
     }
 
     if (selectedRoles.agronomist) {
-      // Agronomist role not yet supported
-      return;
+      fields.push(
+        <div key="agronomist" className="role-fields" data-role="agronomist">
+          <h4>কৃষিবিদ বিবরণ:</h4>
+          <div className="role-specific-fields">
+            <input
+              type="text"
+              name="specialty"
+              placeholder="বিশেষত্ব"
+              value={roleSpecificData.specialty}
+              onChange={handleRoleDataChange}
+            />
+            <input
+              type="number"
+              name="years_of_experience"
+              placeholder="অভিজ্ঞতা (বছর)"
+              value={roleSpecificData.years_of_experience}
+              onChange={handleRoleDataChange}
+            />
+          </div>
+        </div>
+      );
     }
 
     return fields;
@@ -374,27 +415,24 @@ const SignupPage = () => {
                     type="checkbox"
                     checked={selectedRoles.agronomist}
                     onChange={() => handleRoleChange("agronomist")}
-                    disabled
                   />
-                  কৃষিবিদ (শীঘ্রই উপলব্ধ হবে)
+                  কৃষিবিদ
                 </label>
                 <label>
                   <input
                     type="checkbox"
                     checked={selectedRoles.storage_owner}
                     onChange={() => handleRoleChange("storage_owner")}
-                    disabled
                   />
-                  গুদামঘর মালিক (শীঘ্রই উপলব্ধ হবে)
+                  গুদামঘর মালিক
                 </label>
                 <label>
                   <input
                     type="checkbox"
                     checked={selectedRoles.rent_owner}
                     onChange={() => handleRoleChange("rent_owner")}
-                    disabled
                   />
-                  কৃষি সরঞ্জাম ভাড়া প্রদানকারী (শীঘ্রই উপলব্ধ হবে)
+                  কৃষি সরঞ্জাম ভাড়া প্রদানকারী
                 </label>
               </div>
             </div>
