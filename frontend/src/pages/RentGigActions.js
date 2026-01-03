@@ -260,23 +260,32 @@ const RentGigActions = () => {
           <form onSubmit={handleSubmit} className="post-form">
             <div className="form-group">
               <label htmlFor="categoryType">ক্যাটাগরি নির্বাচন করুন</label>
-              <select
-                id="categoryType"
-                name="categoryType"
-                value={formData.categoryType}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">--ক্যাটাগরি নির্বাচন করুন--</option>
-                <option value="Tractors">ট্রাক্টর</option>
-                <option value="Plows">লাঙল</option>
-                <option value="Harrows">হ্যারো</option>
-                <option value="Sprayers">স্প্রেয়ার</option>
-                <option value="Seeders">বীজ বপনকারী</option>
-                <option value="Harvesters">হার্ভেস্টার</option>
-                <option value="Irrigation">সেচ সরঞ্জাম</option>
-                <option value="Others">অন্যান্য</option>
-              </select>
+              <div className="category-combo">
+                <input
+                  type="text"
+                  list="categoryOptions"
+                  id="categoryType"
+                  name="categoryType"
+                  value={formData.categoryType}
+                  onChange={handleInputChange}
+                  placeholder="ক্যাটাগরি নির্বাচন বা টাইপ করুন"
+                  autoComplete="off"
+                  required
+                />
+                <datalist id="categoryOptions">
+                  <option value="Tractors">ট্রাক্টর</option>
+                  <option value="Plows">লাঙল</option>
+                  <option value="Harrows">হ্যারো</option>
+                  <option value="Sprayers">স্প্রেয়ার</option>
+                  <option value="Seeders">বীজ বপনকারী</option>
+                  <option value="Harvesters">হার্ভেস্টার</option>
+                  <option value="Irrigation">সেচ সরঞ্জাম</option>
+                  <option value="Power Tiller">পাওয়ার টিলার</option>
+                  <option value="Thresher">মাড়াই যন্ত্র</option>
+                  <option value="Others">অন্যান্য</option>
+                </datalist>
+              </div>
+              <span className="category-hint">💡 তালিকা থেকে নির্বাচন করুন অথবা নিজের ক্যাটাগরি লিখুন</span>
             </div>
 
             <div className="form-group">
@@ -411,21 +420,30 @@ const RentGigActions = () => {
             <form onSubmit={handleEditSubmit} className="edit-form">
               <div className="form-group">
                 <label>ক্যাটাগরি</label>
-                <select
-                  name="categoryType"
-                  value={editFormData.categoryType}
-                  onChange={handleEditInputChange}
-                  required
-                >
-                  <option value="Tractors">ট্রাক্টর</option>
-                  <option value="Plows">লাঙল</option>
-                  <option value="Harrows">হ্যারো</option>
-                  <option value="Sprayers">স্প্রেয়ার</option>
-                  <option value="Seeders">বীজ বপনকারী</option>
-                  <option value="Harvesters">হার্ভেস্টার</option>
-                  <option value="Irrigation">সেচ সরঞ্জাম</option>
-                  <option value="Others">অন্যান্য</option>
-                </select>
+                <div className="category-combo">
+                  <input
+                    type="text"
+                    list="editCategoryOptions"
+                    name="categoryType"
+                    value={editFormData.categoryType}
+                    onChange={handleEditInputChange}
+                    placeholder="ক্যাটাগরি নির্বাচন বা টাইপ করুন"
+                    autoComplete="off"
+                    required
+                  />
+                  <datalist id="editCategoryOptions">
+                    <option value="Tractors">ট্রাক্টর</option>
+                    <option value="Plows">লাঙল</option>
+                    <option value="Harrows">হ্যারো</option>
+                    <option value="Sprayers">স্প্রেয়ার</option>
+                    <option value="Seeders">বীজ বপনকারী</option>
+                    <option value="Harvesters">হার্ভেস্টার</option>
+                    <option value="Irrigation">সেচ সরঞ্জাম</option>
+                    <option value="Power Tiller">পাওয়ার টিলার</option>
+                    <option value="Thresher">মাড়াই যন্ত্র</option>
+                    <option value="Others">অন্যান্য</option>
+                  </datalist>
+                </div>
               </div>
 
               <div className="form-group">
