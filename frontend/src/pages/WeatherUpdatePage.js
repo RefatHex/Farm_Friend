@@ -163,11 +163,14 @@ const WeatherUpdatePage = () => {
         <div className="weather-container">
           {/* Weather Update Card */}
           <div className="weather-update-card">
-            <h1>আবহাওয়া আপডেট</h1>
-            <div style={{ marginTop: "20px" }}>
+            <h1>🌤️ আবহাওয়া আপডেট</h1>
+            <p style={{ color: '#666', marginBottom: '20px', fontSize: '16px' }}>
+              আপনার এলাকার বিস্তারিত আবহাওয়া তথ্য
+            </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap', justifyContent: 'center' }}>
               <label
                 htmlFor="city-select"
-                style={{ marginRight: "10px", fontWeight: "bold" }}
+                style={{ fontWeight: '500', color: '#555' }}
               >
                 শহর নির্বাচন করুন:
               </label>
@@ -177,12 +180,6 @@ const WeatherUpdatePage = () => {
                 value={city}
                 onChange={handleCityChange}
                 placeholder="শহরের নাম লিখুন"
-                style={{
-                  padding: "8px 12px",
-                  fontSize: "14px",
-                  border: "1px solid #ddd",
-                  borderRadius: "5px",
-                }}
               />
             </div>
           </div>
@@ -191,7 +188,7 @@ const WeatherUpdatePage = () => {
             <div className="loading">তথ্য লোড হচ্ছে...</div>
           ) : error ? (
             <div className="error-message">
-              তথ্য লোড করতে সমস্যা হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।
+              ⚠️ তথ্য লোড করতে সমস্যা হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।
             </div>
           ) : (
             <>
@@ -199,39 +196,39 @@ const WeatherUpdatePage = () => {
               <div className="card-container">
                 <div className="weather-card">
                   <div className="card-value">{weatherData.temperature}°C</div>
-                  <div className="card-label">তাপমাত্রা</div>
+                  <div className="card-label">🌡️ তাপমাত্রা</div>
                 </div>
                 <div className="weather-card">
                   <div className="card-value">{weatherData.humidity}%</div>
-                  <div className="card-label">আর্দ্রতা</div>
+                  <div className="card-label">💧 আর্দ্রতা</div>
                 </div>
                 <div className="weather-card">
                   <div className="card-value">
                     {weatherData.wind_speed} km/h
                   </div>
-                  <div className="card-label">বাতাসের গতি</div>
+                  <div className="card-label">💨 বাতাসের গতি</div>
                 </div>
                 <div className="weather-card">
                   <div className="card-value">{weatherData.pressure} mb</div>
-                  <div className="card-label">চাপ</div>
+                  <div className="card-label">🔵 চাপ</div>
                 </div>
                 <div className="weather-card">
                   <div className="card-value">
                     {weatherData.precipitation} mm
                   </div>
-                  <div className="card-label">বৃষ্টিপাত</div>
+                  <div className="card-label">🌧️ বৃষ্টিপাত</div>
                 </div>
                 <div className="weather-card">
                   <div className="card-value">{weatherData.visibility} km</div>
-                  <div className="card-label">দৃশ্যমানতা</div>
+                  <div className="card-label">👁️ দৃশ্যমানতা</div>
                 </div>
                 <div className="weather-card">
                   <div className="card-value">{weatherData.cloudiness}%</div>
-                  <div className="card-label">মেঘলা</div>
+                  <div className="card-label">☁️ মেঘলা</div>
                 </div>
                 <div className="weather-card">
-                  <div className="card-value">{weatherData.condition}</div>
-                  <div className="card-label">অবস্থা</div>
+                  <div className="card-value">{weatherData.condition || '--'}</div>
+                  <div className="card-label">🌤️ অবস্থা</div>
                 </div>
               </div>
 

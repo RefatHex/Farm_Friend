@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "512a9c8e8c9cbadc3a381ce05075cc17b7be24e90ec4e82796d1901929ccd34d"
+            "sha256": "e6f09d28fc05dcb1d9dc775a81bd0b70fc0af250936e7968b3bbb69ff98eef42"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -187,6 +187,13 @@
             "markers": "python_version >= '3.9'",
             "version": "==3.16.1"
         },
+        "dotenv": {
+            "hashes": [
+                "sha256:29cf74a087b31dafdb5a446b6d7e11cbce8ed2741540e2339c69fbef92c94ce9"
+            ],
+            "index": "pypi",
+            "version": "==0.9.9"
+        },
         "drf-nested-routers": {
             "hashes": [
                 "sha256:815978f802e578fd7035c74040c104909cbe97615de89a275d77e928f4029891",
@@ -343,6 +350,14 @@
             "index": "pypi",
             "markers": "python_version >= '3.10'",
             "version": "==12.0.0"
+        },
+        "python-dotenv": {
+            "hashes": [
+                "sha256:42667e897e16ab0d66954af0e60a9caa94f0fd4ecf3aaf6d2d260eec1aa36ad6",
+                "sha256:b81ee9561e9ca4004139c6cbba3a238c32b03e4894671e181b671e8cb8425d61"
+            ],
+            "markers": "python_version >= '3.9'",
+            "version": "==1.2.1"
         },
         "pytz": {
             "hashes": [
