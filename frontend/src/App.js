@@ -1,19 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './styles/global.css';
-import './App.css';
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import ServicesPage from './pages/ServicesPage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
-import WeatherUpdatePage from './pages/WeatherUpdatePage';
-import EquipmentPage from './pages/EquipmentPage';
-import EquipmentListPage from './pages/EquipmentListPage';
-import EquipmentPostForm from './components/EquipmentPostForm';
-import AdminEquipmentApprovalPage from './pages/AdminEquipmentApprovalPage';
-import ProfilePage from './pages/ProfilePage';
-import AccountSelectPage from './pages/AccountSelectPage';
-import FarmerLandingPage from './pages/FarmerLandingPage';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./styles/global.css";
+import "./App.css";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import ServicesPage from "./pages/ServicesPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import WeatherUpdatePage from "./pages/WeatherUpdatePage";
+import EquipmentPage from "./pages/EquipmentPage";
+import EquipmentListPage from "./pages/EquipmentListPage";
+import EquipmentPostForm from "./components/EquipmentPostForm";
+import AdminEquipmentApprovalPage from "./pages/AdminEquipmentApprovalPage";
+import ProfilePage from "./pages/ProfilePage";
+import AccountSelectPage from "./pages/AccountSelectPage";
+import FarmerLandingPage from "./pages/FarmerLandingPage";
+import RentalOrdersPage from "./pages/RentalOrdersPage";
+import MyRentalsPage from "./pages/MyRentalsPage";
 
 function App() {
   return (
@@ -28,11 +30,16 @@ function App() {
           <Route path="/weather" element={<WeatherUpdatePage />} />
           <Route path="/equipment-list" element={<EquipmentListPage />} />
           <Route path="/post-equipment" element={<EquipmentPostForm />} />
-          <Route path="/admin-approval" element={<AdminEquipmentApprovalPage />} />
+          <Route
+            path="/admin-approval"
+            element={<AdminEquipmentApprovalPage />}
+          />
           <Route path="/equipment/:id" element={<EquipmentPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/account-select" element={<AccountSelectPage />} />
           <Route path="/farmer-dashboard" element={<FarmerLandingPage />} />
+          <Route path="/my-rentals" element={<RentalOrdersPage />} />
+          <Route path="/manage-rentals" element={<MyRentalsPage />} />
         </Routes>
       </div>
     </Router>

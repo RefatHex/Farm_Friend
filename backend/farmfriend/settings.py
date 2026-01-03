@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'rentals',
     # 'consultations',
     # 'notifications',
-    # 'payments',
+    'payments',
     # 'feedback',
     # 'ai_responses',
     'drf_yasg',
