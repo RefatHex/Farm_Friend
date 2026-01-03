@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import FarmerNavbar from '../components/FarmerNavbar';
-import Footer from '../components/Footer';
-import './WeatherUpdatePage.css';
+import React, { useState, useEffect } from "react";
+import FarmerNavbar from "../components/FarmerNavbar";
+import Footer from "../components/Footer";
+import "./WeatherUpdatePage.css";
 
 // API endpoints
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = "http://127.0.0.1:8000/api";
 
 const USE_MOCK_DATA = false;
 
@@ -16,45 +16,67 @@ const MOCK_WEATHER_DATA = {
   pressure: 1013,
   visibility: 10,
   cloudiness: 60,
-  warnings: ['আজ বিকেলে হালকা বৃষ্টির সম্ভাবনা', 'তাপমাত্রা স্বাভাবিকের চেয়ে বেশি']
+  warnings: [
+    "আজ বিকেলে হালকা বৃষ্টির সম্ভাবনা",
+    "তাপমাত্রা স্বাভাবিকের চেয়ে বেশি",
+  ],
 };
 
 const MOCK_WARNINGS_DATA = {
   warnings: [
-    '🌡️ HIGH HEAT: Temperature above 35°C. Monitor crops for heat stress.'
+    "🌡️ HIGH HEAT: Temperature above 35°C. Monitor crops for heat stress.",
   ],
-  recommendations: [
-    'Ensure adequate water supply to prevent crop damage.'
-  ]
+  recommendations: ["Ensure adequate water supply to prevent crop damage."],
 };
 
 const MOCK_FORECAST_DATA = {
   forecast: [
-    { datetime: '2026-01-03 12:00', temperature: 28, humidity: 70, condition: 'Partly Cloudy', precipitation: 0 },
-    { datetime: '2026-01-04 12:00', temperature: 26, humidity: 75, condition: 'Rainy', precipitation: 15 },
-    { datetime: '2026-01-05 12:00', temperature: 24, humidity: 80, condition: 'Rainy', precipitation: 20 }
-  ]
+    {
+      datetime: "2026-01-03 12:00",
+      temperature: 28,
+      humidity: 70,
+      condition: "Partly Cloudy",
+      precipitation: 0,
+    },
+    {
+      datetime: "2026-01-04 12:00",
+      temperature: 26,
+      humidity: 75,
+      condition: "Rainy",
+      precipitation: 15,
+    },
+    {
+      datetime: "2026-01-05 12:00",
+      temperature: 24,
+      humidity: 80,
+      condition: "Rainy",
+      precipitation: 20,
+    },
+  ],
 };
 
 const MOCK_RAINFALL_DATA = {
-  total_rainfall_last_year: 2150
+  total_rainfall_last_year: 2150,
 };
 
 const WeatherUpdatePage = () => {
-  const [city, setCity] = useState('Dhaka');
+  const [city, setCity] = useState("Dhaka");
   const [weatherData, setWeatherData] = useState({
-    temperature: '--',
-    humidity: '--',
-    precipitation: '--',
-    wind_speed: '--',
-    pressure: '--',
-    visibility: '--',
-    cloudiness: '--',
-    warnings: []
+    temperature: "--",
+    humidity: "--",
+    precipitation: "--",
+    wind_speed: "--",
+    pressure: "--",
+    visibility: "--",
+    cloudiness: "--",
+    warnings: [],
   });
-  const [warningsData, setWarningsData] = useState({ warnings: [], recommendations: [] });
+  const [warningsData, setWarningsData] = useState({
+    warnings: [],
+    recommendations: [],
+  });
   const [forecastData, setForecastData] = useState({ forecast: [] });
-  const [historicalRainfall, setHistoricalRainfall] = useState('--');
+  const [historicalRainfall, setHistoricalRainfall] = useState("--");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -68,7 +90,7 @@ const WeatherUpdatePage = () => {
       setError(null);
 
       if (USE_MOCK_DATA) {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         setWeatherData(MOCK_WEATHER_DATA);
         setWarningsData(MOCK_WARNINGS_DATA);
         setForecastData(MOCK_FORECAST_DATA);
@@ -78,45 +100,52 @@ const WeatherUpdatePage = () => {
       }
 
       // Fetch current weather
-      const weatherResponse = await fetch(`${API_BASE}/current-weather/?city=${selectedCity}`);
+      const weatherResponse = await fetch(
+        `${API_BASE}/current-weather/?city=${selectedCity}`
+      );
       if (weatherResponse.ok) {
         const weatherJson = await weatherResponse.json();
         setWeatherData({
-          temperature: weatherJson.temperature || '--',
-          humidity: weatherJson.humidity || '--',
-          precipitation: weatherJson.precipitation || '--',
-          wind_speed: weatherJson.wind_speed || '--',
-          pressure: weatherJson.pressure || '--',
-          visibility: weatherJson.visibility || '--',
-          cloudiness: weatherJson.cloudiness || '--',
-          condition: weatherJson.condition || '--',
-          warnings: weatherJson.warnings || []
+          temperature: weatherJson.temperature || "--",
+          humidity: weatherJson.humidity || "--",
+          precipitation: weatherJson.precipitation || "--",
+          wind_speed: weatherJson.wind_speed || "--",
+          pressure: weatherJson.pressure || "--",
+          visibility: weatherJson.visibility || "--",
+          cloudiness: weatherJson.cloudiness || "--",
+          condition: weatherJson.condition || "--",
+          warnings: weatherJson.warnings || [],
         });
       }
 
       // Fetch weather warnings
-      const warningsResponse = await fetch(`${API_BASE}/weather-warnings/?city=${selectedCity}`);
+      const warningsResponse = await fetch(
+        `${API_BASE}/weather-warnings/?city=${selectedCity}`
+      );
       if (warningsResponse.ok) {
         const warningsJson = await warningsResponse.json();
         setWarningsData(warningsJson);
       }
 
       // Fetch weather forecast
-      const forecastResponse = await fetch(`${API_BASE}/weather-forecast/?city=${selectedCity}&days=5`);
+      const forecastResponse = await fetch(
+        `${API_BASE}/weather-forecast/?city=${selectedCity}&days=5`
+      );
       if (forecastResponse.ok) {
         const forecastJson = await forecastResponse.json();
         setForecastData(forecastJson);
       }
 
       // Fetch historical rainfall
-      const rainfallResponse = await fetch(`${API_BASE}/historical-rainfall/?city=${selectedCity}`);
+      const rainfallResponse = await fetch(
+        `${API_BASE}/historical-rainfall/?city=${selectedCity}`
+      );
       if (rainfallResponse.ok) {
         const rainfallJson = await rainfallResponse.json();
-        setHistoricalRainfall(rainfallJson.total_rainfall_last_year || '--');
+        setHistoricalRainfall(rainfallJson.total_rainfall_last_year || "--");
       }
-
     } catch (err) {
-      console.error('Error fetching weather data:', err);
+      console.error("Error fetching weather data:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -135,8 +164,13 @@ const WeatherUpdatePage = () => {
           {/* Weather Update Card */}
           <div className="weather-update-card">
             <h1>আবহাওয়া আপডেট</h1>
-            <div style={{ marginTop: '20px' }}>
-              <label htmlFor="city-select" style={{ marginRight: '10px', fontWeight: 'bold' }}>শহর নির্বাচন করুন:</label>
+            <div style={{ marginTop: "20px" }}>
+              <label
+                htmlFor="city-select"
+                style={{ marginRight: "10px", fontWeight: "bold" }}
+              >
+                শহর নির্বাচন করুন:
+              </label>
               <input
                 id="city-select"
                 type="text"
@@ -144,10 +178,10 @@ const WeatherUpdatePage = () => {
                 onChange={handleCityChange}
                 placeholder="শহরের নাম লিখুন"
                 style={{
-                  padding: '8px 12px',
-                  fontSize: '14px',
-                  border: '1px solid #ddd',
-                  borderRadius: '5px'
+                  padding: "8px 12px",
+                  fontSize: "14px",
+                  border: "1px solid #ddd",
+                  borderRadius: "5px",
                 }}
               />
             </div>
@@ -172,7 +206,9 @@ const WeatherUpdatePage = () => {
                   <div className="card-label">আর্দ্রতা</div>
                 </div>
                 <div className="weather-card">
-                  <div className="card-value">{weatherData.wind_speed} km/h</div>
+                  <div className="card-value">
+                    {weatherData.wind_speed} km/h
+                  </div>
                   <div className="card-label">বাতাসের গতি</div>
                 </div>
                 <div className="weather-card">
@@ -180,7 +216,9 @@ const WeatherUpdatePage = () => {
                   <div className="card-label">চাপ</div>
                 </div>
                 <div className="weather-card">
-                  <div className="card-value">{weatherData.precipitation} mm</div>
+                  <div className="card-value">
+                    {weatherData.precipitation} mm
+                  </div>
                   <div className="card-label">বৃষ্টিপাত</div>
                 </div>
                 <div className="weather-card">
@@ -212,18 +250,19 @@ const WeatherUpdatePage = () => {
               )}
 
               {/* Recommendations */}
-              {warningsData.recommendations && warningsData.recommendations.length > 0 && (
-                <div className="weather-section">
-                  <h2>✅ সুপারিশ</h2>
-                  <div className="recommendations-list">
-                    {warningsData.recommendations.map((rec, index) => (
-                      <div key={index} className="recommendation-item">
-                        • {rec}
-                      </div>
-                    ))}
+              {warningsData.recommendations &&
+                warningsData.recommendations.length > 0 && (
+                  <div className="weather-section">
+                    <h2>✅ সুপারিশ</h2>
+                    <div className="recommendations-list">
+                      {warningsData.recommendations.map((rec, index) => (
+                        <div key={index} className="recommendation-item">
+                          • {rec}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* 5-Day Forecast */}
               {forecastData.forecast && forecastData.forecast.length > 0 && (
@@ -232,12 +271,22 @@ const WeatherUpdatePage = () => {
                   <div className="forecast-container">
                     {forecastData.forecast.slice(0, 5).map((day, index) => (
                       <div key={index} className="forecast-card">
-                        <div className="forecast-date">{day.datetime.split(' ')[0]}</div>
-                        <div className="forecast-time">{day.datetime.split(' ')[1]}</div>
+                        <div className="forecast-date">
+                          {day.datetime.split(" ")[0]}
+                        </div>
+                        <div className="forecast-time">
+                          {day.datetime.split(" ")[1]}
+                        </div>
                         <div className="forecast-temp">{day.temperature}°C</div>
-                        <div className="forecast-condition">{day.condition}</div>
-                        <div className="forecast-humidity">আর্দ্রতা: {day.humidity}%</div>
-                        <div className="forecast-precip">বৃষ্টি: {day.precipitation} mm</div>
+                        <div className="forecast-condition">
+                          {day.condition}
+                        </div>
+                        <div className="forecast-humidity">
+                          আর্দ্রতা: {day.humidity}%
+                        </div>
+                        <div className="forecast-precip">
+                          বৃষ্টি: {day.precipitation} mm
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -247,7 +296,9 @@ const WeatherUpdatePage = () => {
               {/* Historical Rainfall */}
               <div className="weather-section">
                 <h2>📊 বার্ষিক বৃষ্টিপাত</h2>
-                <p>গত বছর: <strong>{historicalRainfall} mm</strong></p>
+                <p>
+                  গত বছর: <strong>{historicalRainfall} mm</strong>
+                </p>
               </div>
             </>
           )}
