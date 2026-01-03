@@ -42,6 +42,8 @@ urlpatterns = [
     path('api/farmers/', include('farmers.urls')),
     path('api/', include('weather.urls')),
     path('api/rentals/', include('rentals.urls')),
+    path('billing/', include('billing.urls')),
+    path('payment/', include('payments.urls')),
 
 ]
 if settings.DEBUG:
