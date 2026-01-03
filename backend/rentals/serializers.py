@@ -1,21 +1,23 @@
 from rest_framework import serializers
-from .models import Equipment, RentalRequest
+from .models import RentOwner, RentItems, RentItemOrders
 
-
-class EquipmentSerializer(serializers.ModelSerializer):
-    owner_username = serializers.CharField(source='owner.username', read_only=True)
-
+class RentOwnerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Equipment
-        fields = ['id', 'owner', 'owner_username', 'title', 'description', 'image', 'price_per_day', 'is_approved', 'created_at', 'updated_at']
-        read_only_fields = ['is_approved', 'created_at', 'updated_at', 'owner_username']
+        model = RentOwner
+        fields = ['user', 'id','name', 'dob', 'contact', 'no_of_deals']
 
-
-class RentalRequestSerializer(serializers.ModelSerializer):
-    renter_username = serializers.CharField(source='renter.username', read_only=True)
-    equipment_title = serializers.CharField(source='equipment.title', read_only=True)
-
+class RentItemsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = RentalRequest
-        fields = ['id', 'equipment', 'equipment_title', 'renter', 'renter_username', 'start_date', 'end_date', 'total_price', 'status', 'created_at']
-        read_only_fields = ['total_price', 'status', 'created_at', 'renter_username', 'equipment_title']
+        model = RentItems
+        fields = ['id', 'rent_owner', 'product_name', 'description',"quantity", 'image', 'price', 'is_available']
+
+class RentItemsWithUserSerializer(serializers.ModelSerializer):
+    rent_owner=RentOwnerSerializer()
+    class Meta:
+        model = RentItems
+        fields = ['id', 'rent_owner', 'product_name', 'description',"quantity", 'image', 'price', 'is_available']
+
+class RentItemOrdersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RentItemOrders
+        fields = ['id', 'rent_owner','rent_taker', 'title', 'description', 'price','order_date','return_date', 'is_confirmed', 'is_ready_for_pickup']
