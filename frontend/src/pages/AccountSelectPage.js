@@ -13,7 +13,7 @@ const ROLE_REDIRECTS = {
   farmersId: "/farmer-dashboard",
   "rent-ownersId": "/rental-admin",
   "storage-ownersId": "/profile",
-  agronomistsId: "/profile",
+  agronomistsId: "/agronomist-dashboard",
 };
 
 // Role labels in Bengali

@@ -1,0 +1,477 @@
+/* Agronomist Dashboard Page Styles */
+.agronomist-dashboard-page {
+  font-family: "Roboto", Arial, sans-serif;
+  min-height: 100vh;
+  background-color: #f4f4f9;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading Container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e8f5e9;
+  border-top: 4px solid #4caf50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Agronomist Navbar */
+.agronomist-navbar {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 10px 20px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.agronomist-navbar .navbar-logo {
+  display: flex;
+  align-items: center;
+}
+
+.agronomist-navbar .navbar-logo a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 10px;
+}
+
+.agronomist-navbar .navbar-logo img {
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.agronomist-navbar .navbar-logo span {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #4caf50;
+}
+
+.agronomist-navbar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.agronomist-navbar ul li a {
+  color: #333;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.agronomist-navbar ul li a:hover,
+.agronomist-navbar ul li a.active {
+  background-color: #4caf50;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.agronomist-navbar ul li a[href="#logout"] {
+  background-color: #dc3545;
+  color: white;
+}
+
+.agronomist-navbar ul li a[href="#logout"]:hover {
+  background-color: #c82333;
+}
+
+/* Header Section */
+.agronomist-header {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+    url("../assets/images/banner5.jpg");
+  background-size: cover;
+  background-position: center;
+  min-height: 35vh;
+  color: white;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 70px;
+  padding: 40px 20px;
+}
+
+.agronomist-header .header-content h1 {
+  font-size: 2.8rem;
+  margin-bottom: 15px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  animation: fadeInDown 1s ease;
+}
+
+.agronomist-header .header-content h2 {
+  font-size: 1.3rem;
+  font-weight: 400;
+  opacity: 0.95;
+  animation: fadeInUp 1s ease 0.3s both;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Main Container */
+.agronomist-main-container {
+  flex: 1;
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Error Message */
+.error-message {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.error-message p {
+  color: #856404;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.setup-btn {
+  display: inline-block;
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.setup-btn:hover {
+  background-color: #388e3c;
+  transform: translateY(-2px);
+}
+
+/* Section Styles */
+.agronomist-section {
+  animation: fadeIn 0.5s ease;
+}
+
+.agronomist-section h2 {
+  font-size: 1.8rem;
+  color: #2e7d32;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #4caf50;
+  display: inline-block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Section Container Grid */
+.section-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+/* Agronomist Cards */
+.agronomist-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid #e8f5e9;
+}
+
+.agronomist-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(76, 175, 80, 0.2);
+  border-color: #4caf50;
+}
+
+.agronomist-card.clickable {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.agronomist-card h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.4rem;
+  color: #2e7d32;
+}
+
+.agronomist-card p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.agronomist-card .card-value {
+  font-size: 3rem;
+  color: #4caf50;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.agronomist-card .card-value.pending {
+  color: #ff9800;
+}
+
+.agronomist-card .card-value.confirmed {
+  color: #2196f3;
+}
+
+.agronomist-card .card-value.completed {
+  color: #4caf50;
+}
+
+.agronomist-card .card-value.income {
+  color: #27ae60;
+}
+
+/* Consultations List */
+.consultations-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.consultation-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  border: 1px solid #e8f5e9;
+  transition: all 0.3s ease;
+}
+
+.consultation-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transform: translateY(-5px);
+}
+
+.consultation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e8f5e9;
+}
+
+.consultation-header h3 {
+  margin: 0;
+  color: #2e7d32;
+  font-size: 1.3rem;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-pending {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-confirmed {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-cancelled {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+/* Consultation Details */
+.consultation-details {
+  margin-bottom: 20px;
+}
+
+.consultation-details p {
+  margin: 10px 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.consultation-details p strong {
+  color: #333;
+  margin-right: 8px;
+}
+
+/* Consultation Actions */
+.consultation-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.consultation-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-confirm {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-confirm:hover {
+  background-color: #388e3c;
+}
+
+.btn-complete {
+  background-color: #2196f3;
+  color: white;
+}
+
+.btn-complete:hover {
+  background-color: #1976d2;
+}
+
+.btn-reject {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-reject:hover {
+  background-color: #d32f2f;
+}
+
+/* No Data */
+.no-data {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.no-data p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Footer */
+.agronomist-footer {
+  background-color: #2e7d32;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .agronomist-navbar {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .agronomist-navbar ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 15px;
+  }
+
+  .agronomist-navbar ul li a {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .agronomist-header .header-content h1 {
+    font-size: 2rem;
+  }
+
+  .agronomist-header .header-content h2 {
+    font-size: 1rem;
+  }
+
+  .section-container {
+    grid-template-columns: 1fr;
+  }
+
+  .consultations-list {
+    grid-template-columns: 1fr;
+  }
+
+  .consultation-actions {
+    flex-direction: column;
+  }
+
+  .consultation-actions button {
+    width: 100%;
+  }
+}

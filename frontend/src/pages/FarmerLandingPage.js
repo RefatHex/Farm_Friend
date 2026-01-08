@@ -52,10 +52,17 @@ const FarmerLandingPage = () => {
     },
     {
       id: 7,
-      title: 'আমার লেনদেন সমূহ',
-      description: 'আপনার সক্রিয় এবং পূর্ববর্তী সমস্ত চুক্তি FarmFriend-এর সাথে দেখুন এবং পরিচালনা করুন।',
-      buttonText: 'চেক করুন',
-      link: '/my-bookings'
+      title: 'আমার পরামর্শ সমূহ',
+      description: 'কৃষি বিশেষজ্ঞদের সাথে আপনার সকল পরামর্শ অনুরোধ দেখুন এবং পরিচালনা করুন।',
+      buttonText: 'পরামর্শ দেখুন',
+      link: '/my-consultations'
+    },
+    {
+      id: 8,
+      title: 'আমার ভাড়া সমূহ',
+      description: 'আপনার সক্রিয় এবং পূর্ববর্তী সমস্ত ভাড়া চুক্তি দেখুন এবং পরিচালনা করুন।',
+      buttonText: 'ভাড়া দেখুন',
+      link: '/my-rentals'
     }
   ];
 
