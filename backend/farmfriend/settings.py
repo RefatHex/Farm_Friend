@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     # 'notifications',
     'payments',
     # 'feedback',
-    # 'ai_responses',
+    'ai_responses',
     'drf_yasg',
     "corsheaders",
     'django_filters',

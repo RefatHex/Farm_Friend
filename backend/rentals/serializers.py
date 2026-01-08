@@ -4,7 +4,11 @@ from .models import RentOwner, RentItems, RentItemOrders
 class RentOwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = RentOwner
-        fields = ['user', 'id','name', 'dob', 'contact', 'no_of_deals']
+        fields = ['user', 'id', 'name', 'dob', 'contact', 'address', 'no_of_deals', 'ratings']
+
+    def validate(self, data):
+        """Make certain fields optional during creation"""
+        return data
 
 class RentItemsSerializer(serializers.ModelSerializer):
     class Meta:

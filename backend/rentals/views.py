@@ -2,32 +2,61 @@ from .models import RentOwner, RentItems, RentItemOrders
 from .serializers import RentItemsWithUserSerializer, RentOwnerSerializer, RentItemsSerializer, RentItemOrdersSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
+from users.models import UserInfo
 
 class RentOwnerViewSet(ModelViewSet):
     serializer_class = RentOwnerSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['user']
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return RentOwner.objects.all()
+    
+    def perform_create(self, serializer):
+        """Associate rent owner with the current user"""
+        user = self.request.user if self.request.user.is_authenticated else None
+        serializer.save(user=user)
 
 
 class RentItemsViewSet(ModelViewSet):
     serializer_class = RentItemsSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['is_available','product_name','price']
-    search_fields = ['rent_owner','product_name', 'description']
+    filterset_fields = ['is_available','product_name','price', 'rent_owner']
+    search_fields = ['rent_owner__name', 'product_name', 'description']
     ordering_fields = ['price']
 
     def get_queryset(self):
-        return RentItems.objects.all()
+        return RentItems.objects.select_related('rent_owner').all()
+
+    def get_permissions(self):
+        """
+        Allow any user to view, only authenticated users to create/update/delete
+        """
+        if self.request.method in ['GET', 'HEAD', 'OPTIONS']:
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     def perform_create(self, serializer):
         """
         Customize the creation of rent items.
+        Associate with the rent owner of the current user
         """
-        serializer.save()
+        try:
+            rent_owner = RentOwner.objects.get(user=self.request.user)
+            serializer.save(rent_owner=rent_owner)
+        except RentOwner.DoesNotExist:
+            return Response(
+                {"detail": "You need to create a RentOwner profile first"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     def perform_update(self, serializer):
         """
@@ -44,6 +73,7 @@ class RentItemsWithUserViewSet(ModelViewSet):
     filterset_fields = ['is_available', 'product_name', 'price','rent_owner']
     search_fields = ['rent_owner__name', 'product_name', 'description']
     ordering_fields = ['price']
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         """
@@ -55,7 +85,14 @@ class RentItemsWithUserViewSet(ModelViewSet):
         """
         Customize the creation of rent items with user details.
         """
-        serializer.save()
+        try:
+            rent_owner = RentOwner.objects.get(user=self.request.user)
+            serializer.save(rent_owner=rent_owner)
+        except RentOwner.DoesNotExist:
+            return Response(
+                {"detail": "You need to create a RentOwner profile first"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     def perform_update(self, serializer):
         """
@@ -70,16 +107,28 @@ class RentItemsWithUserViewSet(ModelViewSet):
 class RentItemOrdersViewSet(ModelViewSet):
     serializer_class = RentItemOrdersSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['is_confirmed', 'is_ready_for_pickup','rent_owner']
-    search_fields = ['rent_owner','product_name', 'description']
-    ordering_fields = ['price']
+    filterset_fields = ['is_confirmed', 'is_ready_for_pickup','rent_owner', 'rent_taker']
+    search_fields = ['rent_owner__name', 'title', 'description']
+    ordering_fields = ['price', 'order_date']
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return RentItemOrders.objects.select_related('rent_owner').all()
+        user = self.request.user
+        # Rent owners see orders for their items
+        # Farmers see their rental orders
+        return RentItemOrders.objects.select_related('rent_owner', 'rent_taker').all()
+
+    def perform_create(self, serializer):
+        """
+        Create rental order - sets the current user as the rent_taker (farmer)
+        """
+        user = self.request.user if self.request.user.is_authenticated else None
+        serializer.save(rent_taker=user)
 
     def perform_update(self, serializer):
         """
         Handle updates for confirmation and readiness.
+        Only allow status updates
         """
         instance = self.get_object()
         if 'is_confirmed' in self.request.data:
@@ -88,3 +137,35 @@ class RentItemOrdersViewSet(ModelViewSet):
             instance.is_ready_for_pickup = self.request.data['is_ready_for_pickup']
         instance.save()
         serializer.save()
+    
+    @action(detail=False, methods=['get'], permission_classes=[AllowAny])
+    def my_rentals(self, request):
+        """
+        Get rental orders for the current user (as a farmer/rent_taker)
+        """
+        if request.user.is_authenticated:
+            orders = self.get_queryset().filter(rent_taker=request.user)
+        else:
+            orders = self.get_queryset()
+        serializer = self.get_serializer(orders, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], permission_classes=[AllowAny])
+    def my_posted_orders(self, request):
+        """
+        Get rental orders for the current user's posted items (as a rent owner)
+        """
+        if request.user.is_authenticated:
+            try:
+                rent_owner = RentOwner.objects.get(user=request.user)
+                orders = self.get_queryset().filter(rent_owner=rent_owner)
+                serializer = self.get_serializer(orders, many=True)
+                return Response(serializer.data)
+            except RentOwner.DoesNotExist:
+                orders = self.get_queryset()
+                serializer = self.get_serializer(orders, many=True)
+                return Response(serializer.data)
+        else:
+            orders = self.get_queryset()
+            serializer = self.get_serializer(orders, many=True)
+            return Response(serializer.data)

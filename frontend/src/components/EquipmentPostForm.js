@@ -46,7 +46,7 @@ function EquipmentPostForm() {
             name: userInfo.first_name,
             dob: "1990-01-01", // Default, user should update
             contact: userInfo.email,
-            address: "",
+            address: "To be updated",
           });
         }
 

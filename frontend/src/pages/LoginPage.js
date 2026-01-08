@@ -84,6 +84,10 @@ const LoginPage = () => {
       if (response.ok) {
         const data = await response.json();
 
+        // Save user ID and token in localStorage
+        localStorage.setItem("userId", data.id);
+        localStorage.setItem("token", `token_${data.id}`); // Create a simple token
+
         // Save user ID and session ID in cookies
         setCookie("userId", data.id, 7);
 
@@ -91,59 +95,43 @@ const LoginPage = () => {
           setCookie("sessionId", data.session_id, 7);
         }
 
-        // Fetch additional details based on user type
-        const detailsToFetch = [];
-        if (data.is_farmer) {
-          detailsToFetch.push(fetchDetails("farmers/farmers", data.id));
-        }
-        if (data.is_rent_owner) {
-          detailsToFetch.push(fetchDetails("rentals/rent-owners", data.id));
-        }
-        if (data.is_storage_owner) {
-          detailsToFetch.push(fetchDetails("storage/storage-owners", data.id));
-        }
-        if (data.is_agronomist) {
-          detailsToFetch.push(
-            fetchDetails("consultations/agronomists", data.id)
-          );
-        }
-
-        const results = await Promise.all(detailsToFetch);
-
-        results.forEach((result) => {
-          if (result) {
-            setCookie(`${result.type}Id`, result.id, 7);
-          }
-        });
-
         // Show success message
         showAlert("success", "লগ ইন সফল!", `স্বাগতম, ${formData.username}!`);
 
-        // Determine where to redirect based on roles
-        const roleCount = results.filter((r) => r !== null).length;
+        // Determine where to redirect based on user role flags
+        const roleFlags = [
+          data.is_farmer,
+          data.is_rent_owner,
+          data.is_storage_owner,
+          data.is_agronomist,
+          data.is_admin,
+        ].filter(Boolean);
+        const roleCount = roleFlags.length;
 
         setTimeout(() => {
           if (roleCount > 1) {
             // Multiple roles - go to account select page
             navigate("/account-select");
-          } else if (data.is_farmer) {
+          } else if (data.is_rent_owner && roleCount === 1) {
+            // Single rent_owner role - go to rental admin dashboard
+            setCookie("selectedRole", "rent-ownersId", 7);
+            navigate("/rental-admin");
+          } else if (data.is_farmer && roleCount === 1) {
             // Single farmer role - go to farmer dashboard
             setCookie("selectedRole", "farmersId", 7);
             navigate("/farmer-dashboard");
-          } else if (data.is_rent_owner) {
-            // Single rent_owner role - go to rental admin dashboard
-            const rentOwnerResult = results.find((r) => r && r.type === "rent-owners");
-            if (rentOwnerResult) {
-              setCookie("selectedRole", "rent-ownersId", 7);
-            }
-            navigate("/rental-admin");
-          } else if (roleCount === 1) {
-            // Single other role - go to profile
-            const role = results.find((r) => r !== null);
-            if (role) {
-              setCookie("selectedRole", `${role.type}Id`, 7);
-            }
+          } else if (data.is_storage_owner && roleCount === 1) {
+            // Single storage owner role - go to profile
+            setCookie("selectedRole", "storage-ownersId", 7);
             navigate("/profile");
+          } else if (data.is_agronomist && roleCount === 1) {
+            // Single agronomist role - go to profile
+            setCookie("selectedRole", "agronomistsId", 7);
+            navigate("/profile");
+          } else if (data.is_admin && roleCount === 1) {
+            // Single admin role - go to admin approval
+            setCookie("selectedRole", "adminId", 7);
+            navigate("/admin-approval");
           } else {
             // No role - go to home
             navigate("/");

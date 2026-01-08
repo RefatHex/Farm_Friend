@@ -34,6 +34,7 @@ function App() {
           <Route path="/weather" element={<WeatherUpdatePage />} />
           <Route path="/equipment-list" element={<EquipmentListPage />} />
           <Route path="/post-equipment" element={<EquipmentPostForm />} />
+          <Route path="/equipment-post" element={<EquipmentPostForm />} />
           <Route
             path="/admin-approval"
             element={<AdminEquipmentApprovalPage />}
@@ -46,7 +47,10 @@ function App() {
           <Route path="/manage-rentals" element={<MyRentalsPage />} />
           <Route path="/rental-admin" element={<RentalAdminDashboard />} />
           <Route path="/rent-gig-actions" element={<RentGigActions />} />
-          <Route path="/fertilizer" element={<FertilizerRecommendationPage />} />
+          <Route
+            path="/fertilizer"
+            element={<FertilizerRecommendationPage />}
+          />
           <Route path="/crop-advice" element={<CropRecommendationPage />} />
         </Routes>
       </div>

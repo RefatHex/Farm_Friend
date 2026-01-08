@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  fetchMyPostedRentals,
+  fetchOwnerRentItems,
+  updateRentalOrderStatus,
+  fetchRentOwner,
+} from "../services/rentalService";
 import logo from "../assets/images/logo.jpg";
 import "./RentalAdminDashboard.css";
 
@@ -8,76 +14,117 @@ const RentalAdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
   const [dashboardData, setDashboardData] = useState({
     totalProducts: 0,
-    totalUsers: 0,
-    totalBookings: 0,
+    confirmedBookings: 0,
+    pendingBookings: 0,
   });
+  const [postedItems, setPostedItems] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Get cookie helper
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-    return null;
-  };
+  // Get token and user info
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
-  const rentOwnerId = getCookie("rent-ownersId");
-
-  useEffect(() => {
-    fetchDashboardData();
-    fetchBookings();
-  }, []);
-
-  const fetchDashboardData = async () => {
+  const initializeDashboard = useCallback(async () => {
     try {
-      const [rentItemsRes, rentOrdersRes] = await Promise.all([
-        fetch("http://localhost:8000/api/rentals/rent-items/"),
-        fetch("http://localhost:8000/api/rentals/rent-item-orders/"),
-      ]);
+      setLoading(true);
+      setError(null);
 
-      if (rentItemsRes.ok && rentOrdersRes.ok) {
-        const rentItems = await rentItemsRes.json();
-        const rentOrders = await rentOrdersRes.json();
-
-        const totalProducts = rentItems.count || rentItems.results?.length || 0;
-        const totalBookings = rentOrders.count || rentOrders.results?.length || 0;
-        const uniqueUsers = new Set(
-          (rentOrders.results || []).map((order) => order.rent_taker)
-        ).size;
-
-        setDashboardData({
-          totalProducts,
-          totalUsers: uniqueUsers,
-          totalBookings,
-        });
+      // Fetch rent owner profile
+      const owner = await fetchRentOwner(userId);
+      if (owner) {
+        await Promise.all([fetchPostedItems(owner.id), fetchPostingBookings()]);
+      } else {
+        // If no rent owner profile exists, redirect to equipment post page
+        // or show a setup message
+        setError(null);
+        setLoading(false);
+        // Allow dashboard to load without a rent owner, user can set one up
       }
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+    } catch (err) {
+      console.error("Error initializing dashboard:", err);
+      // Don't show error, just allow partial loading
+      setError(null);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
+  }, [userId]);
+
+  useEffect(() => {
+    if (!token || !userId) {
+      navigate("/login");
+      return;
+    }
+    initializeDashboard();
+  }, [token, userId, navigate, initializeDashboard]);
+
+  const fetchPostedItems = async (ownerId) => {
+    try {
+      const data = await fetchOwnerRentItems(ownerId);
+      const items = Array.isArray(data) ? data : data.results || [];
+      setPostedItems(items);
+
+      setDashboardData((prev) => ({
+        ...prev,
+        totalProducts: items.length,
+      }));
+    } catch (err) {
+      console.error("Error fetching posted items:", err);
+    }
   };
 
-  const fetchBookings = async () => {
+  const fetchPostingBookings = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/rentals/rent-item-orders/`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setBookings(data.results || []);
-      }
-    } catch (error) {
-      console.error("Error fetching bookings:", error);
+      const data = await fetchMyPostedRentals();
+      const orders = Array.isArray(data) ? data : data.results || [];
+      setBookings(orders);
+
+      const confirmed = orders.filter((o) => o.is_confirmed).length;
+      const pending = orders.filter((o) => !o.is_confirmed).length;
+
+      setDashboardData((prev) => ({
+        ...prev,
+        confirmedBookings: confirmed,
+        pendingBookings: pending,
+      }));
+    } catch (err) {
+      console.error("Error fetching bookings:", err);
+    }
+  };
+
+  const handleConfirmOrder = async (orderId) => {
+    try {
+      await updateRentalOrderStatus(orderId, { is_confirmed: true });
+      await fetchPostingBookings();
+      alert("Order confirmed successfully!");
+    } catch (err) {
+      console.error("Error confirming order:", err);
+      alert("Failed to confirm order");
+    }
+  };
+
+  const handleReadyForPickup = async (orderId) => {
+    try {
+      await updateRentalOrderStatus(orderId, { is_ready_for_pickup: true });
+      await fetchPostingBookings();
+      alert("Order marked as ready for pickup!");
+    } catch (err) {
+      console.error("Error updating order:", err);
+      alert("Failed to update order");
     }
   };
 
   const handleLogout = () => {
-    // Clear cookies
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("selectedRole");
     document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "rent-ownersId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "selectedRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "rent-ownersId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "selectedRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     navigate("/login");
   };
 
@@ -103,18 +150,27 @@ const RentalAdminDashboard = () => {
           </li>
           <li>
             <a
+              href="#items"
+              className={activeSection === "items" ? "active" : ""}
+              onClick={() => setActiveSection("items")}
+            >
+              আমার যন্ত্র
+            </a>
+          </li>
+          <li>
+            <a
               href="#bookings"
               className={activeSection === "bookings" ? "active" : ""}
               onClick={() => setActiveSection("bookings")}
             >
-              বুকিংস
+              বুকিংস ({bookings.length})
             </a>
           </li>
           <li>
-            <Link to="/profile">প্রোফাইল</Link>
+            <Link to="/equipment-post">নতুন যন্ত্র যোগ করুন</Link>
           </li>
           <li>
-            <Link to="/rent-gig-actions">যন্ত্র আপলোড করুন</Link>
+            <Link to="/profile">প্রোফাইল</Link>
           </li>
           <li>
             <a href="#logout" onClick={handleLogout}>
@@ -127,15 +183,31 @@ const RentalAdminDashboard = () => {
       {/* Header Section */}
       <header className="admin-header">
         <div className="header-content">
-          <h1>FarmFriend - অ্যাডমিন প্যানেল</h1>
-          <h2>কৃষি সরঞ্জাম ব্যবস্থাপনার জন্য আপনার একমাত্র সমাধান</h2>
+          <h1>FarmFriend - ভাড়া প্রদানকারী প্যানেল</h1>
+          <h2>আপনার কৃষি সরঞ্জাম পরিচালনা করুন এবং আয় করুন</h2>
         </div>
       </header>
 
       {/* Main Content */}
       <div className="admin-main-container">
+        {/* Error Message */}
+        {error && (
+          <div
+            style={{
+              padding: "1rem",
+              margin: "1rem",
+              backgroundColor: "#ffebee",
+              color: "#d32f2f",
+              borderRadius: "6px",
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
         {/* Dashboard Section */}
-        {activeSection === "dashboard" && (
+        {activeSection === "dashboard" && !error && (
           <section className="admin-section active">
             <h2>ড্যাশবোর্ড ওভারভিউ</h2>
             {loading ? (
@@ -143,19 +215,25 @@ const RentalAdminDashboard = () => {
             ) : (
               <div className="section-container">
                 <div className="admin-card">
-                  <h3>মোট পণ্য</h3>
-                  <p>ভাড়ার জন্য উপলব্ধ মোট পণ্য</p>
-                  <div className="card-value">{dashboardData.totalProducts}</div>
+                  <h3>মোট পোস্ট করা যন্ত্র</h3>
+                  <p>আপনার ভাড়া সেবায় যন্ত্রের সংখ্যা</p>
+                  <div className="card-value">
+                    {dashboardData.totalProducts}
+                  </div>
                 </div>
                 <div className="admin-card">
-                  <h3>মোট ব্যবহারকারী</h3>
-                  <p>বুকিং করেছেন এমন ব্যবহারকারী</p>
-                  <div className="card-value">{dashboardData.totalUsers}</div>
+                  <h3>নিশ্চিত বুকিংস</h3>
+                  <p>অনুমোদিত ভাড়া অর্ডার</p>
+                  <div className="card-value">
+                    {dashboardData.confirmedBookings}
+                  </div>
                 </div>
                 <div className="admin-card">
-                  <h3>মোট বুকিং</h3>
-                  <p>মোট বুকিং সংখ্যা</p>
-                  <div className="card-value">{dashboardData.totalBookings}</div>
+                  <h3>অপেক্ষমাণ বুকিংস</h3>
+                  <p>অনুমোদনের জন্য অপেক্ষমান অর্ডার</p>
+                  <div className="card-value">
+                    {dashboardData.pendingBookings}
+                  </div>
                 </div>
               </div>
             )}
@@ -164,24 +242,89 @@ const RentalAdminDashboard = () => {
             <div className="quick-actions">
               <h3>দ্রুত কার্যক্রম</h3>
               <div className="action-buttons">
-                <Link to="/rent-gig-actions" className="action-btn primary">
+                <Link to="/equipment-post" className="action-btn primary">
                   নতুন যন্ত্র যোগ করুন
                 </Link>
-                <Link to="/manage-rentals" className="action-btn secondary">
-                  বুকিং পরিচালনা
-                </Link>
+                <button
+                  className="action-btn secondary"
+                  onClick={() => setActiveSection("bookings")}
+                >
+                  অপেক্ষমান বুকিংস দেখুন
+                </button>
               </div>
             </div>
           </section>
         )}
 
-        {/* Bookings Section */}
-        {activeSection === "bookings" && (
+        {/* Posted Items Section */}
+        {activeSection === "items" && !error && (
           <section className="admin-section active">
-            <h2>বুকিং তালিকা</h2>
+            <h2>আমার পোস্ট করা যন্ত্র</h2>
             <div className="section-container">
-              {bookings.length === 0 ? (
-                <p className="no-data">কোনো বুকিং পাওয়া যায়নি</p>
+              {loading ? (
+                <div className="loading">লোড হচ্ছে...</div>
+              ) : postedItems.length === 0 ? (
+                <div style={{ padding: "2rem", textAlign: "center" }}>
+                  <p>আপনি এখনো কোনো যন্ত্র পোস্ট করেননি</p>
+                  <Link to="/equipment-post" className="action-btn primary">
+                    প্রথম যন্ত্র যোগ করুন
+                  </Link>
+                </div>
+              ) : (
+                postedItems.map((item) => (
+                  <div key={item.id} className="admin-card booking-card">
+                    <div style={{ display: "flex", gap: "1rem" }}>
+                      {item.image && (
+                        <img
+                          src={`http://localhost:8000${item.image}`}
+                          alt={item.product_name}
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            borderRadius: "6px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+                      <div style={{ flex: 1 }}>
+                        <h3>{item.product_name}</h3>
+                        <p>
+                          <strong>বিবরণ:</strong> {item.description}
+                        </p>
+                        <p>
+                          <strong>মূল্য:</strong> ৳{item.price}/দিন
+                        </p>
+                        <p>
+                          <strong>পরিমাণ:</strong> {item.quantity}
+                        </p>
+                        <p>
+                          <strong>অবস্থা:</strong>{" "}
+                          <span
+                            className={`status ${
+                              item.is_available ? "available" : "unavailable"
+                            }`}
+                          >
+                            {item.is_available ? "উপলব্ধ" : "অনুপলব্ধ"}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Bookings Section */}
+        {activeSection === "bookings" && !error && (
+          <section className="admin-section active">
+            <h2>ভাড়া অর্ডারসমূহ</h2>
+            <div className="section-container">
+              {loading ? (
+                <div className="loading">লোড হচ্ছে...</div>
+              ) : bookings.length === 0 ? (
+                <p className="no-data">কোনো অর্ডার পাওয়া যায়নি</p>
               ) : (
                 bookings.map((booking) => (
                   <div key={booking.id} className="admin-card booking-card">
@@ -190,7 +333,7 @@ const RentalAdminDashboard = () => {
                       <strong>বিবরণ:</strong> {booking.description}
                     </p>
                     <p>
-                      <strong>তারিখ:</strong> {booking.order_date}
+                      <strong>অর্ডার তারিখ:</strong> {booking.order_date}
                     </p>
                     <p>
                       <strong>ফেরত তারিখ:</strong> {booking.return_date}
@@ -209,7 +352,7 @@ const RentalAdminDashboard = () => {
                       </span>
                     </p>
                     <p>
-                      <strong>পিকআপ রেডি:</strong>{" "}
+                      <strong>পিকআপ প্রস্তুত:</strong>{" "}
                       <span
                         className={`status ${
                           booking.is_ready_for_pickup ? "ready" : "not-ready"
@@ -218,6 +361,46 @@ const RentalAdminDashboard = () => {
                         {booking.is_ready_for_pickup ? "হ্যাঁ" : "না"}
                       </span>
                     </p>
+
+                    {/* Action Buttons */}
+                    <div
+                      style={{
+                        marginTop: "1rem",
+                        display: "flex",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      {!booking.is_confirmed && (
+                        <button
+                          onClick={() => handleConfirmOrder(booking.id)}
+                          style={{
+                            padding: "0.5rem 1rem",
+                            backgroundColor: "#4caf50",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          নিশ্চিত করুন
+                        </button>
+                      )}
+                      {booking.is_confirmed && !booking.is_ready_for_pickup && (
+                        <button
+                          onClick={() => handleReadyForPickup(booking.id)}
+                          style={{
+                            padding: "0.5rem 1rem",
+                            backgroundColor: "#2196f3",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          পিকআপের জন্য প্রস্তুত
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))
               )}
@@ -228,7 +411,10 @@ const RentalAdminDashboard = () => {
 
       {/* Footer */}
       <footer className="admin-footer">
-        <p>&copy; 2025 FarmFriend ভাড়া প্রদানকারী অ্যাডমিন প্যানেল। সর্বস্বত্ব সংরক্ষিত।</p>
+        <p>
+          &copy; 2025 FarmFriend ভাড়া প্রদানকারী অ্যাডমিন প্যানেল। সর্বস্বত্ব
+          সংরক্ষিত।
+        </p>
       </footer>
     </div>
   );
