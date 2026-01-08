@@ -44,6 +44,7 @@ urlpatterns = [
     path('ai_responses/', include('ai_responses.urls')),
     path('api/rentals/', include('rentals.urls')),
     path('billing/', include('billing.urls')),
+    path('api/notifications/', include('notifications.urls')),
     path('payment/', include('payments.urls')),
 
 ]

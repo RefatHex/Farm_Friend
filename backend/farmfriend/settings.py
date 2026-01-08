@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     # 'storage',
     'rentals',
     # 'consultations',
-    # 'notifications',
+    'notifications',
     'payments',
     # 'feedback',
     'ai_responses',
