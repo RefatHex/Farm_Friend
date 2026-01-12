@@ -1,7 +1,15 @@
-from rest_framework.routers import DefaultRouter
-from .views import NotificationsViewSet
+from rest_framework.viewsets import ModelViewSet
+from .models import Notifications
+from .serializers import NotificationsSerializer
 
-router = DefaultRouter()
-router.register(r'notifications', NotificationsViewSet, basename='notifications')
+class NotificationsViewSet(ModelViewSet):
+    """
+    CRUD operations for notifications.
+    """
+    serializer_class = NotificationsSerializer
 
-urlpatterns = router.urls
+    def get_queryset(self):
+        """
+        Fetch notifications for the authenticated user.
+        """
+        return Notifications.objects.all()

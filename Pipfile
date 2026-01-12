@@ -4,21 +4,22 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pandas = "*"
+numpy = "*"
+scikit-learn = "*"
+xgboost = "*"
+matplotlib = "*"
+seaborn = "*"
 django = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
 pillow = "*"
 drf-nested-routers = "*"
 django-filter = "*"
-drf-yasg = {extras = ["swagger-ui"], version = "*"}
+drf-yasg = "*"
 requests = "*"
 mysqlclient = "*"
-dotenv = "*"
-scikit-learn = "*"
-xgboost = "*"
-pandas = "*"
-numpy = "*"
-joblib = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
