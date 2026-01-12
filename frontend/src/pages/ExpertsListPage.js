@@ -1,0 +1,385 @@
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  fetchAgronomists,
+  createConsultationRequest,
+  getCookie,
+} from "../services/agronomistService";
+import Footer from "../components/Footer";
+import logo from "../assets/images/logo.jpg";
+import "./ExpertsListPage.css";
+
+// Set to true to use mock data for testing UI (set to false in production)
+const USE_MOCK_DATA = true;
+
+// Mock data for testing
+const MOCK_AGRONOMISTS = [
+  {
+    id: 1,
+    name: "ড. আব্দুল করিম",
+    contact: "01712345678",
+    specialty: "ফসল ব্যবস্থাপনা ও পোকামাকড় দমন",
+    experience: 15,
+    fee: 500,
+    availability: true,
+    profile_image: null,
+    total_consultations: 245,
+  },
+  {
+    id: 2,
+    name: "প্রফেসর মোঃ শফিকুল ইসলাম",
+    contact: "01898765432",
+    specialty: "মৃত্তিকা বিজ্ঞান ও সার ব্যবস্থাপনা",
+    experience: 20,
+    fee: 600,
+    availability: true,
+    profile_image: null,
+    total_consultations: 312,
+  },
+  {
+    id: 3,
+    name: "ড. ফাতেমা খাতুন",
+    contact: "01556789012",
+    specialty: "উদ্ভিদ রোগ ও প্রতিরোধ",
+    experience: 12,
+    fee: 450,
+    availability: true,
+    profile_image: null,
+    total_consultations: 178,
+  },
+  {
+    id: 4,
+    name: "মোঃ রফিকুল হক",
+    contact: "01623456789",
+    specialty: "সেচ ব্যবস্থাপনা ও জল সংরক্ষণ",
+    experience: 8,
+    fee: 400,
+    availability: true,
+    profile_image: null,
+    total_consultations: 95,
+  },
+  {
+    id: 5,
+    name: "ড. নাজমুল হাসান",
+    contact: "01445678901",
+    specialty: "বীজ প্রযুক্তি ও ফসল উন্নয়ন",
+    experience: 18,
+    fee: 550,
+    availability: false,
+    profile_image: null,
+    total_consultations: 289,
+  },
+];
+
+const ExpertsListPage = () => {
+  const navigate = useNavigate();
+  const [agronomists, setAgronomists] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAgronomist, setSelectedAgronomist] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const [bookingData, setBookingData] = useState({
+    requestDate: "",
+    details: "",
+  });
+
+  const farmerId = USE_MOCK_DATA ? "mock-farmer" : getCookie("farmersId");
+  const userId = USE_MOCK_DATA ? "mock-user" : localStorage.getItem("userId");
+
+  useEffect(() => {
+    loadAgronomists();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadAgronomists = async () => {
+    // Use mock data if enabled
+    if (USE_MOCK_DATA) {
+      // Filter only available agronomists for mock data
+      const availableAgronomists = MOCK_AGRONOMISTS.filter(a => a.availability);
+      setAgronomists(availableAgronomists);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const data = await fetchAgronomists({ availability: true });
+      const results = Array.isArray(data) ? data : data.results || [];
+      setAgronomists(results);
+    } catch (error) {
+      console.error("Error loading agronomists:", error);
+      showAlert("error", "বিশেষজ্ঞদের তথ্য লোড করতে সমস্যা হয়েছে।");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showAlert = (type, message) => {
+    setAlertMessage({ type, message });
+    setTimeout(() => setAlertMessage(null), 4000);
+  };
+
+  const handleBookClick = (agronomist) => {
+    if (!USE_MOCK_DATA && !farmerId && !userId) {
+      showAlert("warning", "বুকিং করতে অনুগ্রহ করে প্রথমে লগইন করুন।");
+      setTimeout(() => navigate("/login"), 2000);
+      return;
+    }
+    setSelectedAgronomist(agronomist);
+    setBookingData({ requestDate: "", details: "" });
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedAgronomist(null);
+    setBookingData({ requestDate: "", details: "" });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setBookingData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmitBooking = async (e) => {
+    e.preventDefault();
+
+    if (!bookingData.requestDate || !bookingData.details) {
+      showAlert("warning", "সমস্ত তথ্য পূরণ করুন।");
+      return;
+    }
+
+    // Mock booking for testing
+    if (USE_MOCK_DATA) {
+      showAlert("success", "বুকিং সফলভাবে সম্পন্ন হয়েছে! (Mock Mode)");
+      handleCloseModal();
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const requestData = {
+        farmer: parseInt(farmerId) || parseInt(userId),
+        agronomist: selectedAgronomist.id,
+        fee: selectedAgronomist.fee,
+        status: "Pending",
+        request_date: bookingData.requestDate,
+        details: bookingData.details,
+      };
+
+      await createConsultationRequest(requestData);
+      showAlert("success", "বুকিং সফলভাবে সম্পন্ন হয়েছে!");
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      showAlert("error", "বুকিং করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleLogout = () => {
+    document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "farmersId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "selectedRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("userId");
+    navigate("/login");
+  };
+
+  if (loading) {
+    return (
+      <div className="experts-page">
+        <nav className="experts-navbar">
+          <div className="navbar-logo">
+            <Link to="/farmer-dashboard">
+              <img src={logo} alt="FarmFriend Logo" />
+              <span>FarmFriend</span>
+            </Link>
+          </div>
+          <ul>
+            <li><Link to="/farmer-dashboard">হোম</Link></li>
+            <li><Link to="/experts" className="active">বিশেষজ্ঞ</Link></li>
+            <li><Link to="/my-consultations">আমার পরামর্শ</Link></li>
+            <li><Link to="/profile">প্রোফাইল</Link></li>
+            <li><a href="#logout" onClick={handleLogout}>লগ আউট</a></li>
+          </ul>
+        </nav>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>বিশেষজ্ঞদের তথ্য লোড হচ্ছে...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="experts-page">
+      {/* Navbar */}
+      <nav className="experts-navbar">
+        <div className="navbar-logo">
+          <Link to="/farmer-dashboard">
+            <img src={logo} alt="FarmFriend Logo" />
+            <span>FarmFriend</span>
+          </Link>
+        </div>
+        <ul>
+          <li><Link to="/farmer-dashboard">হোম</Link></li>
+          <li><Link to="/experts" className="active">বিশেষজ্ঞ</Link></li>
+          <li><Link to="/my-consultations">আমার পরামর্শ</Link></li>
+          <li><Link to="/profile">প্রোফাইল</Link></li>
+          <li><a href="#logout" onClick={handleLogout}>লগ আউট</a></li>
+        </ul>
+      </nav>
+
+      {/* Alert Message */}
+      {alertMessage && (
+        <div className={`alert-message alert-${alertMessage.type}`}>
+          {alertMessage.message}
+        </div>
+      )}
+
+      {/* Hero Section */}
+      <div className="experts-hero">
+        <div className="hero-content">
+          <h1>কৃষি বিশেষজ্ঞ পরামর্শ</h1>
+          <p>আমাদের অভিজ্ঞ কৃষি বিশেষজ্ঞদের সাথে যোগাযোগ করুন এবং আপনার কৃষি সমস্যার সমাধান পান</p>
+        </div>
+      </div>
+
+      {/* Experts List */}
+      <div className="experts-container">
+        <h2 className="section-title">উপলব্ধ কৃষি বিশেষজ্ঞগণ</h2>
+        
+        {agronomists.length === 0 ? (
+          <div className="no-experts">
+            <p>বর্তমানে কোনো বিশেষজ্ঞ উপলব্ধ নেই।</p>
+          </div>
+        ) : (
+          <div className="experts-grid">
+            {agronomists.map((agronomist) => (
+              <div key={agronomist.id} className="expert-card">
+                <div className="expert-avatar">
+                  <span>{agronomist.name ? agronomist.name.charAt(0).toUpperCase() : "?"}</span>
+                </div>
+                <h3 className="expert-name">{agronomist.name || "নাম নেই"}</h3>
+                <p className="expert-description">
+                  {agronomist.description || "কোনো বিবরণ নেই"}
+                </p>
+                <div className="expert-fee">
+                  পরামর্শ ফি: ৳{parseFloat(agronomist.fee).toFixed(2)}
+                </div>
+                <div className="expert-details">
+                  <p>
+                    <strong>বিশেষত্ব:</strong> {agronomist.specialty || "N/A"}
+                  </p>
+                  <p>
+                    <strong>অভিজ্ঞতা:</strong> {agronomist.years_of_experience || 0} বছর
+                  </p>
+                  <p>
+                    <strong>যোগাযোগ:</strong> {agronomist.contact || "N/A"}
+                  </p>
+                  <p>
+                    <strong>ঠিকানা:</strong> {agronomist.address || "N/A"}
+                  </p>
+                  <p className="availability-status">
+                    <strong>স্ট্যাটাস:</strong>{" "}
+                    {agronomist.availability ? (
+                      <span className="available">✅ উপলব্ধ</span>
+                    ) : (
+                      <span className="unavailable">❌ উপলব্ধ নয়</span>
+                    )}
+                  </p>
+                </div>
+                <button
+                  className="btn-book"
+                  onClick={() => handleBookClick(agronomist)}
+                  disabled={!agronomist.availability}
+                >
+                  এখনই বুক করুন
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Booking Modal */}
+      {showModal && selectedAgronomist && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>পরামর্শ বুক করুন</h3>
+              <button className="modal-close" onClick={handleCloseModal}>
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="selected-expert-info">
+                <p>
+                  <strong>বিশেষজ্ঞ:</strong> {selectedAgronomist.name}
+                </p>
+                <p>
+                  <strong>বিশেষত্ব:</strong> {selectedAgronomist.specialty}
+                </p>
+                <p>
+                  <strong>ফি:</strong> ৳{parseFloat(selectedAgronomist.fee).toFixed(2)}
+                </p>
+              </div>
+              <form onSubmit={handleSubmitBooking}>
+                <div className="form-group">
+                  <label htmlFor="requestDate">তারিখ ও সময় নির্বাচন করুন *</label>
+                  <input
+                    type="datetime-local"
+                    id="requestDate"
+                    name="requestDate"
+                    value={bookingData.requestDate}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="details">পরামর্শের বিবরণ *</label>
+                  <textarea
+                    id="details"
+                    name="details"
+                    value={bookingData.details}
+                    onChange={handleInputChange}
+                    rows="4"
+                    placeholder="আপনার সমস্যা বা প্রশ্ন বিস্তারিত লিখুন..."
+                    required
+                  ></textarea>
+                </div>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="btn-cancel"
+                    onClick={handleCloseModal}
+                  >
+                    বাতিল
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn-submit"
+                    disabled={submitting}
+                  >
+                    {submitting ? "জমা হচ্ছে..." : "বুকিং জমা দিন"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Footer />
+    </div>
+  );
+};
+
+export default ExpertsListPage;

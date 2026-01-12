@@ -20,6 +20,11 @@ import RentalAdminDashboard from "./pages/RentalAdminDashboard";
 import RentGigActions from "./pages/RentGigActions";
 import FertilizerRecommendationPage from "./pages/FertilizerRecommendationPage";
 import CropRecommendationPage from "./pages/CropRecommendationPage";
+// Agronomist/Expert imports
+import AgronomistDashboardPage from "./pages/AgronomistDashboardPage";
+import AgronomistProfileSetupPage from "./pages/AgronomistProfileSetupPage";
+import ExpertsListPage from "./pages/ExpertsListPage";
+import MyConsultationsPage from "./pages/MyConsultationsPage";
 
 function App() {
   return (
@@ -52,6 +57,11 @@ function App() {
             element={<FertilizerRecommendationPage />}
           />
           <Route path="/crop-advice" element={<CropRecommendationPage />} />
+          {/* Agronomist/Expert Routes */}
+          <Route path="/agronomist-dashboard" element={<AgronomistDashboardPage />} />
+          <Route path="/agronomist-profile-setup" element={<AgronomistProfileSetupPage />} />
+          <Route path="/experts" element={<ExpertsListPage />} />
+          <Route path="/my-consultations" element={<MyConsultationsPage />} />
         </Routes>
       </div>
     </Router>
