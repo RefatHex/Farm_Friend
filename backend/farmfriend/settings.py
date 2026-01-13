@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'farmers',
     # 'storage',
     'rentals',
-    # 'consultations',
+    'consultations',
     'notifications',
     'payments',
     # 'feedback',
