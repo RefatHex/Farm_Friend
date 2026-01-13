@@ -9,53 +9,6 @@ import Footer from "../components/Footer";
 import logo from "../assets/images/logo.jpg";
 import "./MyConsultationsPage.css";
 
-// Set to true to use mock data for testing UI (set to false in production)
-const USE_MOCK_DATA = true;
-
-// Mock data for testing
-const MOCK_CONSULTATIONS = [
-  {
-    id: 1,
-    farmer: 1,
-    agronomist: 1,
-    agronomist_name: "ড. আব্দুল করিম",
-    fee: 500,
-    status: "Pending",
-    request_date: "2026-01-15T10:00:00Z",
-    details: "আমার ধান ক্ষেতে পোকামাকড়ের আক্রমণ হয়েছে। কী করব?",
-  },
-  {
-    id: 2,
-    farmer: 1,
-    agronomist: 2,
-    agronomist_name: "প্রফেসর মোঃ শফিকুল ইসলাম",
-    fee: 600,
-    status: "Confirmed",
-    request_date: "2026-01-12T14:00:00Z",
-    details: "টমেটো গাছের পাতা হলুদ হয়ে যাচ্ছে। কারণ ও সমাধান জানতে চাই।",
-  },
-  {
-    id: 3,
-    farmer: 1,
-    agronomist: 3,
-    agronomist_name: "ড. ফাতেমা খাতুন",
-    fee: 450,
-    status: "Completed",
-    request_date: "2026-01-05T09:00:00Z",
-    details: "সার প্রয়োগের সঠিক সময় ও পরিমাণ সম্পর্কে পরামর্শ নিয়েছিলাম।",
-  },
-  {
-    id: 4,
-    farmer: 1,
-    agronomist: 1,
-    agronomist_name: "ড. আব্দুল করিম",
-    fee: 500,
-    status: "Completed",
-    request_date: "2026-01-02T11:00:00Z",
-    details: "মরিচ চাষের জন্য মাটি প্রস্তুত করার পরামর্শ নিয়েছিলাম।",
-  },
-];
-
 const MyConsultationsPage = () => {
   const navigate = useNavigate();
   const [consultations, setConsultations] = useState([]);
@@ -63,11 +16,11 @@ const MyConsultationsPage = () => {
   const [alertMessage, setAlertMessage] = useState(null);
   const [filter, setFilter] = useState("all");
 
-  const farmerId = USE_MOCK_DATA ? "mock-farmer" : getCookie("farmersId");
-  const userId = USE_MOCK_DATA ? "mock-user" : localStorage.getItem("userId");
+  const farmerId = getCookie("farmersId");
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    if (!USE_MOCK_DATA && !farmerId && !userId) {
+    if (!farmerId && !userId) {
       navigate("/login");
       return;
     }
@@ -76,13 +29,6 @@ const MyConsultationsPage = () => {
   }, [farmerId, userId, navigate]);
 
   const loadConsultations = async () => {
-    // Use mock data if enabled
-    if (USE_MOCK_DATA) {
-      setConsultations(MOCK_CONSULTATIONS);
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
       const id = farmerId || userId;
@@ -104,13 +50,6 @@ const MyConsultationsPage = () => {
 
   const handleCancelConsultation = async (consultationId) => {
     if (!window.confirm("আপনি কি নিশ্চিত এই পরামর্শ অনুরোধ বাতিল করতে চান?")) {
-      return;
-    }
-
-    // Mock cancel for testing
-    if (USE_MOCK_DATA) {
-      setConsultations(prev => prev.filter(c => c.id !== consultationId));
-      showAlert("success", "পরামর্শ অনুরোধ বাতিল করা হয়েছে।");
       return;
     }
 
@@ -139,12 +78,18 @@ const MyConsultationsPage = () => {
   const getStatusBadge = (status) => {
     const statusMap = {
       Pending: { class: "status-pending", text: "অপেক্ষমাণ" },
+      Accepted: { class: "status-confirmed", text: "গৃহীত" },
       Confirmed: { class: "status-confirmed", text: "নিশ্চিত" },
       Completed: { class: "status-completed", text: "সম্পন্ন" },
+      Rejected: { class: "status-rejected", text: "প্রত্যাখ্যাত" },
       Cancelled: { class: "status-cancelled", text: "বাতিল" },
     };
     const statusInfo = statusMap[status] || { class: "", text: status };
-    return <span className={`status-badge ${statusInfo.class}`}>{statusInfo.text}</span>;
+    return (
+      <span className={`status-badge ${statusInfo.class}`}>
+        {statusInfo.text}
+      </span>
+    );
   };
 
   const filteredConsultations = consultations.filter((c) => {
@@ -161,8 +106,10 @@ const MyConsultationsPage = () => {
 
   const handleLogout = () => {
     document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "farmersId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "selectedRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "farmersId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "selectedRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     localStorage.removeItem("userId");
     navigate("/login");
   };
@@ -178,11 +125,25 @@ const MyConsultationsPage = () => {
             </Link>
           </div>
           <ul>
-            <li><Link to="/farmer-dashboard">হোম</Link></li>
-            <li><Link to="/experts">বিশেষজ্ঞ</Link></li>
-            <li><Link to="/my-consultations" className="active">আমার পরামর্শ</Link></li>
-            <li><Link to="/profile">প্রোফাইল</Link></li>
-            <li><a href="#logout" onClick={handleLogout}>লগ আউট</a></li>
+            <li>
+              <Link to="/farmer-dashboard">হোম</Link>
+            </li>
+            <li>
+              <Link to="/experts">বিশেষজ্ঞ</Link>
+            </li>
+            <li>
+              <Link to="/my-consultations" className="active">
+                আমার পরামর্শ
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile">প্রোফাইল</Link>
+            </li>
+            <li>
+              <a href="#logout" onClick={handleLogout}>
+                লগ আউট
+              </a>
+            </li>
           </ul>
         </nav>
         <div className="loading-container">
@@ -205,11 +166,25 @@ const MyConsultationsPage = () => {
           </Link>
         </div>
         <ul>
-          <li><Link to="/farmer-dashboard">হোম</Link></li>
-          <li><Link to="/experts">বিশেষজ্ঞ</Link></li>
-          <li><Link to="/my-consultations" className="active">আমার পরামর্শ</Link></li>
-          <li><Link to="/profile">প্রোফাইল</Link></li>
-          <li><a href="#logout" onClick={handleLogout}>লগ আউট</a></li>
+          <li>
+            <Link to="/farmer-dashboard">হোম</Link>
+          </li>
+          <li>
+            <Link to="/experts">বিশেষজ্ঞ</Link>
+          </li>
+          <li>
+            <Link to="/my-consultations" className="active">
+              আমার পরামর্শ
+            </Link>
+          </li>
+          <li>
+            <Link to="/profile">প্রোফাইল</Link>
+          </li>
+          <li>
+            <a href="#logout" onClick={handleLogout}>
+              লগ আউট
+            </a>
+          </li>
         </ul>
       </nav>
 
@@ -282,7 +257,10 @@ const MyConsultationsPage = () => {
         {filteredConsultations.length === 0 ? (
           <div className="no-consultations">
             <p>কোনো পরামর্শ অনুরোধ নেই।</p>
-            <button onClick={() => navigate("/experts")} className="btn-find-experts">
+            <button
+              onClick={() => navigate("/experts")}
+              className="btn-find-experts"
+            >
               বিশেষজ্ঞ খুঁজুন
             </button>
           </div>
@@ -298,10 +276,12 @@ const MyConsultationsPage = () => {
                   <div className="consultation-info">
                     <p>
                       <strong>বিশেষজ্ঞ:</strong>{" "}
-                      {consultation.agronomist_name || `বিশেষজ্ঞ #${consultation.agronomist}`}
+                      {consultation.agronomist_name ||
+                        `বিশেষজ্ঞ #${consultation.agronomist}`}
                     </p>
                     <p>
-                      <strong>তারিখ:</strong> {formatDate(consultation.request_date)}
+                      <strong>তারিখ:</strong>{" "}
+                      {formatDate(consultation.request_date)}
                     </p>
                     <p>
                       <strong>ফি:</strong> ৳{consultation.fee}
@@ -311,7 +291,9 @@ const MyConsultationsPage = () => {
                     <p>
                       <strong>বিবরণ:</strong>
                     </p>
-                    <p className="details-text">{consultation.details || "কোনো বিবরণ নেই"}</p>
+                    <p className="details-text">
+                      {consultation.details || "কোনো বিবরণ নেই"}
+                    </p>
                   </div>
                 </div>
                 <div className="consultation-actions">

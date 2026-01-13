@@ -26,8 +26,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Agronomist Navbar */
@@ -216,8 +220,12 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Section Container Grid */
@@ -349,6 +357,11 @@
 .status-cancelled {
   background-color: #ffebee;
   color: #c62828;
+}
+
+.status-rejected {
+  background-color: #ffcdd2;
+  color: #b71c1c;
 }
 
 /* Consultation Details */

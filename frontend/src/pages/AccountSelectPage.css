@@ -3,148 +3,249 @@
 }
 
 .account-select-background {
-  font-family: 'Arial', sans-serif;
-  background-image: url('../assets/images/banner16.jpg');
-  background-size: cover;
-  background-position: center center;
-  background-attachment: fixed;
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-top: 50px;
+  padding: 20px;
 }
 
-.account-select-container {
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  text-align: center;
-}
-
-.welcome-title {
-  font-size: 2rem;
-  color: #0044cc;
-  margin-bottom: 20px;
-}
-
-.account-select-container p {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #555;
-}
-
-/* Popup Overlay */
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+/* Navbar */
+.account-select-navbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  z-index: 1000;
-}
-
-.popup-content {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.popup-content h2 {
-  font-size: 1.8rem;
-  color: #198754;
-  margin-bottom: 20px;
-}
-
-.account-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0 0 20px 0;
-}
-
-.account-list li {
-  margin: 10px 0;
-}
-
-.account-btn {
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
   width: 100%;
-  padding: 15px 20px;
-  font-size: 1.1rem;
-  color: #fff;
-  background-color: #28a745;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+  transition: transform 0.3s ease;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+.navbar-logo img {
+  height: 50px;
+  width: auto;
+}
+
+.navbar-logo span {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.btn-logout {
+  background-color: #ff6b6b;
+  color: white;
   border: none;
+  padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 1rem;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.account-btn:hover {
-  background-color: #218838;
+.btn-logout:hover {
+  background-color: #ff5252;
   transform: translateY(-2px);
 }
 
-.btn-close-popup {
-  background-color: #007bff;
-  border: none;
-  color: white;
-  padding: 12px 25px;
-  font-size: 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+/* Main Container */
+.account-select-container {
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 40px 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  max-width: 900px;
+  text-align: center;
+  margin: 0 auto;
+  margin-bottom: 40px;
 }
 
-.btn-close-popup:hover {
-  background-color: #0056b3;
+.welcome-title {
+  font-size: 2.5rem;
+  color: #667eea;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+/* Role Cards Container */
+.role-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+/* Individual Role Card */
+.role-card {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.role-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25);
+  transform: translateY(-5px);
+}
+
+.role-card.selected {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #667eea15, #764ba215);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25);
+}
+
+.role-icon {
+  font-size: 3.5rem;
+  margin-bottom: 15px;
+  display: inline-block;
+}
+
+.role-label {
+  font-size: 1.3rem;
+  color: #333;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.role-description {
+  font-size: 0.95rem;
+  color: #777;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.role-select-btn {
+  background-color: #667eea;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+.role-select-btn:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px);
+}
+
+.role-card.selected .role-select-btn {
+  background-color: #28a745;
+}
+
+.role-card.selected .role-select-btn:hover {
+  background-color: #218838;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .account-select-container {
+    padding: 25px 20px;
     margin: 20px;
-    padding: 20px;
   }
 
   .welcome-title {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
 
-  .popup-content {
-    padding: 20px;
+  .subtitle {
+    font-size: 1rem;
   }
 
-  .popup-content h2 {
+  .role-cards-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .role-icon {
+    font-size: 3rem;
+  }
+
+  .role-label {
+    font-size: 1.1rem;
+  }
+
+  .account-select-navbar {
+    margin-bottom: 30px;
+  }
+
+  .navbar-logo span {
+    font-size: 1.2rem;
+  }
+
+  .btn-logout {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-select-background {
+    padding: 10px;
+  }
+
+  .account-select-container {
+    border-radius: 10px;
+    padding: 20px 15px;
+  }
+
+  .welcome-title {
     font-size: 1.5rem;
   }
 
-  .account-btn {
-    font-size: 1rem;
-    padding: 12px 15px;
+  .role-icon {
+    font-size: 2.5rem;
   }
 
-  .btn-close-popup {
-    padding: 10px 20px;
+  .role-label {
+    font-size: 1rem;
   }
 }

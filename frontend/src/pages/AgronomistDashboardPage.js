@@ -2,71 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   fetchAgronomistByUserId,
+  fetchAgronomistById,
   fetchAgronomistConsultations,
   updateConsultationRequest,
   getCookie,
 } from "../services/agronomistService";
 import logo from "../assets/images/logo.jpg";
 import "./AgronomistDashboardPage.css";
-
-// Set to true to use mock data for testing UI (set to false in production)
-const USE_MOCK_DATA = true;
-
-// Mock data for testing
-const MOCK_AGRONOMIST = {
-  id: 1,
-  name: "ড. আব্দুল করিম",
-  contact: "+880171234567",
-  address: "ঢাকা, বাংলাদেশ",
-  description: "২০ বছরের অভিজ্ঞ কৃষি বিশেষজ্ঞ",
-  specialty: "ধান ও সবজি চাষ",
-  fee: 500,
-  years_of_experience: 20,
-  availability: true,
-};
-
-const MOCK_CONSULTATIONS = [
-  {
-    id: 1,
-    farmer: 1,
-    farmer_name: "মোঃ রহিম উদ্দিন",
-    agronomist: 1,
-    fee: 500,
-    status: "Pending",
-    request_date: "2026-01-15T10:00:00Z",
-    details: "আমার ধান ক্ষেতে পোকামাকড়ের আক্রমণ হয়েছে। কী করব?",
-  },
-  {
-    id: 2,
-    farmer: 2,
-    farmer_name: "করিম সরকার",
-    agronomist: 1,
-    fee: 500,
-    status: "Confirmed",
-    request_date: "2026-01-12T14:00:00Z",
-    details: "টমেটো গাছের পাতা হলুদ হয়ে যাচ্ছে।",
-  },
-  {
-    id: 3,
-    farmer: 3,
-    farmer_name: "জামাল হোসেন",
-    agronomist: 1,
-    fee: 500,
-    status: "Completed",
-    request_date: "2026-01-05T09:00:00Z",
-    details: "সার প্রয়োগের সঠিক সময় ও পরিমাণ জানতে চাই।",
-  },
-  {
-    id: 4,
-    farmer: 4,
-    farmer_name: "সালমা বেগম",
-    agronomist: 1,
-    fee: 500,
-    status: "Completed",
-    request_date: "2026-01-02T11:00:00Z",
-    details: "মরিচ চাষের জন্য মাটি প্রস্তুত করার পরামর্শ চাই।",
-  },
-];
 
 const AgronomistDashboardPage = () => {
   const navigate = useNavigate();
@@ -83,49 +25,28 @@ const AgronomistDashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const userId = USE_MOCK_DATA ? "mock-user" : localStorage.getItem("userId");
-  const agronomistId = USE_MOCK_DATA ? "1" : getCookie("agronomistsId");
+  const userId = localStorage.getItem("userId");
+  const agronomistId = getCookie("agronomistsId");
 
   const initializeDashboard = useCallback(async () => {
-    // Use mock data if enabled
-    if (USE_MOCK_DATA) {
-      setAgronomist(MOCK_AGRONOMIST);
-      setConsultations(MOCK_CONSULTATIONS);
-      
-      const pending = MOCK_CONSULTATIONS.filter((c) => c.status === "Pending").length;
-      const confirmed = MOCK_CONSULTATIONS.filter((c) => c.status === "Confirmed").length;
-      const completed = MOCK_CONSULTATIONS.filter((c) => c.status === "Completed").length;
-      const totalIncome = MOCK_CONSULTATIONS
-        .filter((c) => c.status === "Completed")
-        .reduce((sum, c) => sum + parseFloat(c.fee || 0), 0);
-
-      setDashboardData({
-        totalConsultations: MOCK_CONSULTATIONS.length,
-        pendingConsultations: pending,
-        confirmedConsultations: confirmed,
-        completedConsultations: completed,
-        totalIncome: totalIncome,
-      });
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
       setError(null);
 
       let agro = null;
-      
+
       // Try to fetch agronomist by cookie ID first
       if (agronomistId) {
         try {
-          const { fetchAgronomistById } = await import("../services/agronomistService");
+          const { fetchAgronomistById } = await import(
+            "../services/agronomistService"
+          );
           agro = await fetchAgronomistById(agronomistId);
         } catch (err) {
           console.log("Could not fetch by agronomist ID, trying user ID...");
         }
       }
-      
+
       // If not found, try by user ID
       if (!agro && userId) {
         agro = await fetchAgronomistByUserId(userId);
@@ -146,7 +67,7 @@ const AgronomistDashboardPage = () => {
   }, [userId, agronomistId]);
 
   useEffect(() => {
-    if (!USE_MOCK_DATA && !userId && !agronomistId) {
+    if (!userId && !agronomistId) {
       navigate("/login");
       return;
     }
@@ -208,7 +129,7 @@ const AgronomistDashboardPage = () => {
   const handleRejectConsultation = async (consultationId) => {
     if (!window.confirm("আপনি কি নিশ্চিত এই অনুরোধ বাতিল করতে চান?")) return;
     try {
-      await updateConsultationRequest(consultationId, { status: "Cancelled" });
+      await updateConsultationRequest(consultationId, { status: "Rejected" });
       if (agronomist) {
         await fetchConsultations(agronomist.id);
       }
@@ -246,12 +167,18 @@ const AgronomistDashboardPage = () => {
   const getStatusBadge = (status) => {
     const statusMap = {
       Pending: { class: "status-pending", text: "অপেক্ষমাণ" },
+      Accepted: { class: "status-confirmed", text: "গৃহীত" },
       Confirmed: { class: "status-confirmed", text: "নিশ্চিত" },
       Completed: { class: "status-completed", text: "সম্পন্ন" },
+      Rejected: { class: "status-rejected", text: "প্রত্যাখ্যাত" },
       Cancelled: { class: "status-cancelled", text: "বাতিল" },
     };
     const statusInfo = statusMap[status] || { class: "", text: status };
-    return <span className={`status-badge ${statusInfo.class}`}>{statusInfo.text}</span>;
+    return (
+      <span className={`status-badge ${statusInfo.class}`}>
+        {statusInfo.text}
+      </span>
+    );
   };
 
   if (loading) {
@@ -332,34 +259,47 @@ const AgronomistDashboardPage = () => {
               <div className="agronomist-card">
                 <h3>মোট পরামর্শ</h3>
                 <p>সকল পরামর্শ অনুরোধ</p>
-                <div className="card-value">{dashboardData.totalConsultations}</div>
+                <div className="card-value">
+                  {dashboardData.totalConsultations}
+                </div>
               </div>
 
               <div className="agronomist-card">
                 <h3>অপেক্ষমাণ</h3>
                 <p>প্রতিক্রিয়ার অপেক্ষায়</p>
-                <div className="card-value pending">{dashboardData.pendingConsultations}</div>
+                <div className="card-value pending">
+                  {dashboardData.pendingConsultations}
+                </div>
               </div>
 
               <div className="agronomist-card">
                 <h3>নিশ্চিত</h3>
                 <p>নিশ্চিত করা পরামর্শ</p>
-                <div className="card-value confirmed">{dashboardData.confirmedConsultations}</div>
+                <div className="card-value confirmed">
+                  {dashboardData.confirmedConsultations}
+                </div>
               </div>
 
               <div className="agronomist-card">
                 <h3>সম্পন্ন</h3>
                 <p>সম্পন্ন পরামর্শ</p>
-                <div className="card-value completed">{dashboardData.completedConsultations}</div>
+                <div className="card-value completed">
+                  {dashboardData.completedConsultations}
+                </div>
               </div>
 
               <div className="agronomist-card">
                 <h3>মোট আয়</h3>
                 <p>সম্পন্ন পরামর্শ থেকে</p>
-                <div className="card-value income">৳{dashboardData.totalIncome.toFixed(2)}</div>
+                <div className="card-value income">
+                  ৳{dashboardData.totalIncome.toFixed(2)}
+                </div>
               </div>
 
-              <Link to="/agronomist-profile-setup" className="agronomist-card clickable">
+              <Link
+                to="/agronomist-profile-setup"
+                className="agronomist-card clickable"
+              >
                 <h3>প্রোফাইল সেটআপ</h3>
                 <p>আপনার বিশেষজ্ঞ প্রোফাইল আপডেট করুন</p>
               </Link>
@@ -371,7 +311,7 @@ const AgronomistDashboardPage = () => {
         {activeSection === "consultations" && !error && (
           <section className="agronomist-section">
             <h2>পরামর্শ অনুরোধ সমূহ</h2>
-            
+
             {consultations.length === 0 ? (
               <div className="no-data">
                 <p>কোনো পরামর্শ অনুরোধ নেই।</p>
@@ -385,23 +325,39 @@ const AgronomistDashboardPage = () => {
                       {getStatusBadge(consultation.status)}
                     </div>
                     <div className="consultation-details">
-                      <p><strong>কৃষক:</strong> {consultation.farmer_name || `কৃষক #${consultation.farmer}`}</p>
-                      <p><strong>তারিখ:</strong> {formatDate(consultation.request_date)}</p>
-                      <p><strong>ফি:</strong> ৳{consultation.fee}</p>
-                      <p><strong>বিবরণ:</strong> {consultation.details || "কোনো বিবরণ নেই"}</p>
+                      <p>
+                        <strong>কৃষক:</strong>{" "}
+                        {consultation.farmer_name ||
+                          `কৃষক #${consultation.farmer}`}
+                      </p>
+                      <p>
+                        <strong>তারিখ:</strong>{" "}
+                        {formatDate(consultation.request_date)}
+                      </p>
+                      <p>
+                        <strong>ফি:</strong> ৳{consultation.fee}
+                      </p>
+                      <p>
+                        <strong>বিবরণ:</strong>{" "}
+                        {consultation.details || "কোনো বিবরণ নেই"}
+                      </p>
                     </div>
                     <div className="consultation-actions">
                       {consultation.status === "Pending" && (
                         <>
                           <button
                             className="btn-confirm"
-                            onClick={() => handleConfirmConsultation(consultation.id)}
+                            onClick={() =>
+                              handleConfirmConsultation(consultation.id)
+                            }
                           >
                             নিশ্চিত করুন
                           </button>
                           <button
                             className="btn-reject"
-                            onClick={() => handleRejectConsultation(consultation.id)}
+                            onClick={() =>
+                              handleRejectConsultation(consultation.id)
+                            }
                           >
                             বাতিল করুন
                           </button>
@@ -410,7 +366,9 @@ const AgronomistDashboardPage = () => {
                       {consultation.status === "Confirmed" && (
                         <button
                           className="btn-complete"
-                          onClick={() => handleCompleteConsultation(consultation.id)}
+                          onClick={() =>
+                            handleCompleteConsultation(consultation.id)
+                          }
                         >
                           সম্পন্ন করুন
                         </button>
@@ -426,7 +384,10 @@ const AgronomistDashboardPage = () => {
 
       {/* Footer */}
       <footer className="agronomist-footer">
-        <p>&copy; 2025 FarmFriend - কৃষি বিশেষজ্ঞ প্ল্যাটফর্ম। সর্বস্বত্ব সংরক্ষিত।</p>
+        <p>
+          &copy; 2025 FarmFriend - কৃষি বিশেষজ্ঞ প্ল্যাটফর্ম। সর্বস্বত্ব
+          সংরক্ষিত।
+        </p>
       </footer>
     </div>
   );

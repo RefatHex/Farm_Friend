@@ -108,26 +108,77 @@ const LoginPage = () => {
         ].filter(Boolean);
         const roleCount = roleFlags.length;
 
-        setTimeout(() => {
+        const handleNavigation = async () => {
           if (roleCount > 1) {
-            // Multiple roles - go to account select page
+            // Multiple roles - fetch all role IDs and store them, then go to account select page
+            if (data.is_farmer) {
+              const farmerDetails = await fetchDetails("farmers", data.id);
+              if (farmerDetails) {
+                setCookie("farmersId", farmerDetails.id, 7);
+              }
+            }
+            if (data.is_rent_owner) {
+              const rentDetails = await fetchDetails("rentals", data.id);
+              if (rentDetails) {
+                setCookie("rent-ownersId", rentDetails.id, 7);
+              }
+            }
+            if (data.is_storage_owner) {
+              const storageDetails = await fetchDetails("storage", data.id);
+              if (storageDetails) {
+                setCookie("storage-ownersId", storageDetails.id, 7);
+              }
+            }
+            if (data.is_agronomist) {
+              const agronomistDetails = await fetchDetails(
+                "consultations/agronomists",
+                data.id
+              );
+              if (agronomistDetails) {
+                setCookie("agronomistsId", agronomistDetails.id, 7);
+              }
+            }
             navigate("/account-select");
           } else if (data.is_rent_owner && roleCount === 1) {
-            // Single rent_owner role - go to rental admin dashboard
+            // Single rent_owner role - fetch ID and go to rental admin dashboard
+            const rentDetails = await fetchDetails("rentals", data.id);
+            if (rentDetails) {
+              setCookie("rent-ownersId", rentDetails.id, 7);
+            }
             setCookie("selectedRole", "rent-ownersId", 7);
             navigate("/rental-admin");
           } else if (data.is_farmer && roleCount === 1) {
-            // Single farmer role - go to farmer dashboard
+            // Single farmer role - fetch ID and go to farmer dashboard
+            const farmerDetails = await fetchDetails("farmers", data.id);
+            if (farmerDetails) {
+              setCookie("farmersId", farmerDetails.id, 7);
+            }
             setCookie("selectedRole", "farmersId", 7);
             navigate("/farmer-dashboard");
           } else if (data.is_storage_owner && roleCount === 1) {
-            // Single storage owner role - go to profile
+            // Single storage owner role - fetch ID and go to profile
+            const storageDetails = await fetchDetails("storage", data.id);
+            if (storageDetails) {
+              setCookie("storage-ownersId", storageDetails.id, 7);
+            }
             setCookie("selectedRole", "storage-ownersId", 7);
             navigate("/profile");
           } else if (data.is_agronomist && roleCount === 1) {
-            // Single agronomist role - go to profile
-            setCookie("selectedRole", "agronomistsId", 7);
-            navigate("/profile");
+            // Single agronomist role - fetch ID and go to agronomist profile setup or dashboard
+            const agronomistDetails = await fetchDetails(
+              "consultations/agronomists",
+              data.id
+            );
+            if (agronomistDetails) {
+              setCookie("agronomistsId", agronomistDetails.id, 7);
+              setCookie("selectedRole", "agronomistsId", 7);
+              // Check if profile is complete, if not go to setup page
+              navigate("/agronomist-profile-setup");
+            } else {
+              // Profile doesn't exist, go to setup page
+              setCookie("selectedRole", "agronomistsId", 7);
+              navigate("/agronomist-profile-setup");
+            }
           } else if (data.is_admin && roleCount === 1) {
             // Single admin role - go to admin approval
             setCookie("selectedRole", "adminId", 7);
@@ -136,7 +187,9 @@ const LoginPage = () => {
             // No role - go to home
             navigate("/");
           }
-        }, 2000);
+        };
+
+        setTimeout(handleNavigation, 2000);
       } else {
         const errorData = await response.json();
         showAlert(

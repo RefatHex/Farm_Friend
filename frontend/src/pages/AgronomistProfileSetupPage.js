@@ -11,22 +11,6 @@ import {
 import logo from "../assets/images/logo.jpg";
 import "./AgronomistProfileSetupPage.css";
 
-// Set to true to use mock data for testing UI (set to false in production)
-const USE_MOCK_DATA = true;
-
-// Mock data for testing
-const MOCK_AGRONOMIST = {
-  id: 1,
-  name: "ড. আব্দুল করিম",
-  contact: "+880171234567",
-  address: "ঢাকা, বাংলাদেশ",
-  description: "২০ বছরের অভিজ্ঞ কৃষি বিশেষজ্ঞ। ধান, গম, সবজি চাষে বিশেষজ্ঞ।",
-  specialty: "ধান ও সবজি চাষ",
-  fee: 500,
-  years_of_experience: 20,
-  availability: true,
-};
-
 const AgronomistProfileSetupPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -45,11 +29,11 @@ const AgronomistProfileSetupPage = () => {
     availability: false,
   });
 
-  const userId = USE_MOCK_DATA ? "mock-user" : localStorage.getItem("userId");
-  const cookieAgronomistId = USE_MOCK_DATA ? "1" : getCookie("agronomistsId");
+  const userId = localStorage.getItem("userId");
+  const cookieAgronomistId = getCookie("agronomistsId");
 
   useEffect(() => {
-    if (!USE_MOCK_DATA && !userId && !cookieAgronomistId) {
+    if (!userId && !cookieAgronomistId) {
       navigate("/login");
       return;
     }
@@ -58,23 +42,6 @@ const AgronomistProfileSetupPage = () => {
   }, [userId, cookieAgronomistId, navigate]);
 
   const fetchExistingData = async () => {
-    // Use mock data if enabled
-    if (USE_MOCK_DATA) {
-      setAgronomistId(MOCK_AGRONOMIST.id);
-      setFormData({
-        name: MOCK_AGRONOMIST.name,
-        contact: MOCK_AGRONOMIST.contact,
-        address: MOCK_AGRONOMIST.address,
-        description: MOCK_AGRONOMIST.description,
-        specialty: MOCK_AGRONOMIST.specialty,
-        fee: MOCK_AGRONOMIST.fee,
-        years_of_experience: MOCK_AGRONOMIST.years_of_experience,
-        availability: MOCK_AGRONOMIST.availability,
-      });
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
       let agronomist = null;
@@ -144,21 +111,21 @@ const AgronomistProfileSetupPage = () => {
   const handleBlur = (e) => {
     const { name, value, type, checked } = e.target;
     const fieldValue = type === "checkbox" ? checked : value;
-    
+
     // Map form field names to API field names
     const fieldMapping = {
       years_of_experience: "years_of_experience",
       fee: "fee",
     };
-    
+
     const apiField = fieldMapping[name] || name;
-    
+
     // Convert numeric fields
     let processedValue = fieldValue;
     if (name === "fee" || name === "years_of_experience") {
       processedValue = parseFloat(fieldValue) || 0;
     }
-    
+
     handleFieldUpdate(apiField, processedValue);
   };
 
@@ -201,7 +168,8 @@ const AgronomistProfileSetupPage = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
-    document.cookie = "agronomistsId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "agronomistsId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     navigate("/login");
   };
 
@@ -374,7 +342,11 @@ const AgronomistProfileSetupPage = () => {
 
               <div className="form-actions">
                 <button type="submit" className="btn-primary" disabled={saving}>
-                  {saving ? "সংরক্ষণ হচ্ছে..." : agronomistId ? "প্রোফাইল আপডেট করুন" : "প্রোফাইল তৈরি করুন"}
+                  {saving
+                    ? "সংরক্ষণ হচ্ছে..."
+                    : agronomistId
+                    ? "প্রোফাইল আপডেট করুন"
+                    : "প্রোফাইল তৈরি করুন"}
                 </button>
               </div>
             </form>
@@ -384,7 +356,10 @@ const AgronomistProfileSetupPage = () => {
 
       {/* Footer */}
       <footer className="profile-footer">
-        <p>&copy; 2025 FarmFriend - কৃষি বিশেষজ্ঞ প্ল্যাটফর্ম। সর্বস্বত্ব সংরক্ষিত।</p>
+        <p>
+          &copy; 2025 FarmFriend - কৃষি বিশেষজ্ঞ প্ল্যাটফর্ম। সর্বস্বত্ব
+          সংরক্ষিত।
+        </p>
       </footer>
     </div>
   );

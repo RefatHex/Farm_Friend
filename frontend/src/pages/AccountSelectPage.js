@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/images/logo.jpg";
 import "./AccountSelectPage.css";
-
-// Set to true to use mock data for testing (set to false in production)
-const USE_MOCK_DATA = false;
-
-// Demo mock roles for testing (simulates user with multiple roles)
-const MOCK_ROLES = ["farmersId", "agronomistsId"];
 
 // Role redirects mapping - defined outside component to avoid recreation
 const ROLE_REDIRECTS = {
   farmersId: "/farmer-dashboard",
   "rent-ownersId": "/rental-admin",
   "storage-ownersId": "/profile",
-  agronomistsId: "/agronomist-dashboard",
+  agronomistsId: "/agronomist-profile-setup",
 };
 
 // Role labels in Bengali
@@ -24,10 +19,20 @@ const ROLE_LABELS = {
   agronomistsId: "কৃষি বিশেষজ্ঞ",
 };
 
+// Role icons/descriptions in Bengali
+const ROLE_DESCRIPTIONS = {
+  farmersId: "আপনার কৃষি কার্যক্রম পরিচালনা করুন",
+  "rent-ownersId": "ভাড়া সেবা পরিচালনা করুন",
+  "storage-ownersId": "স্টোরেজ সেবা পরিচালনা করুন",
+  agronomistsId: "পরামর্শ সেবা প্রদান করুন",
+};
+
 const AccountSelectPage = () => {
   const navigate = useNavigate();
   const [foundRoles, setFoundRoles] = useState([]);
-  const [showPopup, setShowPopup] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Cookie helper functions
   const getCookie = (name) => {
@@ -57,13 +62,6 @@ const AccountSelectPage = () => {
   };
 
   useEffect(() => {
-    // Use mock data if enabled
-    if (USE_MOCK_DATA) {
-      setFoundRoles(MOCK_ROLES);
-      setShowPopup(true);
-      return;
-    }
-
     const roles = [
       "farmersId",
       "rent-ownersId",
@@ -80,68 +78,129 @@ const AccountSelectPage = () => {
     });
 
     if (found.length === 0) {
-      // No roles found, redirect to home
-      navigate("/");
+      // No roles found, redirect to login
+      setError("কোনো অ্যাকাউন্ট খুঁজে পাওয়া যায়নি। অনুগ্রহ করে লগইন করুন।");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
       return;
     }
 
     if (found.length === 1) {
-      // Only one role, auto-redirect
+      // Only one role, auto-redirect immediately
       setCookie("selectedRole", found[0], 7);
       navigate(ROLE_REDIRECTS[found[0]]);
       return;
     }
 
-    // Multiple roles found, show popup
+    // Multiple roles found, show selection page
     setFoundRoles(found);
-    setShowPopup(true);
+    setLoading(false);
   }, [navigate]);
 
   const handleRoleSelect = (role) => {
+    setSelectedRole(role);
+    setLoading(true);
     console.log("Role selected:", role);
     console.log("Redirecting to:", ROLE_REDIRECTS[role]);
-    setCookie("selectedRole", role, 7);
-    navigate(ROLE_REDIRECTS[role]);
+
+    setTimeout(() => {
+      setCookie("selectedRole", role, 7);
+      navigate(ROLE_REDIRECTS[role]);
+    }, 500);
   };
 
-  const handleClose = () => {
-    setShowPopup(false);
-    navigate("/");
+  const handleLogout = () => {
+    // Clear all role cookies
+    const roles = [
+      "farmersId",
+      "rent-ownersId",
+      "storage-ownersId",
+      "agronomistsId",
+    ];
+    roles.forEach((role) => {
+      document.cookie = `${role}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+    document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "selectedRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("userId");
+    navigate("/login");
   };
+
+  if (error) {
+    return (
+      <div className="account-select-page">
+        <div className="account-select-background">
+          <div className="account-select-container">
+            <h1 className="welcome-title">ত্রুটি</h1>
+            <p style={{ color: "red" }}>{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="account-select-page">
+        <div className="account-select-background">
+          <div className="account-select-container">
+            <h1 className="welcome-title">লোড হচ্ছে...</h1>
+            <div className="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="account-select-page">
       <div className="account-select-background">
+        {/* Top Navigation */}
+        <nav className="account-select-navbar">
+          <div className="navbar-logo" onClick={() => navigate("/")}>
+            <img src={logo} alt="FarmFriend Logo" />
+            <span>FarmFriend</span>
+          </div>
+          <button className="btn-logout" onClick={handleLogout}>
+            লগ আউট
+          </button>
+        </nav>
+
+        {/* Main Container */}
         <div className="account-select-container">
           <h1 className="welcome-title">স্বাগতম!</h1>
-          <p>
-            আপনার একাধিক অ্যাকাউন্ট আছে, দয়া করে কোনটি ব্যবহার করতে চান তা
-            নির্বাচন করুন।
+          <p className="subtitle">
+            আপনার একাধিক অ্যাকাউন্ট রয়েছে। দয়া করে চালিয়ে যেতে একটি নির্বাচন
+            করুন।
           </p>
-          <p>
-            <em>অন্যথায়, আপনাকে স্বয়ংক্রিয়ভাবে পুনর্নির্দেশিত করা হবে।</em>
-          </p>
-        </div>
 
-        {showPopup && (
-          <div className="popup-overlay" onClick={handleClose}>
-            <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-              <h2>অ্যাকাউন্টের ধরন নির্বাচন করুন</h2>
-              <ul className="account-list">
-                {foundRoles.map((role) => (
-                  <li key={role} onClick={() => handleRoleSelect(role)}>
-                    <button className="account-btn">
-                      {ROLE_LABELS[role]} হিসাবে প্রবেশ করুন
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <button className="btn-close-popup" onClick={handleClose}>
-                বন্ধ করুন
-              </button>
-            </div>
+          {/* Role Selection Cards */}
+          <div className="role-cards-container">
+            {foundRoles.map((role) => (
+              <div
+                key={role}
+                className={`role-card ${
+                  selectedRole === role ? "selected" : ""
+                }`}
+                onClick={() => handleRoleSelect(role)}
+              >
+                <div className="role-icon">
+                  {role === "farmersId" && "🌾"}
+                  {role === "rent-ownersId" && "🚜"}
+                  {role === "storage-ownersId" && "📦"}
+                  {role === "agronomistsId" && "👨‍🌾"}
+                </div>
+                <h3 className="role-label">{ROLE_LABELS[role]}</h3>
+                <p className="role-description">{ROLE_DESCRIPTIONS[role]}</p>
+                <button className="role-select-btn">
+                  {selectedRole === role ? "নির্বাচিত ✓" : "নির্বাচন করুন"}
+                </button>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

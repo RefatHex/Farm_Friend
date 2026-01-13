@@ -46,7 +46,7 @@ urlpatterns = [
     path('billing/', include('billing.urls')),
     path('api/notifications/', include('notifications.urls')),
     path('payment/', include('payments.urls')),
-
+    path('api/consultations/', include('consultations.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

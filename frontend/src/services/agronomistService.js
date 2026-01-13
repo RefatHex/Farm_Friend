@@ -1,5 +1,5 @@
 // Agronomist API Service
-const API_BASE_URL = "http://localhost:8000/consultations";
+const API_BASE_URL = "http://localhost:8000/api/consultations";
 
 // ===================== AGRONOMIST MANAGEMENT =====================
 
@@ -13,12 +13,17 @@ export const fetchAgronomists = async (filters = {}) => {
       params.append("availability", filters.availability);
     if (filters.specialty) params.append("specialty", filters.specialty);
     if (filters.search) params.append("search", filters.search);
+    if (filters.min_fee) params.append("min_fee", filters.min_fee);
+    if (filters.max_fee) params.append("max_fee", filters.max_fee);
+    if (filters.ordering) params.append("ordering", filters.ordering);
 
     if (params.toString()) url += `?${params.toString()}`;
 
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch agronomists");
-    return await response.json();
+    const data = await response.json();
+    // Handle both paginated and non-paginated responses
+    return Array.isArray(data) ? data : data.results || data;
   } catch (error) {
     console.error("Error fetching agronomists:", error);
     throw error;
@@ -40,13 +45,11 @@ export const fetchAgronomistById = async (id) => {
 // Fetch agronomist by user ID
 export const fetchAgronomistByUserId = async (userId) => {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/agronomists/?user=${userId}`
-    );
+    const response = await fetch(`${API_BASE_URL}/agronomists/?user=${userId}`);
     if (!response.ok) throw new Error("Failed to fetch agronomist");
     const data = await response.json();
     // Return first matching agronomist or null
-    const results = data.results || data;
+    const results = Array.isArray(data) ? data : data.results || data;
     return Array.isArray(results) && results.length > 0 ? results[0] : null;
   } catch (error) {
     console.error("Error fetching agronomist by user:", error);
@@ -75,6 +78,27 @@ export const createAgronomist = async (data) => {
   }
 };
 
+// Update agronomist profile (PUT for full updates)
+export const updateAgronomistFull = async (id, data) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/agronomists/${id}/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || "Failed to update agronomist profile");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating agronomist:", error);
+    throw error;
+  }
+};
+
 // Update agronomist profile (PATCH for partial updates)
 export const updateAgronomist = async (id, data) => {
   try {
@@ -96,6 +120,22 @@ export const updateAgronomist = async (id, data) => {
   }
 };
 
+// Delete agronomist
+export const deleteAgronomist = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/agronomists/${id}/`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Failed to delete agronomist");
+    return true;
+  } catch (error) {
+    console.error("Error deleting agronomist:", error);
+    throw error;
+  }
+};
+
+// ===================== CONSULTATION REQUESTS MANAGEMENT =====================
+
 // ===================== CONSULTATION REQUESTS MANAGEMENT =====================
 
 // Fetch all consultation requests
@@ -107,14 +147,32 @@ export const fetchConsultationRequests = async (filters = {}) => {
     if (filters.agronomist) params.append("agronomist", filters.agronomist);
     if (filters.farmer) params.append("farmer", filters.farmer);
     if (filters.status) params.append("status", filters.status);
+    if (filters.search) params.append("search", filters.search);
+    if (filters.ordering) params.append("ordering", filters.ordering);
 
     if (params.toString()) url += `?${params.toString()}`;
 
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch consultation requests");
-    return await response.json();
+    const data = await response.json();
+    // Handle both paginated and non-paginated responses
+    return Array.isArray(data) ? data : data.results || data;
   } catch (error) {
     console.error("Error fetching consultation requests:", error);
+    throw error;
+  }
+};
+
+// Fetch single consultation request by ID
+export const fetchConsultationRequestById = async (id) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/consultation-requests/${id}/`
+    );
+    if (!response.ok) throw new Error("Failed to fetch consultation request");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching consultation request:", error);
     throw error;
   }
 };
@@ -126,7 +184,9 @@ export const fetchAgronomistConsultations = async (agronomistId) => {
       `${API_BASE_URL}/consultation-requests/?agronomist=${agronomistId}`
     );
     if (!response.ok) throw new Error("Failed to fetch consultations");
-    return await response.json();
+    const data = await response.json();
+    // Handle both paginated and non-paginated responses
+    return Array.isArray(data) ? data : data.results || data;
   } catch (error) {
     console.error("Error fetching agronomist consultations:", error);
     throw error;
@@ -140,7 +200,9 @@ export const fetchFarmerConsultations = async (farmerId) => {
       `${API_BASE_URL}/consultation-requests/?farmer=${farmerId}`
     );
     if (!response.ok) throw new Error("Failed to fetch consultations");
-    return await response.json();
+    const data = await response.json();
+    // Handle both paginated and non-paginated responses
+    return Array.isArray(data) ? data : data.results || data;
   } catch (error) {
     console.error("Error fetching farmer consultations:", error);
     throw error;
@@ -168,7 +230,31 @@ export const createConsultationRequest = async (data) => {
   }
 };
 
-// Update consultation request status
+// Update consultation request (full update with PUT)
+export const updateConsultationRequestFull = async (id, data) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/consultation-requests/${id}/`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || "Failed to update consultation request");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating consultation request:", error);
+    throw error;
+  }
+};
+
+// Update consultation request status (PATCH for partial updates)
 export const updateConsultationRequest = async (id, data) => {
   try {
     const response = await fetch(
@@ -227,5 +313,7 @@ export const setCookie = (name, value, days = 7) => {
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     expires = "; expires=" + date.toUTCString();
   }
-  document.cookie = `${name}=${encodeURIComponent(value || "")}${expires}; path=/`;
+  document.cookie = `${name}=${encodeURIComponent(
+    value || ""
+  )}${expires}; path=/`;
 };
