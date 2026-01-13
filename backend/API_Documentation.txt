@@ -691,6 +691,841 @@ Query Parameters:
 Example: http://localhost:8000/api/weather-warnings/?city=Dhaka
 
 ================================================================================
+                    11. AI RESPONSES & RECOMMENDATIONS APIs
+================================================================================
+
+--------------------------------------------------------------------------------
+11.1 CREATE CROP RECOMMENDATION
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/ai_responses/rec/
+Method: POST
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "nitrogen": 45.2,
+    "phosphorus": 34.1,
+    "potassium": 20.5,
+    "temperature": 30.1,
+    "humidity": 40.2,
+    "ph": 6.5,
+    "rainfall": 120.3,
+    "session_id": 12345
+}
+
+Expected Response (Success - 201):
+{
+    "id": 1,
+    "user": 1,
+    "nitrogen": 45.2,
+    "phosphorus": 34.1,
+    "potassium": 20.5,
+    "temperature": 30.1,
+    "humidity": 40.2,
+    "ph": 6.5,
+    "rainfall": 120.3,
+    "answer": "Rice",
+    "asked_at": "2026-01-14T10:30:00Z",
+    "answer_rating": null,
+    "session_id": 12345
+}
+
+--------------------------------------------------------------------------------
+11.2 RATE CROP RECOMMENDATION
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/ai_responses/rec/{id}/
+Method: PUT/PATCH
+Content-Type: application/json
+
+Request Body (PATCH - partial update):
+{
+    "answer_rating": 4.5
+}
+
+--------------------------------------------------------------------------------
+11.3 CREATE FERTILIZER RECOMMENDATION
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/ai_responses/fert/
+Method: POST
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "nitrogen": 45.2,
+    "phosphorus": 34.1,
+    "potassium": 20.5,
+    "temperature": 30.1,
+    "humidity": 40.2,
+    "moisture": 60.5,
+    "crop_type": "Rice",
+    "soil_type": "Loamy",
+    "session_id": 12345
+}
+
+Expected Response (Success - 201):
+{
+    "id": 1,
+    "user": 1,
+    "nitrogen": 45.2,
+    "phosphorus": 34.1,
+    "potassium": 20.5,
+    "temperature": 30.1,
+    "humidity": 40.2,
+    "moisture": 60.5,
+    "crop_type": "Rice",
+    "soil_type": "Loamy",
+    "answer": "NPK 10-26-26",
+    "asked_at": "2026-01-14T10:30:00Z",
+    "answer_rating": null,
+    "session_id": 12345
+}
+
+--------------------------------------------------------------------------------
+11.4 RATE FERTILIZER RECOMMENDATION
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/ai_responses/fert/{id}/
+Method: PUT/PATCH
+Content-Type: application/json
+
+Request Body (PATCH - partial update):
+{
+    "answer_rating": 4.0
+}
+
+--------------------------------------------------------------------------------
+11.5 GET ALL CROP SUGGESTIONS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/ai_responses/crops/
+Method: GET
+
+Expected Response:
+[
+    {
+        "id": 1,
+        "user": 1,
+        "nitrogen": 45.2,
+        "phosphorus": 34.1,
+        "potassium": 20.5,
+        "temperature": 30.1,
+        "humidity": 40.2,
+        "ph": 6.5,
+        "rainfall": 120.3,
+        "recommended_crop": "Rice",
+        "recommendation_message": "Based on soil NPK levels and climate conditions...",
+        "created_at": "2026-01-14T10:30:00Z",
+        "rating": 4.5,
+        "session_id": 12345
+    }
+]
+
+--------------------------------------------------------------------------------
+11.6 GET CROP SUGGESTION BY USER
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/ai_responses/crops/{user_id}/
+Method: GET
+
+Example: http://localhost:8000/api/ai_responses/crops/1/
+
+--------------------------------------------------------------------------------
+11.7 GET ALL FERTILIZER SUGGESTIONS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/ai_responses/fertilizers/
+Method: GET
+
+Expected Response:
+[
+    {
+        "id": 1,
+        "user": 1,
+        "nitrogen": 45.2,
+        "phosphorous": 34.1,
+        "potassium": 20.5,
+        "soil_type": "Loamy",
+        "crop_type": "Rice",
+        "temperature": 30.1,
+        "humidity": 40.2,
+        "moisture": 60.5,
+        "recommended_fertilizer": "NPK 10-26-26",
+        "recommendation_message": "Based on soil conditions...",
+        "created_at": "2026-01-14T10:30:00Z",
+        "rating": 4.0,
+        "session_id": 12345
+    }
+]
+
+--------------------------------------------------------------------------------
+11.8 GET FERTILIZER SUGGESTION BY USER
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/ai_responses/fertilizers/{user_id}/
+Method: GET
+
+Example: http://localhost:8000/api/ai_responses/fertilizers/1/
+
+================================================================================
+                    12. AGRONOMIST & CONSULTATION APIs
+================================================================================
+
+--------------------------------------------------------------------------------
+12.1 CREATE AGRONOMIST
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/agronomists/
+Method: POST
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "name": "Dr. Ahmed Khan",
+    "dob": "1975-03-20",
+    "contact": "+8801900000000",
+    "address": "Agronomist Center, Dhaka",
+    "description": "Expert in crop management and soil science",
+    "specialty": "Crop Disease Management",
+    "fee": 5000.00,
+    "years_of_experience": 15,
+    "availability": true
+}
+
+--------------------------------------------------------------------------------
+12.2 GET ALL AGRONOMISTS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/agronomists/
+Method: GET
+
+Optional Query Parameters:
+- search: Filter by name, specialty, or description
+  Example: http://localhost:8000/api/consultations/agronomists/?search=disease
+- min_fee: Filter agronomists by minimum fee
+  Example: http://localhost:8000/api/consultations/agronomists/?min_fee=1000
+- max_fee: Filter agronomists by maximum fee
+  Example: http://localhost:8000/api/consultations/agronomists/?max_fee=10000
+- availability: Filter by availability (true/false)
+  Example: http://localhost:8000/api/consultations/agronomists/?availability=true
+- ordering: Sort results (fee, years_of_experience)
+  Example: http://localhost:8000/api/consultations/agronomists/?ordering=fee
+
+--------------------------------------------------------------------------------
+12.3 GET AGRONOMIST BY ID
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/agronomists/{id}/
+Method: GET
+
+Example: http://localhost:8000/api/consultations/agronomists/1/
+
+--------------------------------------------------------------------------------
+12.4 UPDATE AGRONOMIST
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/agronomists/{id}/
+Method: PUT
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "name": "Dr. Ahmed Khan",
+    "dob": "1975-03-20",
+    "contact": "+8801900000000",
+    "address": "New Center Location",
+    "description": "Expert in crop management",
+    "specialty": "Plant Nutrition",
+    "fee": 6000.00,
+    "years_of_experience": 15,
+    "availability": true
+}
+
+--------------------------------------------------------------------------------
+12.5 PARTIAL UPDATE AGRONOMIST
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/agronomists/{id}/
+Method: PATCH
+Content-Type: application/json
+
+Request Body:
+{
+    "availability": false,
+    "fee": 5500.00
+}
+
+--------------------------------------------------------------------------------
+12.6 DELETE AGRONOMIST
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/agronomists/{id}/
+Method: DELETE
+
+--------------------------------------------------------------------------------
+12.7 CREATE CONSULTATION REQUEST
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/consultation-requests/
+Method: POST
+Content-Type: application/json
+
+Request Body:
+{
+    "farmer": 1,
+    "agronomist": 1,
+    "fee": 5000.00,
+    "status": "Pending",
+    "details": "Need advice on managing crop diseases",
+    "meet_link": null,
+    "resolution": null
+}
+
+Status Options:
+- "Pending"
+- "Accepted"
+- "Rejected"
+- "Completed"
+
+Expected Response (Success - 201):
+{
+    "id": 1,
+    "farmer": 1,
+    "agronomist": 1,
+    "request_date": "2026-01-14T10:30:00Z",
+    "fee": 5000.00,
+    "status": "Pending",
+    "details": "Need advice on managing crop diseases",
+    "meet_link": null,
+    "resolution": null
+}
+
+--------------------------------------------------------------------------------
+12.8 GET ALL CONSULTATION REQUESTS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/consultation-requests/
+Method: GET
+
+Optional Query Parameters:
+- status: Filter by status
+  Example: http://localhost:8000/api/consultations/consultation-requests/?status=Pending
+- farmer: Filter by farmer ID
+- agronomist: Filter by agronomist ID
+- search: Search by farmer or agronomist name, or details
+- ordering: Sort by request_date or fee
+
+--------------------------------------------------------------------------------
+12.9 GET CONSULTATION REQUEST BY ID
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/consultation-requests/{id}/
+Method: GET
+
+Example: http://localhost:8000/api/consultations/consultation-requests/1/
+
+--------------------------------------------------------------------------------
+12.10 UPDATE CONSULTATION REQUEST
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/consultation-requests/{id}/
+Method: PUT
+Content-Type: application/json
+
+Request Body:
+{
+    "farmer": 1,
+    "agronomist": 1,
+    "fee": 5000.00,
+    "status": "Accepted",
+    "details": "Need advice on managing crop diseases",
+    "meet_link": "https://zoom.us/j/meeting123",
+    "resolution": null
+}
+
+--------------------------------------------------------------------------------
+12.11 PARTIAL UPDATE CONSULTATION REQUEST (Update Status)
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/consultation-requests/{id}/
+Method: PATCH
+Content-Type: application/json
+
+Request Body:
+{
+    "status": "Accepted",
+    "meet_link": "https://zoom.us/j/meeting123"
+}
+
+Or to mark as completed:
+{
+    "status": "Completed",
+    "resolution": "Applied recommended pest management techniques successfully"
+}
+
+--------------------------------------------------------------------------------
+12.12 DELETE CONSULTATION REQUEST
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/consultations/consultation-requests/{id}/
+Method: DELETE
+
+================================================================================
+                    13. FEEDBACK & REVIEWS APIs
+================================================================================
+
+--------------------------------------------------------------------------------
+13.1 CREATE FEEDBACK
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/feedback/feedbacks/
+Method: POST
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "target_user": 2,
+    "gig_id": null,
+    "consultation_id": 1,
+    "content": "Excellent consultation! Very helpful advice on crop management.",
+    "rating": 4.8,
+    "review_type": "Consultation"
+}
+
+Review Type Options:
+- "Gig" (for gig reviews)
+- "Consultation" (for consultation feedback)
+- "General" (for general feedback)
+
+Expected Response (Success - 201):
+{
+    "id": 1,
+    "user": 1,
+    "target_user": 2,
+    "gig_id": null,
+    "consultation_id": 1,
+    "content": "Excellent consultation! Very helpful advice.",
+    "rating": 4.8,
+    "created_at": "2026-01-14T10:30:00Z",
+    "review_type": "Consultation"
+}
+
+--------------------------------------------------------------------------------
+13.2 GET ALL FEEDBACKS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/feedback/feedbacks/
+Method: GET
+
+Optional Query Parameters:
+- review_type: Filter by review type (Gig, Consultation, General)
+- user: Filter by reviewer user ID
+- created_at: Filter by creation date
+- search: Search by content
+
+Examples:
+- http://localhost:8000/api/feedback/feedbacks/?review_type=Consultation
+- http://localhost:8000/api/feedback/feedbacks/?user=1
+- http://localhost:8000/api/feedback/feedbacks/?review_type=Gig&rating__gte=4
+
+--------------------------------------------------------------------------------
+13.3 GET FEEDBACK BY ID
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/feedback/feedbacks/{id}/
+Method: GET
+
+Example: http://localhost:8000/api/feedback/feedbacks/1/
+
+--------------------------------------------------------------------------------
+13.4 UPDATE FEEDBACK
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/feedback/feedbacks/{id}/
+Method: PUT
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "target_user": 2,
+    "content": "Updated feedback content",
+    "rating": 4.5,
+    "review_type": "Consultation"
+}
+
+--------------------------------------------------------------------------------
+13.5 PARTIAL UPDATE FEEDBACK
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/feedback/feedbacks/{id}/
+Method: PATCH
+Content-Type: application/json
+
+Request Body:
+{
+    "rating": 5.0,
+    "content": "Amazing service!"
+}
+
+--------------------------------------------------------------------------------
+13.6 DELETE FEEDBACK
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/feedback/feedbacks/{id}/
+Method: DELETE
+
+================================================================================
+                    14. NOTIFICATIONS APIs
+================================================================================
+
+--------------------------------------------------------------------------------
+14.1 CREATE NOTIFICATION
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/notifications/notifications/
+Method: POST
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "content": "Your consultation request has been accepted",
+    "is_read": false
+}
+
+Expected Response (Success - 201):
+{
+    "id": 1,
+    "user": 1,
+    "content": "Your consultation request has been accepted",
+    "is_read": false,
+    "created_at": "2026-01-14T10:30:00Z"
+}
+
+--------------------------------------------------------------------------------
+14.2 GET ALL NOTIFICATIONS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/notifications/notifications/
+Method: GET
+
+Returns all notifications in the system.
+
+--------------------------------------------------------------------------------
+14.3 GET NOTIFICATION BY ID
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/notifications/notifications/{id}/
+Method: GET
+
+Example: http://localhost:8000/api/notifications/notifications/1/
+
+--------------------------------------------------------------------------------
+14.4 UPDATE NOTIFICATION
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/notifications/notifications/{id}/
+Method: PUT
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "content": "Updated notification content",
+    "is_read": true
+}
+
+--------------------------------------------------------------------------------
+14.5 MARK NOTIFICATION AS READ
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/notifications/notifications/{id}/
+Method: PATCH
+Content-Type: application/json
+
+Request Body:
+{
+    "is_read": true
+}
+
+--------------------------------------------------------------------------------
+14.6 DELETE NOTIFICATION
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/notifications/notifications/{id}/
+Method: DELETE
+
+================================================================================
+                    15. STORAGE OWNER & DEALS APIs
+================================================================================
+
+--------------------------------------------------------------------------------
+15.1 CREATE STORAGE OWNER
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-owners/
+Method: POST
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "name": "Premium Storage Solutions",
+    "dob": "1980-06-15",
+    "contact": "+8801700000000",
+    "address": "Industrial Area, Warehouse 5, Dhaka"
+}
+
+Expected Response (Success - 201):
+{
+    "id": 1,
+    "user": 1,
+    "name": "Premium Storage Solutions",
+    "dob": "1980-06-15",
+    "contact": "+8801700000000",
+    "address": "Industrial Area, Warehouse 5, Dhaka",
+    "no_of_deals": 0
+}
+
+--------------------------------------------------------------------------------
+15.2 GET ALL STORAGE OWNERS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-owners/
+Method: GET
+
+Returns list of all storage owners ordered by name.
+
+--------------------------------------------------------------------------------
+15.3 GET STORAGE OWNER BY ID
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-owners/{id}/
+Method: GET
+
+Example: http://localhost:8000/api/storage/storage-owners/1/
+
+--------------------------------------------------------------------------------
+15.4 UPDATE STORAGE OWNER
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-owners/{id}/
+Method: PUT
+Content-Type: application/json
+
+Request Body:
+{
+    "user": 1,
+    "name": "Updated Storage Name",
+    "dob": "1980-06-15",
+    "contact": "+8801800000000",
+    "address": "New Warehouse Address"
+}
+
+--------------------------------------------------------------------------------
+15.5 PARTIAL UPDATE STORAGE OWNER
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-owners/{id}/
+Method: PATCH
+Content-Type: application/json
+
+Request Body:
+{
+    "name": "Premium Storage Updated",
+    "contact": "+8801750000000"
+}
+
+--------------------------------------------------------------------------------
+15.6 DELETE STORAGE OWNER
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-owners/{id}/
+Method: DELETE
+
+--------------------------------------------------------------------------------
+15.7 CREATE STORAGE GIG
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-gigs/
+Method: POST
+Content-Type: multipart/form-data (for image upload)
+
+Form Data:
+- storage_owner: 1
+- address: "Warehouse Location, Dhaka"
+- description: "Climate controlled storage for rice and wheat"
+- prefered_crop: 1
+- price: 500.00
+- quantity: 100
+- is_Available: true
+- image: [Select File] (optional)
+
+Or JSON (without image):
+{
+    "storage_owner": 1,
+    "address": "Warehouse Location, Dhaka",
+    "description": "Climate controlled storage for rice and wheat",
+    "prefered_crop": 1,
+    "price": 500.00,
+    "quantity": 100,
+    "is_Available": true
+}
+
+Expected Response (Success - 201):
+{
+    "id": 1,
+    "storage_owner": 1,
+    "address": "Warehouse Location, Dhaka",
+    "description": "Climate controlled storage for rice and wheat",
+    "image": null,
+    "prefered_crop": 1,
+    "price": "500.00",
+    "quantity": 100,
+    "is_Available": true
+}
+
+--------------------------------------------------------------------------------
+15.8 GET ALL STORAGE GIGS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-gigs/
+Method: GET
+
+Returns all storage gigs ordered by price (descending).
+
+--------------------------------------------------------------------------------
+15.9 GET STORAGE GIG BY ID
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-gigs/{id}/
+Method: GET
+
+Example: http://localhost:8000/api/storage/storage-gigs/1/
+
+--------------------------------------------------------------------------------
+15.10 UPDATE STORAGE GIG
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-gigs/{id}/
+Method: PUT
+Content-Type: application/json
+
+Request Body:
+{
+    "storage_owner": 1,
+    "address": "Updated Warehouse Location",
+    "description": "Updated storage description",
+    "prefered_crop": 1,
+    "price": 550.00,
+    "quantity": 80,
+    "is_Available": true
+}
+
+--------------------------------------------------------------------------------
+15.11 DELETE STORAGE GIG
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-gigs/{id}/
+Method: DELETE
+
+--------------------------------------------------------------------------------
+15.12 GET STORAGE GIGS WITH DETAILS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-gigs-details/
+Method: GET
+
+Returns storage gigs with complete details including storage owner information.
+
+--------------------------------------------------------------------------------
+15.13 CREATE STORAGE DEAL
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-deals/
+Method: POST
+Content-Type: application/json
+
+Request Body:
+{
+    "farmer": 1,
+    "storage_owner": 1,
+    "gigs_offered": 1,
+    "crops": 1,
+    "start_date": "2026-01-15",
+    "end_date": "2026-06-15",
+    "is_confirmed": false,
+    "is_ready_for_pickup": false,
+    "completed": false
+}
+
+Expected Response (Success - 201):
+{
+    "id": 1,
+    "farmer": 1,
+    "storage_owner": 1,
+    "gigs_offered": 1,
+    "crops": 1,
+    "start_date": "2026-01-15",
+    "end_date": "2026-06-15",
+    "created_at": "2026-01-14T10:30:00Z",
+    "completed": false,
+    "is_confirmed": false,
+    "is_ready_for_pickup": false
+}
+
+--------------------------------------------------------------------------------
+15.14 GET ALL STORAGE DEALS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-deals/
+Method: GET
+
+Optional Query Parameters:
+- is_confirmed: Filter by confirmation status (true/false)
+- is_ready_for_pickup: Filter by pickup readiness (true/false)
+- completed: Filter by completion status (true/false)
+- storage_owner: Filter by storage owner ID
+
+Examples:
+- http://localhost:8000/api/storage/storage-deals/?is_confirmed=true
+- http://localhost:8000/api/storage/storage-deals/?completed=false&storage_owner=1
+
+Returns deals ordered by creation date (most recent first).
+
+--------------------------------------------------------------------------------
+15.15 GET STORAGE DEAL BY ID
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-deals/{id}/
+Method: GET
+
+Example: http://localhost:8000/api/storage/storage-deals/1/
+
+--------------------------------------------------------------------------------
+15.16 UPDATE STORAGE DEAL
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-deals/{id}/
+Method: PUT
+Content-Type: application/json
+
+Request Body:
+{
+    "farmer": 1,
+    "storage_owner": 1,
+    "gigs_offered": 1,
+    "crops": 1,
+    "start_date": "2026-01-15",
+    "end_date": "2026-07-15",
+    "is_confirmed": true,
+    "is_ready_for_pickup": true,
+    "completed": false
+}
+
+--------------------------------------------------------------------------------
+15.17 CONFIRM STORAGE DEAL
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-deals/{id}/
+Method: PATCH
+Content-Type: application/json
+
+Request Body:
+{
+    "is_confirmed": true
+}
+
+Or to mark as ready for pickup:
+{
+    "is_ready_for_pickup": true
+}
+
+Or to mark as completed:
+{
+    "completed": true
+}
+
+--------------------------------------------------------------------------------
+15.18 DELETE STORAGE DEAL
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-deals/{id}/
+Method: DELETE
+
+--------------------------------------------------------------------------------
+15.19 GET STORAGE DEALS WITH DETAILS
+--------------------------------------------------------------------------------
+URL: http://localhost:8000/api/storage/storage-deals-details/
+Method: GET
+
+Optional Query Parameters:
+- is_confirmed: Filter by confirmation status
+- is_ready_for_pickup: Filter by pickup readiness
+- completed: Filter by completion status
+- storage_owner: Filter by storage owner ID
+
+Returns storage deals with complete details including farmer and storage owner information.
+
+================================================================================
                     ADDITIONAL NOTES
 ================================================================================
 

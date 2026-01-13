@@ -4,6 +4,8 @@ import FarmerNavbar from "../components/FarmerNavbar";
 import Footer from "../components/Footer";
 import "./FertilizerRecommendationPage.css";
 
+const API_BASE_URL = "http://localhost:8000/api";
+
 const FertilizerRecommendationPage = () => {
   const [weatherData, setWeatherData] = useState({
     city: "লোড হচ্ছে...",
@@ -29,6 +31,20 @@ const FertilizerRecommendationPage = () => {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(";").shift();
     return null;
+  };
+
+  // Get user ID from localStorage or cookies
+  const getUserId = () => {
+    // Try localStorage first
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) return parseInt(storedUserId);
+
+    // Fallback to cookie
+    const cookieUserId = getCookie("userId");
+    if (cookieUserId) return parseInt(cookieUserId);
+
+    // Default user ID
+    return 1;
   };
 
   // Crop types in Bengali
@@ -61,9 +77,7 @@ const FertilizerRecommendationPage = () => {
 
   const fetchWeather = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8000/api/weather/?city=Dhaka"
-      );
+      const response = await fetch(`${API_BASE_URL}/weather/?city=Dhaka`);
       if (!response.ok) {
         throw new Error("Failed to fetch weather data");
       }
@@ -75,6 +89,7 @@ const FertilizerRecommendationPage = () => {
         condition: data.condition,
       });
     } catch (error) {
+      console.error("Weather fetch error:", error);
       setWeatherData({
         city: "ত্রুটি",
         temperature: "N/A",
@@ -96,41 +111,87 @@ const FertilizerRecommendationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate form inputs
+    if (
+      !formData.nitrogen ||
+      !formData.phosphorus ||
+      !formData.potassium ||
+      !formData.moisture ||
+      formData.crop_type === "0" ||
+      formData.soil_type === "0"
+    ) {
+      setResponse({
+        type: "error",
+        message:
+          "অনুগ্রহ করে সমস্ত ক্ষেত্র পূরণ করুন এবং বৈধ মান নির্বাচন করুন।",
+      });
+      return;
+    }
+
     setLoading(true);
     setResponse(null);
 
+    const userId = getUserId();
+
+    // Get crop type label
+    const cropLabel =
+      cropTypes.find((c) => c.value === formData.crop_type)?.label ||
+      formData.crop_type;
+
+    // Get soil type label
+    const soilLabel =
+      soilTypes.find((s) => s.value === formData.soil_type)?.label ||
+      formData.soil_type;
+
     const payload = {
-      user: getCookie("userId") || 1,
+      user: userId,
       nitrogen: parseFloat(formData.nitrogen),
-      phosphorus: parseFloat(formData.phosphorus),
+      phosphorous: parseFloat(formData.phosphorus),
       potassium: parseFloat(formData.potassium),
       moisture: parseFloat(formData.moisture),
-      crop_type: formData.crop_type,
-      soil_type: formData.soil_type,
-      session_id: 12,
-      temperature: weatherData.temperature,
-      humidity: weatherData.humidity,
+      crop_type: cropLabel,
+      soil_type: soilLabel,
+      session_id: Math.random().toString(36).substr(2, 9),
+      temperature: parseFloat(weatherData.temperature) || 25,
+      humidity: parseFloat(weatherData.humidity) || 50,
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/ai_responses/fert/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/ai_responses/fertilizers/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (!response.ok) {
+        const errorData = await response.json();
         throw new Error(
-          `Server error: ${response.status} ${response.statusText}`
+          errorData?.detail ||
+            `Server error: ${response.status} ${response.statusText}`
         );
       }
 
       const data = await response.json();
       setResponse({
         type: "success",
-        message: `সারের সুপারিশ: ${data.answer}`,
+        message: `সার সুপারিশ: ${data.recommended_fertilizer}\n\nবিস্তারিত: ${data.recommendation_message}`,
+        recommendation: data,
+      });
+
+      // Clear form after successful submission
+      setFormData({
+        nitrogen: "",
+        phosphorus: "",
+        potassium: "",
+        moisture: "",
+        crop_type: "0",
+        soil_type: "0",
       });
     } catch (error) {
       setResponse({
@@ -268,7 +329,9 @@ const FertilizerRecommendationPage = () => {
                 </div>
 
                 <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? "প্রক্রিয়াকরণ হচ্ছে..." : "সারের সুপারিশ গ্রহণ করুন"}
+                  {loading
+                    ? "প্রক্রিয়াকরণ হচ্ছে..."
+                    : "সারের সুপারিশ গ্রহণ করুন"}
                 </button>
               </form>
 

@@ -4,6 +4,8 @@ import FarmerNavbar from "../components/FarmerNavbar";
 import Footer from "../components/Footer";
 import "./CropRecommendationPage.css";
 
+const API_BASE_URL = "http://localhost:8000/api";
+
 const CropRecommendationPage = () => {
   const [weatherData, setWeatherData] = useState({
     city: "লোড হচ্ছে...",
@@ -29,15 +31,27 @@ const CropRecommendationPage = () => {
     return null;
   };
 
+  // Get user ID from localStorage or cookies
+  const getUserId = () => {
+    // Try localStorage first
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) return parseInt(storedUserId);
+
+    // Fallback to cookie
+    const cookieUserId = getCookie("userId");
+    if (cookieUserId) return parseInt(cookieUserId);
+
+    // Default user ID
+    return 1;
+  };
+
   useEffect(() => {
     fetchWeather();
   }, []);
 
   const fetchWeather = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8000/api/weather/?city=Dhaka"
-      );
+      const response = await fetch(`${API_BASE_URL}/weather/?city=Dhaka`);
       if (!response.ok) {
         throw new Error("Failed to fetch weather data");
       }
@@ -48,6 +62,7 @@ const CropRecommendationPage = () => {
         humidity: data.humidity,
       });
     } catch (error) {
+      console.error("Weather fetch error:", error);
       setWeatherData({
         city: "ত্রুটি",
         temperature: "N/A",
@@ -68,23 +83,41 @@ const CropRecommendationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate form inputs
+    if (
+      !formData.nitrogen ||
+      !formData.phosphorus ||
+      !formData.potassium ||
+      !formData.ph ||
+      !formData.rainfall
+    ) {
+      setResponse({
+        type: "error",
+        message: "অনুগ্রহ করে সমস্ত ক্ষেত্র পূরণ করুন।",
+      });
+      return;
+    }
+
     setLoading(true);
     setResponse(null);
 
+    const userId = getUserId();
+
     const payload = {
-      user: getCookie("userId") || 1,
+      user: userId,
       nitrogen: parseFloat(formData.nitrogen),
       phosphorus: parseFloat(formData.phosphorus),
       potassium: parseFloat(formData.potassium),
       ph: parseFloat(formData.ph),
       rainfall: parseFloat(formData.rainfall),
-      temperature: weatherData.temperature,
-      humidity: weatherData.humidity,
-      session_id: 12,
+      temperature: parseFloat(weatherData.temperature) || 25,
+      humidity: parseFloat(weatherData.humidity) || 50,
+      session_id: Math.random().toString(36).substr(2, 9),
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/ai_responses/rec/", {
+      const response = await fetch(`${API_BASE_URL}/ai_responses/crops/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,15 +126,27 @@ const CropRecommendationPage = () => {
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
         throw new Error(
-          `Server error: ${response.status} ${response.statusText}`
+          errorData?.detail ||
+            `Server error: ${response.status} ${response.statusText}`
         );
       }
 
       const data = await response.json();
       setResponse({
         type: "success",
-        message: `সুপারিশকৃত ফসল: ${data.answer}`,
+        message: `সুপারিশকৃত ফসল: ${data.recommended_crop}\n\nবিস্তারিত: ${data.recommendation_message}`,
+        recommendation: data,
+      });
+
+      // Clear form after successful submission
+      setFormData({
+        nitrogen: "",
+        phosphorus: "",
+        potassium: "",
+        ph: "",
+        rainfall: "",
       });
     } catch (error) {
       setResponse({
