@@ -25,6 +25,10 @@ import AgronomistDashboardPage from "./pages/AgronomistDashboardPage";
 import AgronomistProfileSetupPage from "./pages/AgronomistProfileSetupPage";
 import ExpertsListPage from "./pages/ExpertsListPage";
 import MyConsultationsPage from "./pages/MyConsultationsPage";
+// Storage imports
+import StoragePage from "./pages/StoragePage";
+import StorageAdminDashboard from "./pages/StorageAdminDashboard";
+import MyStorageBookingsPage from "./pages/MyStorageBookingsPage";
 
 function App() {
   return (
@@ -62,6 +66,10 @@ function App() {
           <Route path="/agronomist-profile-setup" element={<AgronomistProfileSetupPage />} />
           <Route path="/experts" element={<ExpertsListPage />} />
           <Route path="/my-consultations" element={<MyConsultationsPage />} />
+          {/* Storage Routes */}
+          <Route path="/storage" element={<StoragePage />} />
+          <Route path="/storage-dashboard" element={<StorageAdminDashboard />} />
+          <Route path="/my-storage-bookings" element={<MyStorageBookingsPage />} />
         </Routes>
       </div>
     </Router>
