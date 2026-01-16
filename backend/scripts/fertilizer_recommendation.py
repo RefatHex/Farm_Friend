@@ -18,9 +18,9 @@ import joblib
 warnings.filterwarnings('ignore')
 
 # Get the base directory for model storage
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODELS_DIR = os.path.join(BASE_DIR, 'scripts', 'models')
-DATASET_PATH = os.path.join(BASE_DIR, '..', 'dataset', 'Fertilizer Prediction.csv')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(BASE_DIR, 'models')
+DATASET_PATH = os.path.join(BASE_DIR, '..', '..', 'dataset', 'Fertilizer Prediction.csv')
 
 # Create models directory if it doesn't exist
 os.makedirs(MODELS_DIR, exist_ok=True)

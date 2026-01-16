@@ -18,9 +18,9 @@ import xgboost as xgb
 warnings.filterwarnings('ignore')
 
 # Get the base directory for model storage
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODELS_DIR = os.path.join(BASE_DIR, 'scripts', 'models')
-DATASET_PATH = os.path.join(BASE_DIR, '..', 'dataset', 'Crop_recommendation.csv')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(BASE_DIR, 'models')
+DATASET_PATH = os.path.join(BASE_DIR, '..', '..', 'dataset', 'Crop_recommendation.csv')
 
 # Create models directory if it doesn't exist
 os.makedirs(MODELS_DIR, exist_ok=True)
@@ -51,6 +51,8 @@ class CropRecommendationSystem:
             'XGBoost': 'XGBoost.pkl'
         }
         
+        print(f"Models directory: {MODELS_DIR}")
+        
         models_exist = all(
             os.path.exists(os.path.join(MODELS_DIR, fname)) 
             for fname in model_files.values()
@@ -69,6 +71,13 @@ class CropRecommendationSystem:
                     else:
                         self.models[model_name] = loaded_model
             print("✓ Crop models loaded successfully!")
+            # Set best model to Random Forest by default after loading
+            self.best_model_name = 'Random Forest'
+            self.best_model = self.models.get('Random Forest')
+            if self.best_model is None:
+                # Fallback to first available model if Random Forest not found
+                self.best_model_name = list(self.models.keys())[0]
+                self.best_model = self.models[self.best_model_name]
         else:
             # Train new models
             print("Training models... This may take a few minutes.")

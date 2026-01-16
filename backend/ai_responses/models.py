@@ -14,11 +14,11 @@ class CropSuggestion(models.Model):
     humidity = models.FloatField(help_text="Humidity percentage")
     ph = models.FloatField(help_text="Soil pH level")
     rainfall = models.FloatField(help_text="Rainfall in mm")
-    recommended_crop = models.CharField(max_length=255, help_text="Recommended crop name")
-    recommendation_message = models.TextField(help_text="Full recommendation message")
+    recommended_crop = models.CharField(max_length=255, null=True, blank=True, help_text="Recommended crop name")
+    recommendation_message = models.TextField(null=True, blank=True, help_text="Full recommendation message")
     created_at = models.DateTimeField(auto_now_add=True)
     rating = models.FloatField(null=True, blank=True, help_text="User rating of recommendation (1-5)")
-    session_id = models.BigIntegerField(null=True, blank=True)
+    session_id = models.CharField(max_length=255, null=True, blank=True, help_text="Session identifier")
 
     class Meta:
         ordering = ['-created_at']
@@ -42,11 +42,11 @@ class FertilizerSuggestion(models.Model):
     temperature = models.FloatField(help_text="Temperature in Celsius")
     humidity = models.FloatField(help_text="Humidity percentage")
     moisture = models.FloatField(help_text="Soil moisture percentage")
-    recommended_fertilizer = models.CharField(max_length=255, help_text="Recommended fertilizer name")
-    recommendation_message = models.TextField(help_text="Full recommendation message")
+    recommended_fertilizer = models.CharField(max_length=255, null=True, blank=True, help_text="Recommended fertilizer name")
+    recommendation_message = models.TextField(null=True, blank=True, help_text="Full recommendation message")
     created_at = models.DateTimeField(auto_now_add=True)
     rating = models.FloatField(null=True, blank=True, help_text="User rating of recommendation (1-5)")
-    session_id = models.BigIntegerField(null=True, blank=True)
+    session_id = models.CharField(max_length=255, null=True, blank=True, help_text="Session identifier")
 
     class Meta:
         ordering = ['-created_at']
@@ -69,7 +69,7 @@ class RecAIResponse(models.Model):
     answer = models.CharField(max_length=255)
     asked_at = models.DateTimeField(auto_now_add=True)
     answer_rating = models.FloatField(null=True, blank=True)
-    session_id = models.BigIntegerField()
+    session_id = models.CharField(max_length=255, null=True, blank=True)
 
 class FertAIResponse(models.Model):
     user = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
@@ -84,4 +84,4 @@ class FertAIResponse(models.Model):
     answer = models.CharField(max_length=255)
     asked_at = models.DateTimeField(auto_now_add=True)
     answer_rating = models.FloatField(null=True, blank=True)
-    session_id = models.BigIntegerField()
+    session_id = models.CharField(max_length=255, null=True, blank=True)
