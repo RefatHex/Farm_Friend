@@ -63,6 +63,13 @@ const FarmerLandingPage = () => {
       description: 'আপনার সক্রিয় এবং পূর্ববর্তী সমস্ত ভাড়া চুক্তি দেখুন এবং পরিচালনা করুন।',
       buttonText: 'ভাড়া দেখুন',
       link: '/my-rentals'
+    },
+    {
+      id: 9,
+      title: 'আমার স্টোরেজ বুকিং',
+      description: 'আপনার সকল স্টোরেজ বুকিং দেখুন এবং ট্র্যাক করুন।',
+      buttonText: 'বুকিং দেখুন',
+      link: '/my-storage-bookings'
     }
   ];
 
