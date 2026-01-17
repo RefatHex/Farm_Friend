@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import FarmerNavbar from '../components/FarmerNavbar';
-import Footer from '../components/Footer';
-import { fetchStorageDeals } from '../services/storageService';
-import './MyStorageBookingsPage.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import FarmerNavbar from "../components/FarmerNavbar";
+import Footer from "../components/Footer";
+import {
+  fetchStorageDealsByFarmer,
+  updateStorageDeal,
+  deleteStorageDeal,
+} from "../services/storageService";
+import "./MyStorageBookingsPage.css";
 
 // Helper to get cookie
 const getCookie = (name) => {
@@ -23,14 +27,14 @@ const MyStorageBookingsPage = () => {
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState("all");
   const [notification, setNotification] = useState(null);
 
-  const farmerId = getCookie('farmersId');
+  const farmerId = getCookie("farmersId");
 
   useEffect(() => {
     if (!farmerId) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
     loadBookings();
@@ -43,53 +47,54 @@ const MyStorageBookingsPage = () => {
   const loadBookings = async () => {
     setLoading(true);
     try {
-      const allDeals = await fetchStorageDeals();
-      // Filter bookings for current farmer
-      const farmerBookings = allDeals.filter(
-        deal => String(deal.farmer) === String(farmerId)
-      );
+      const farmerBookings = await fetchStorageDealsByFarmer(farmerId);
       setBookings(farmerBookings);
     } catch (error) {
-      console.error('Error loading bookings:', error);
-      showNotification('বুকিং লোড করতে সমস্যা হয়েছে', 'error');
+      console.error("Error loading bookings:", error);
+      showNotification("বুকিং লোড করতে সমস্যা হয়েছে", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  const showNotification = (message, type = 'success') => {
+  const showNotification = (message, type = "success") => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 4000);
   };
 
   const filterBookings = (filter) => {
     let filtered = [...bookings];
-    
+
     switch (filter) {
-      case 'pending':
-        filtered = bookings.filter(b => !b.is_confirmed);
+      case "pending":
+        filtered = bookings.filter((b) => !b.is_confirmed);
         break;
-      case 'confirmed':
-        filtered = bookings.filter(b => b.is_confirmed && !b.is_ready_for_pickup);
+      case "confirmed":
+        filtered = bookings.filter(
+          (b) => b.is_confirmed && !b.is_ready_for_pickup,
+        );
         break;
-      case 'ready':
-        filtered = bookings.filter(b => b.is_ready_for_pickup && !b.completed);
+      case "ready":
+        filtered = bookings.filter(
+          (b) => b.is_ready_for_pickup && !b.completed,
+        );
         break;
-      case 'completed':
-        filtered = bookings.filter(b => b.completed);
+      case "completed":
+        filtered = bookings.filter((b) => b.completed);
         break;
       default:
         filtered = bookings;
     }
-    
+
     setFilteredBookings(filtered);
   };
 
   const getBookingStatus = (booking) => {
-    if (booking.completed) return { label: 'সম্পন্ন', class: 'completed' };
-    if (booking.is_ready_for_pickup) return { label: 'পিকআপ প্রস্তুত', class: 'ready' };
-    if (booking.is_confirmed) return { label: 'নিশ্চিত', class: 'confirmed' };
-    return { label: 'অপেক্ষমাণ', class: 'pending' };
+    if (booking.completed) return { label: "সম্পন্ন", class: "completed" };
+    if (booking.is_ready_for_pickup)
+      return { label: "পিকআপ প্রস্তুত", class: "ready" };
+    if (booking.is_confirmed) return { label: "নিশ্চিত", class: "confirmed" };
+    return { label: "অপেক্ষমাণ", class: "pending" };
   };
 
   const getTimelineStatus = (booking) => ({
@@ -99,22 +104,37 @@ const MyStorageBookingsPage = () => {
     completed: booking.completed,
   });
 
+  const handleCancelBooking = async (bookingId) => {
+    if (!window.confirm("এই বুকিং বাতিল করতে কি আপনি নিশ্চিত?")) {
+      return;
+    }
+
+    try {
+      await deleteStorageDeal(bookingId);
+      showNotification("বুকিং সফলভাবে বাতিল করা হয়েছে", "success");
+      loadBookings();
+    } catch (error) {
+      console.error("Error canceling booking:", error);
+      showNotification("বুকিং বাতিল করতে সমস্যা হয়েছে", "error");
+    }
+  };
+
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
-    return date.toLocaleDateString('bn-BD', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return date.toLocaleDateString("bn-BD", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   // Stats calculations
   const stats = {
     total: bookings.length,
-    pending: bookings.filter(b => !b.is_confirmed).length,
-    active: bookings.filter(b => b.is_confirmed && !b.completed).length,
-    completed: bookings.filter(b => b.completed).length,
+    pending: bookings.filter((b) => !b.is_confirmed).length,
+    active: bookings.filter((b) => b.is_confirmed && !b.completed).length,
+    completed: bookings.filter((b) => b.completed).length,
   };
 
   if (loading) {
@@ -132,7 +152,7 @@ const MyStorageBookingsPage = () => {
   return (
     <div className="my-storage-page">
       <FarmerNavbar />
-      
+
       {/* Notification */}
       {notification && (
         <div className={`storage-booking-notification ${notification.type}`}>
@@ -172,33 +192,40 @@ const MyStorageBookingsPage = () => {
 
       {/* Filter Buttons */}
       <div className="booking-filters">
-        <button 
-          className={`filter-btn ${activeFilter === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('all')}
+        <button
+          className={`filter-btn ${activeFilter === "all" ? "active" : ""}`}
+          onClick={() => setActiveFilter("all")}
         >
           সকল ({bookings.length})
         </button>
-        <button 
-          className={`filter-btn ${activeFilter === 'pending' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('pending')}
+        <button
+          className={`filter-btn ${activeFilter === "pending" ? "active" : ""}`}
+          onClick={() => setActiveFilter("pending")}
         >
           অপেক্ষমাণ ({stats.pending})
         </button>
-        <button 
-          className={`filter-btn ${activeFilter === 'confirmed' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('confirmed')}
+        <button
+          className={`filter-btn ${activeFilter === "confirmed" ? "active" : ""}`}
+          onClick={() => setActiveFilter("confirmed")}
         >
-          নিশ্চিত ({bookings.filter(b => b.is_confirmed && !b.is_ready_for_pickup).length})
+          নিশ্চিত (
+          {
+            bookings.filter((b) => b.is_confirmed && !b.is_ready_for_pickup)
+              .length
+          }
+          )
         </button>
-        <button 
-          className={`filter-btn ${activeFilter === 'ready' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('ready')}
+        <button
+          className={`filter-btn ${activeFilter === "ready" ? "active" : ""}`}
+          onClick={() => setActiveFilter("ready")}
         >
-          পিকআপ প্রস্তুত ({bookings.filter(b => b.is_ready_for_pickup && !b.completed).length})
+          পিকআপ প্রস্তুত (
+          {bookings.filter((b) => b.is_ready_for_pickup && !b.completed).length}
+          )
         </button>
-        <button 
-          className={`filter-btn ${activeFilter === 'completed' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('completed')}
+        <button
+          className={`filter-btn ${activeFilter === "completed" ? "active" : ""}`}
+          onClick={() => setActiveFilter("completed")}
         >
           সম্পন্ন ({stats.completed})
         </button>
@@ -211,13 +238,13 @@ const MyStorageBookingsPage = () => {
             <div className="no-bookings-icon">📦</div>
             <h3>কোনো বুকিং পাওয়া যায়নি</h3>
             <p>
-              {activeFilter === 'all' 
-                ? 'আপনার এখনো কোনো স্টোরেজ বুকিং নেই' 
-                : 'এই ফিল্টারে কোনো বুকিং নেই'}
+              {activeFilter === "all"
+                ? "আপনার এখনো কোনো স্টোরেজ বুকিং নেই"
+                : "এই ফিল্টারে কোনো বুকিং নেই"}
             </p>
-            <button 
+            <button
               className="btn-browse-storage"
-              onClick={() => navigate('/storage')}
+              onClick={() => navigate("/storage")}
             >
               স্টোরেজ খুঁজুন
             </button>
@@ -226,7 +253,7 @@ const MyStorageBookingsPage = () => {
           filteredBookings.map((booking) => {
             const status = getBookingStatus(booking);
             const timeline = getTimelineStatus(booking);
-            
+
             return (
               <div key={booking.id} className="storage-booking-card">
                 <img
@@ -244,19 +271,27 @@ const MyStorageBookingsPage = () => {
 
                   {/* Timeline Progress */}
                   <div className="booking-timeline">
-                    <div className={`timeline-step ${timeline.booked ? 'completed' : ''}`}>
+                    <div
+                      className={`timeline-step ${timeline.booked ? "completed" : ""}`}
+                    >
                       <div className="timeline-icon">📝</div>
                       <span className="timeline-label">বুক করা</span>
                     </div>
-                    <div className={`timeline-step ${timeline.confirmed ? 'completed' : ''}`}>
+                    <div
+                      className={`timeline-step ${timeline.confirmed ? "completed" : ""}`}
+                    >
                       <div className="timeline-icon">✓</div>
                       <span className="timeline-label">নিশ্চিত</span>
                     </div>
-                    <div className={`timeline-step ${timeline.ready ? 'completed' : ''}`}>
+                    <div
+                      className={`timeline-step ${timeline.ready ? "completed" : ""}`}
+                    >
                       <div className="timeline-icon">📦</div>
                       <span className="timeline-label">প্রস্তুত</span>
                     </div>
-                    <div className={`timeline-step ${timeline.completed ? 'completed' : ''}`}>
+                    <div
+                      className={`timeline-step ${timeline.completed ? "completed" : ""}`}
+                    >
                       <div className="timeline-icon">✅</div>
                       <span className="timeline-label">সম্পন্ন</span>
                     </div>
@@ -265,23 +300,32 @@ const MyStorageBookingsPage = () => {
                   <div className="booking-info-grid">
                     <div className="booking-info-item">
                       <span>🏪</span>
-                      <span><strong>স্টোরেজ ID:</strong> {booking.gigs_offered || 'N/A'}</span>
+                      <span>
+                        <strong>স্টোরেজ ID:</strong>{" "}
+                        {booking.gigs_offered || "N/A"}
+                      </span>
                     </div>
                     <div className="booking-info-item">
                       <span>🌾</span>
-                      <span><strong>ফসল ID:</strong> {booking.crops || 'N/A'}</span>
+                      <span>
+                        <strong>ফসল ID:</strong> {booking.crops || "N/A"}
+                      </span>
                     </div>
                   </div>
 
                   <div className="booking-dates">
                     <div className="date-item">
                       <span className="date-label">শুরু</span>
-                      <span className="date-value">{formatDate(booking.start_date)}</span>
+                      <span className="date-value">
+                        {formatDate(booking.start_date)}
+                      </span>
                     </div>
                     <span className="date-arrow">→</span>
                     <div className="date-item">
                       <span className="date-label">শেষ</span>
-                      <span className="date-value">{formatDate(booking.end_date)}</span>
+                      <span className="date-value">
+                        {formatDate(booking.end_date)}
+                      </span>
                     </div>
                   </div>
 
@@ -290,12 +334,20 @@ const MyStorageBookingsPage = () => {
                       বুকিং তারিখ: {formatDate(booking.created_at)}
                     </div>
                     <div className="booking-actions">
-                      <button 
+                      <button
                         className="btn-booking-action btn-view-details"
-                        onClick={() => navigate('/storage')}
+                        onClick={() => navigate("/storage")}
                       >
-                        বিস্তারিত
+                        আরও দেখুন
                       </button>
+                      {!booking.completed && !booking.is_ready_for_pickup && (
+                        <button
+                          className="btn-booking-action btn-cancel"
+                          onClick={() => handleCancelBooking(booking.id)}
+                        >
+                          বাতিল করুন
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

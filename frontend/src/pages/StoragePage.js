@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import {
   fetchStorageGigsWithDetails,
   createStorageDeal,
+  fetchStorageDealsByFarmer,
 } from '../services/storageService';
 import './StoragePage.css';
 
@@ -50,7 +51,9 @@ const StoragePage = () => {
     const loadStorageGigs = async () => {
       try {
         const gigs = await fetchStorageGigsWithDetails();
-        setStorageGigs(gigs);
+        // Filter only available gigs
+        const availableGigs = gigs.filter(gig => gig.is_Available === true);
+        setStorageGigs(availableGigs);
       } catch (error) {
         console.error('Error loading storage gigs:', error);
         showNotification('তথ্য লোড করতে সমস্যা হয়েছে', 'error');
@@ -117,7 +120,7 @@ const StoragePage = () => {
       return;
     }
     
-    if (quantity <= 0) {
+    if (quantity <= 0 || quantity > selectedGig.quantity) {
       showNotification('পরিমাণ সঠিকভাবে উল্লেখ করুন', 'error');
       return;
     }
@@ -137,17 +140,19 @@ const StoragePage = () => {
       start_date: startDate,
       end_date: endDate,
       completed: false,
-      is_confirmed: true,
+      is_confirmed: false,
       is_ready_for_pickup: false,
     };
 
     try {
-      await createStorageDeal(bookingPayload);
-      showNotification('বুকিং সফলভাবে সম্পন্ন হয়েছে!', 'success');
+      const response = await createStorageDeal(bookingPayload);
+      showNotification('বুকিং সফলভাবে জমা দেওয়া হয়েছে! প্রতিষ্ঠাতার নিশ্চিতকরণের জন্য অপেক্ষা করুন।', 'success');
       closeDetailsModal();
+      // Refresh the page
+      setTimeout(() => window.location.reload(), 2000);
     } catch (error) {
       console.error('Booking failed:', error);
-      showNotification('বুকিং করতে সমস্যা হয়েছে', 'error');
+      showNotification('বুকিং করতে সমস্যা হয়েছে: ' + error.message, 'error');
     }
   };
 

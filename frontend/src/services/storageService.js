@@ -73,7 +73,20 @@ export const createStorageGig = async (formData) => {
     throw error;
   }
 };
-
+// Fetch storage gigs by owner ID
+export const fetchStorageGigsByOwner = async (ownerId) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/storage-gigs/?storage_owner=${ownerId}`,
+    );
+    if (!response.ok) throw new Error("Failed to fetch owner storage gigs");
+    const data = await response.json();
+    return data.results || [];
+  } catch (error) {
+    console.error("Error fetching owner storage gigs:", error);
+    throw error;
+  }
+};
 // Update storage gig
 export const updateStorageGig = async (id, formData) => {
   try {
@@ -124,7 +137,9 @@ export const fetchStorageDeals = async () => {
 // Fetch storage deals by farmer ID
 export const fetchStorageDealsByFarmer = async (farmerId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/storage-deals/?farmer=${farmerId}`);
+    const response = await fetch(
+      `${API_BASE_URL}/storage-deals/?farmer=${farmerId}`,
+    );
     if (!response.ok) throw new Error("Failed to fetch farmer storage deals");
     const data = await response.json();
     return data.results || [];
@@ -137,7 +152,9 @@ export const fetchStorageDealsByFarmer = async (farmerId) => {
 // Fetch storage deals by storage owner ID
 export const fetchStorageDealsByOwner = async (ownerId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/storage-deals/?storage_owner=${ownerId}`);
+    const response = await fetch(
+      `${API_BASE_URL}/storage-deals/?storage_owner=${ownerId}`,
+    );
     if (!response.ok) throw new Error("Failed to fetch owner storage deals");
     const data = await response.json();
     return data.results || [];
@@ -185,6 +202,32 @@ export const updateStorageDeal = async (id, data) => {
     return await response.json();
   } catch (error) {
     console.error("Error updating storage deal:", error);
+    throw error;
+  }
+};
+
+// Delete storage deal
+export const deleteStorageDeal = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/storage-deals/${id}/`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Failed to delete storage deal");
+    return true;
+  } catch (error) {
+    console.error("Error deleting storage deal:", error);
+    throw error;
+  }
+};
+
+// Fetch storage deal by ID
+export const fetchStorageDealById = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/storage-deals/${id}/`);
+    if (!response.ok) throw new Error("Failed to fetch storage deal");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching storage deal:", error);
     throw error;
   }
 };
@@ -261,14 +304,17 @@ export default {
   fetchStorageGigsWithDetails,
   fetchStorageGigs,
   fetchStorageGigById,
+  fetchStorageGigsByOwner,
   createStorageGig,
   updateStorageGig,
   deleteStorageGig,
   fetchStorageDeals,
   fetchStorageDealsByFarmer,
   fetchStorageDealsByOwner,
+  fetchStorageDealById,
   createStorageDeal,
   updateStorageDeal,
+  deleteStorageDeal,
   fetchStorageOwners,
   fetchStorageOwnerById,
   getStorageOwnersCount,

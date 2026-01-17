@@ -29,6 +29,7 @@ import MyConsultationsPage from "./pages/MyConsultationsPage";
 import StoragePage from "./pages/StoragePage";
 import StorageAdminDashboard from "./pages/StorageAdminDashboard";
 import MyStorageBookingsPage from "./pages/MyStorageBookingsPage";
+import StorageOwnersListPage from "./pages/StorageOwnersListPage";
 
 function App() {
   return (
@@ -62,14 +63,27 @@ function App() {
           />
           <Route path="/crop-advice" element={<CropRecommendationPage />} />
           {/* Agronomist/Expert Routes */}
-          <Route path="/agronomist-dashboard" element={<AgronomistDashboardPage />} />
-          <Route path="/agronomist-profile-setup" element={<AgronomistProfileSetupPage />} />
+          <Route
+            path="/agronomist-dashboard"
+            element={<AgronomistDashboardPage />}
+          />
+          <Route
+            path="/agronomist-profile-setup"
+            element={<AgronomistProfileSetupPage />}
+          />
           <Route path="/experts" element={<ExpertsListPage />} />
           <Route path="/my-consultations" element={<MyConsultationsPage />} />
           {/* Storage Routes */}
           <Route path="/storage" element={<StoragePage />} />
-          <Route path="/storage-dashboard" element={<StorageAdminDashboard />} />
-          <Route path="/my-storage-bookings" element={<MyStorageBookingsPage />} />
+          <Route path="/storage-owners" element={<StorageOwnersListPage />} />
+          <Route
+            path="/storage-dashboard"
+            element={<StorageAdminDashboard />}
+          />
+          <Route
+            path="/my-storage-bookings"
+            element={<MyStorageBookingsPage />}
+          />
         </Routes>
       </div>
     </Router>
