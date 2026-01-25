@@ -19,6 +19,9 @@ xgboost = "*"
 pandas = "*"
 numpy = "*"
 joblib = "*"
+selenium = "*"
+webdriver-manager = "*"
+playwright = "*"
 
 [dev-packages]
 

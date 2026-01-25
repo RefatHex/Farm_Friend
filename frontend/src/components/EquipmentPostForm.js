@@ -42,7 +42,7 @@ function EquipmentPostForm() {
           };
 
           owner = await createRentOwner({
-            user: userId,
+            user: parseInt(userId, 10), // Ensure user ID is an integer
             name: userInfo.first_name,
             dob: "1990-01-01", // Default, user should update
             contact: userInfo.email,
@@ -50,7 +50,12 @@ function EquipmentPostForm() {
           });
         }
 
-        setRentOwnerId(owner.id);
+        if (owner && owner.id) {
+          setRentOwnerId(owner.id);
+          console.log("Rent owner initialized:", owner.id);
+        } else {
+          setError("Failed to get rent owner profile.");
+        }
       } catch (err) {
         console.error("Error initializing rent owner:", err);
         setError("Failed to initialize rent owner profile. Please try again.");

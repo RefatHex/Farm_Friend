@@ -23,9 +23,8 @@ function EquipmentList() {
           title: item.product_name,
           price: parseFloat(item.price),
           description: item.description,
-          image: item.image
-            ? `http://localhost:8000${item.image}`
-            : "https://via.placeholder.com/300x180?text=No+Image",
+          image:
+            item.image || "https://via.placeholder.com/300x180?text=No+Image",
           is_available: item.is_available,
           rent_owner: item.rent_owner,
         }));

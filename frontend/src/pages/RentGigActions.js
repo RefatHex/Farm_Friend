@@ -52,7 +52,7 @@ const RentGigActions = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:8000/api/rentals/rent-items-with-user/?rent_owner=${rentOwnerId}`
+        `http://localhost:8000/api/rentals/rent-items-with-user/?rent_owner=${rentOwnerId}`,
       );
       if (response.ok) {
         const data = await response.json();
@@ -126,7 +126,7 @@ const RentGigActions = () => {
         {
           method: "POST",
           body: submitData,
-        }
+        },
       );
 
       if (response.ok) {
@@ -160,7 +160,7 @@ const RentGigActions = () => {
         `http://localhost:8000/api/rentals/rent-items/${productId}/`,
         {
           method: "DELETE",
-        }
+        },
       );
 
       if (response.ok) {
@@ -200,7 +200,7 @@ const RentGigActions = () => {
     submitData.append("quantity", editFormData.quantity);
     submitData.append(
       "is_available",
-      editFormData.isAvailable === "true" ? "True" : "False"
+      editFormData.isAvailable === "true" ? "True" : "False",
     );
 
     if (editFormData.image) {
@@ -213,7 +213,7 @@ const RentGigActions = () => {
         {
           method: "PATCH",
           body: submitData,
-        }
+        },
       );
 
       if (response.ok) {
@@ -285,7 +285,9 @@ const RentGigActions = () => {
                   <option value="Others">অন্যান্য</option>
                 </datalist>
               </div>
-              <span className="category-hint">💡 তালিকা থেকে নির্বাচন করুন অথবা নিজের ক্যাটাগরি লিখুন</span>
+              <span className="category-hint">
+                💡 তালিকা থেকে নির্বাচন করুন অথবা নিজের ক্যাটাগরি লিখুন
+              </span>
             </div>
 
             <div className="form-group">
@@ -353,14 +355,19 @@ const RentGigActions = () => {
             <div className="loading">লোড হচ্ছে...</div>
           ) : products.length === 0 ? (
             <div className="no-products">
-              কোনো যন্ত্র পাওয়া যায়নি। উপরের ফর্ম ব্যবহার করে নতুন যন্ত্র যোগ করুন।
+              কোনো যন্ত্র পাওয়া যায়নি। উপরের ফর্ম ব্যবহার করে নতুন যন্ত্র যোগ
+              করুন।
             </div>
           ) : (
             <div className="products-grid">
               {products.map((product) => (
                 <div key={product.id} className="product-card">
                   <img
-                    src={product.image || "/assets/images/default-product.jpg"}
+                    src={
+                      product.image
+                        ? `http://localhost:8000${product.image}`
+                        : "/assets/images/default-product.jpg"
+                    }
                     alt={product.product_name}
                   />
                   <div className="product-content">
@@ -410,10 +417,7 @@ const RentGigActions = () => {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>যন্ত্র সম্পাদনা করুন</h3>
-              <button
-                className="close-btn"
-                onClick={() => setShowModal(false)}
-              >
+              <button className="close-btn" onClick={() => setShowModal(false)}>
                 &times;
               </button>
             </div>
@@ -521,7 +525,9 @@ const RentGigActions = () => {
 
       {/* Footer */}
       <footer className="gig-footer">
-        <p>&copy; 2025 FarmFriend ভাড়া প্রদানকারী প্যানেল। সর্বস্বত্ব সংরক্ষিত।</p>
+        <p>
+          &copy; 2025 FarmFriend ভাড়া প্রদানকারী প্যানেল। সর্বস্বত্ব সংরক্ষিত।
+        </p>
       </footer>
     </div>
   );

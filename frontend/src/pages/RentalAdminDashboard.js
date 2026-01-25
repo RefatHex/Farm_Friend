@@ -25,32 +25,53 @@ const RentalAdminDashboard = () => {
   // Get token and user info
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
+  const rentOwnerId = (() => {
+    // Helper to get cookie value
+    const getCookie = (name) => {
+      const nameEQ = name + "=";
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.indexOf(nameEQ) === 0) {
+          return decodeURIComponent(cookie.substring(nameEQ.length));
+        }
+      }
+      return null;
+    };
+    return getCookie("rent-ownersId");
+  })();
 
   const initializeDashboard = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch rent owner profile
-      const owner = await fetchRentOwner(userId);
-      if (owner) {
-        await Promise.all([fetchPostedItems(owner.id), fetchPostingBookings()]);
+      let ownerId = rentOwnerId;
+
+      // If we don't have rent owner ID from cookies, fetch it
+      if (!ownerId && userId) {
+        const owner = await fetchRentOwner(userId);
+        ownerId = owner?.id;
+      }
+
+      if (ownerId) {
+        await Promise.all([
+          fetchPostedItems(ownerId),
+          fetchPostingBookings(ownerId),
+        ]);
       } else {
-        // If no rent owner profile exists, redirect to equipment post page
-        // or show a setup message
+        console.warn("No rent owner profile found");
         setError(null);
         setLoading(false);
-        // Allow dashboard to load without a rent owner, user can set one up
       }
     } catch (err) {
       console.error("Error initializing dashboard:", err);
-      // Don't show error, just allow partial loading
       setError(null);
       setLoading(false);
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [userId, rentOwnerId]);
 
   useEffect(() => {
     if (!token || !userId) {
@@ -75,14 +96,19 @@ const RentalAdminDashboard = () => {
     }
   };
 
-  const fetchPostingBookings = async () => {
+  const fetchPostingBookings = async (ownerId) => {
     try {
-      const data = await fetchMyPostedRentals();
+      console.log("[RentalAdmin] Fetching bookings for rent owner:", ownerId);
+      const data = await fetchMyPostedRentals(ownerId);
+      console.log("[RentalAdmin] API Response:", data);
       const orders = Array.isArray(data) ? data : data.results || [];
+      console.log("[RentalAdmin] Processed orders:", orders);
       setBookings(orders);
 
       const confirmed = orders.filter((o) => o.is_confirmed).length;
       const pending = orders.filter((o) => !o.is_confirmed).length;
+
+      console.log("[RentalAdmin] Confirmed:", confirmed, "Pending:", pending);
 
       setDashboardData((prev) => ({
         ...prev,
@@ -90,14 +116,22 @@ const RentalAdminDashboard = () => {
         pendingBookings: pending,
       }));
     } catch (err) {
-      console.error("Error fetching bookings:", err);
+      console.error("[RentalAdmin] Error fetching bookings:", err);
     }
   };
 
   const handleConfirmOrder = async (orderId) => {
     try {
+      let ownerId = rentOwnerId;
+      if (!ownerId && userId) {
+        const owner = await fetchRentOwner(userId);
+        ownerId = owner?.id;
+      }
+
       await updateRentalOrderStatus(orderId, { is_confirmed: true });
-      await fetchPostingBookings();
+      if (ownerId) {
+        await fetchPostingBookings(ownerId);
+      }
       alert("Order confirmed successfully!");
     } catch (err) {
       console.error("Error confirming order:", err);
@@ -107,8 +141,16 @@ const RentalAdminDashboard = () => {
 
   const handleReadyForPickup = async (orderId) => {
     try {
+      let ownerId = rentOwnerId;
+      if (!ownerId && userId) {
+        const owner = await fetchRentOwner(userId);
+        ownerId = owner?.id;
+      }
+
       await updateRentalOrderStatus(orderId, { is_ready_for_pickup: true });
-      await fetchPostingBookings();
+      if (ownerId) {
+        await fetchPostingBookings(ownerId);
+      }
       alert("Order marked as ready for pickup!");
     } catch (err) {
       console.error("Error updating order:", err);

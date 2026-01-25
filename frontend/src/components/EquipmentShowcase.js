@@ -47,7 +47,7 @@ function EquipmentShowcase() {
           product_name: item.product_name,
           description: item.description,
           price: parseFloat(item.price),
-          image: item.image ? `http://localhost:8000${item.image}` : tractorImg,
+          image: item.image || tractorImg,
           is_available: item.is_available,
           quantity: item.quantity,
           rent_owner: item.rent_owner,

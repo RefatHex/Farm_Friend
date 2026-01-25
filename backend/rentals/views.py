@@ -19,9 +19,19 @@ class RentOwnerViewSet(ModelViewSet):
         return RentOwner.objects.all()
     
     def perform_create(self, serializer):
-        """Associate rent owner with the current user"""
-        user = self.request.user if self.request.user.is_authenticated else None
-        serializer.save(user=user)
+        """Associate rent owner with the user from request data or current user"""
+        # Use user from request data if provided, otherwise use authenticated user
+        user_id = self.request.data.get('user')
+        if user_id:
+            try:
+                user = UserInfo.objects.get(id=user_id)
+                serializer.save(user=user)
+            except UserInfo.DoesNotExist:
+                serializer.save(user=None)
+        elif self.request.user.is_authenticated:
+            serializer.save(user=self.request.user)
+        else:
+            serializer.save(user=None)
 
 
 class RentItemsViewSet(ModelViewSet):
@@ -30,31 +40,33 @@ class RentItemsViewSet(ModelViewSet):
     filterset_fields = ['is_available','product_name','price', 'rent_owner']
     search_fields = ['rent_owner__name', 'product_name', 'description']
     ordering_fields = ['price']
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return RentItems.objects.select_related('rent_owner').all()
 
-    def get_permissions(self):
-        """
-        Allow any user to view, only authenticated users to create/update/delete
-        """
-        if self.request.method in ['GET', 'HEAD', 'OPTIONS']:
-            permission_classes = [AllowAny]
-        else:
-            permission_classes = [IsAuthenticated]
-        return [permission() for permission in permission_classes]
-
     def perform_create(self, serializer):
         """
         Customize the creation of rent items.
-        Associate with the rent owner of the current user
+        If rent_owner is provided in request, use it directly (for unauthenticated requests).
+        Otherwise, associate with the rent owner of the current user.
         """
-        try:
-            rent_owner = RentOwner.objects.get(user=self.request.user)
-            serializer.save(rent_owner=rent_owner)
-        except RentOwner.DoesNotExist:
+        # If rent_owner is provided in the request data, save it directly
+        if 'rent_owner' in self.request.data:
+            serializer.save()
+        # Otherwise, try to get rent owner from authenticated user
+        elif self.request.user.is_authenticated:
+            try:
+                rent_owner = RentOwner.objects.get(user=self.request.user)
+                serializer.save(rent_owner=rent_owner)
+            except RentOwner.DoesNotExist:
+                return Response(
+                    {"detail": "You need to create a RentOwner profile first"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        else:
             return Response(
-                {"detail": "You need to create a RentOwner profile first"},
+                {"detail": "rent_owner field is required"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -84,13 +96,13 @@ class RentItemsWithUserViewSet(ModelViewSet):
     def perform_create(self, serializer):
         """
         Customize the creation of rent items with user details.
+        If rent_owner is provided in request, use it directly.
         """
-        try:
-            rent_owner = RentOwner.objects.get(user=self.request.user)
-            serializer.save(rent_owner=rent_owner)
-        except RentOwner.DoesNotExist:
+        if 'rent_owner' in self.request.data:
+            serializer.save()
+        else:
             return Response(
-                {"detail": "You need to create a RentOwner profile first"},
+                {"detail": "rent_owner field is required"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -120,10 +132,13 @@ class RentItemOrdersViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         """
-        Create rental order - sets the current user as the rent_taker (farmer)
+        Create rental order - sets the user as rent_taker if provided in request
         """
-        user = self.request.user if self.request.user.is_authenticated else None
-        serializer.save(rent_taker=user)
+        if 'rent_taker' in self.request.data:
+            serializer.save()
+        else:
+            user = self.request.user if self.request.user.is_authenticated else None
+            serializer.save(rent_taker=user)
 
     def perform_update(self, serializer):
         """

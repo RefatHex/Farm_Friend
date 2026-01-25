@@ -82,7 +82,7 @@ const SignupPage = () => {
 
   const createRolePayload = (role, userId) => {
     const basePayload = {
-      user: userId,
+      user: parseInt(userId, 10), // Ensure user ID is an integer
       name: `${formData.firstName} ${formData.lastName}`,
       dob: formData.dob,
       address: formData.address,
@@ -93,7 +93,7 @@ const SignupPage = () => {
       case "farmer":
         return {
           ...basePayload,
-          field_size: parseFloat(roleSpecificData.field_size),
+          field_size: parseFloat(roleSpecificData.field_size) || 0,
         };
       case "storage_owner":
         return {
@@ -129,14 +129,14 @@ const SignupPage = () => {
     e.preventDefault();
 
     const activeRoles = Object.entries(selectedRoles).filter(
-      ([_, isSelected]) => isSelected
+      ([_, isSelected]) => isSelected,
     );
 
     if (activeRoles.length === 0) {
       showAlert(
         "error",
         "একাউন্টের ধরন প্রয়োজন",
-        "অনুগ্রহ করে কমপক্ষে একটি একাউন্টের ধরন নির্বাচন করুন"
+        "অনুগ্রহ করে কমপক্ষে একটি একাউন্টের ধরন নির্বাচন করুন",
       );
       return;
     }
@@ -171,7 +171,7 @@ const SignupPage = () => {
         {
           method: "POST",
           body: userFormData,
-        }
+        },
       );
 
       if (!userResponse.ok) {
@@ -231,10 +231,11 @@ const SignupPage = () => {
               placeholder="জমির মাপ (বিঘা অনুযায়ী)"
               value={roleSpecificData.field_size}
               onChange={handleRoleDataChange}
+              autocomplete="off"
               required
             />
           </div>
-        </div>
+        </div>,
       );
     }
 
@@ -243,13 +244,17 @@ const SignupPage = () => {
         <div key="rent_owner" className="role-fields" data-role="rent_owner">
           <h4>ভাড়া প্রদানকারী বিবরণ:</h4>
           <p className="role-info">আপনি কৃষি সরঞ্জাম ভাড়া দিতে পারবেন।</p>
-        </div>
+        </div>,
       );
     }
 
     if (selectedRoles.storage_owner) {
       fields.push(
-        <div key="storage_owner" className="role-fields" data-role="storage_owner">
+        <div
+          key="storage_owner"
+          className="role-fields"
+          data-role="storage_owner"
+        >
           <h4>গুদামঘর মালিক বিবরণ:</h4>
           <div className="role-specific-fields">
             <input
@@ -258,9 +263,10 @@ const SignupPage = () => {
               placeholder="গুদামঘরের ধারণক্ষমতা (টন)"
               value={roleSpecificData.storage_capacity}
               onChange={handleRoleDataChange}
+              autocomplete="off"
             />
           </div>
-        </div>
+        </div>,
       );
     }
 
@@ -275,6 +281,7 @@ const SignupPage = () => {
               placeholder="বিশেষত্ব"
               value={roleSpecificData.specialty}
               onChange={handleRoleDataChange}
+              autocomplete="off"
             />
             <input
               type="number"
@@ -282,9 +289,10 @@ const SignupPage = () => {
               placeholder="অভিজ্ঞতা (বছর)"
               value={roleSpecificData.years_of_experience}
               onChange={handleRoleDataChange}
+              autocomplete="off"
             />
           </div>
-        </div>
+        </div>,
       );
     }
 
@@ -315,6 +323,7 @@ const SignupPage = () => {
                 placeholder="প্রথম নাম"
                 value={formData.firstName}
                 onChange={handleChange}
+                autocomplete="given-name"
                 required
               />
               <input
@@ -323,6 +332,7 @@ const SignupPage = () => {
                 placeholder="শেষ নাম"
                 value={formData.lastName}
                 onChange={handleChange}
+                autocomplete="family-name"
                 required
               />
             </div>
@@ -333,6 +343,7 @@ const SignupPage = () => {
               placeholder="ইমেইল"
               value={formData.email}
               onChange={handleChange}
+              autocomplete="email"
               required
             />
             <input
@@ -341,6 +352,7 @@ const SignupPage = () => {
               placeholder="ইউজারনেম"
               value={formData.username}
               onChange={handleChange}
+              autocomplete="username"
               required
             />
 
@@ -351,6 +363,7 @@ const SignupPage = () => {
                 placeholder="পাসওয়ার্ড"
                 value={formData.password}
                 onChange={handleChange}
+                autocomplete="new-password"
                 required
               />
               <input
@@ -359,6 +372,7 @@ const SignupPage = () => {
                 placeholder="পাসওয়ার্ড নিশ্চিত করুন"
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                autocomplete="new-password"
                 required
               />
             </div>
@@ -380,6 +394,7 @@ const SignupPage = () => {
               placeholder="জন্ম তারিখ"
               value={formData.dob}
               onChange={handleChange}
+              autocomplete="bday"
               required
             />
             <textarea
@@ -387,6 +402,7 @@ const SignupPage = () => {
               placeholder="ঠিকানা"
               value={formData.address}
               onChange={handleChange}
+              autocomplete="street-address"
               required
             />
             <input
@@ -395,6 +411,7 @@ const SignupPage = () => {
               placeholder="যোগাযোগ নম্বর"
               value={formData.contact}
               onChange={handleChange}
+              autocomplete="tel"
               required
             />
 

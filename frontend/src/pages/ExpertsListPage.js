@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   fetchAgronomists,
   createConsultationRequest,
+  fetchFarmerProfileByUser,
   getCookie,
+  setCookie,
 } from "../services/agronomistService";
 import Footer from "../components/Footer";
 import logo from "../assets/images/logo.jpg";
@@ -23,7 +25,7 @@ const ExpertsListPage = () => {
     details: "",
   });
 
-  const farmerId = getCookie("farmersId");
+  const [farmerId, setFarmerId] = useState(() => getCookie("farmersId"));
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -45,15 +47,46 @@ const ExpertsListPage = () => {
     }
   };
 
-  const showAlert = (type, message) => {
+  const showAlert = useCallback((type, message) => {
     setAlertMessage({ type, message });
     setTimeout(() => setAlertMessage(null), 4000);
-  };
+  }, []);
 
-  const handleBookClick = (agronomist) => {
-    if (!farmerId && !userId) {
+  const ensureFarmerId = useCallback(async () => {
+    if (farmerId) return farmerId;
+    if (!userId) return null;
+
+    try {
+      const profile = await fetchFarmerProfileByUser(userId);
+      if (profile?.id) {
+        const normalizedId = String(profile.id);
+        setCookie("farmersId", normalizedId);
+        setFarmerId(normalizedId);
+        return normalizedId;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error resolving farmer profile:", error);
+      showAlert("error", "কৃষক তথ্য লোড করতে ব্যর্থ হয়েছে।");
+      return null;
+    }
+  }, [farmerId, userId, showAlert]);
+
+  useEffect(() => {
+    if (!userId) return;
+    ensureFarmerId();
+  }, [userId, ensureFarmerId]);
+
+  const handleBookClick = async (agronomist) => {
+    if (!userId) {
       showAlert("warning", "বুকিং করতে অনুগ্রহ করে প্রথমে লগইন করুন।");
       setTimeout(() => navigate("/login"), 2000);
+      return;
+    }
+
+    const resolvedFarmerId = farmerId || (await ensureFarmerId());
+    if (!resolvedFarmerId) {
+      showAlert("warning", "বুকিং করতে কৃষক প্রোফাইল প্রয়োজন।");
       return;
     }
     setSelectedAgronomist(agronomist);
@@ -86,23 +119,29 @@ const ExpertsListPage = () => {
     try {
       setSubmitting(true);
 
-      // Convert requestDate to ISO format if needed
-      const requestDate = new Date(bookingData.requestDate).toISOString();
+      const resolvedFarmerId = farmerId || (await ensureFarmerId());
+      const numericFarmerId = parseInt(resolvedFarmerId || "", 10);
+      if (!numericFarmerId) {
+        showAlert("error", "বুকিং করতে কৃষক প্রোফাইল নিশ্চিত করুন।");
+        return;
+      }
 
       const requestData = {
-        farmer: parseInt(farmerId),
+        farmer: numericFarmerId,
         agronomist: selectedAgronomist.id,
         fee: selectedAgronomist.fee,
         status: "Pending",
         details: bookingData.details,
       };
 
+      console.log("Sending consultation request with data:", requestData);
       await createConsultationRequest(requestData);
       showAlert("success", "বুকিং সফলভাবে সম্পন্ন হয়েছে!");
       handleCloseModal();
     } catch (error) {
       console.error("Error creating booking:", error);
-      showAlert("error", "বুকিং করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+      const errorMessage = error.message || "বুকিং করতে সমস্যা হয়েছে।";
+      showAlert("error", `${errorMessage} আবার চেষ্টা করুন।`);
     } finally {
       setSubmitting(false);
     }
@@ -115,6 +154,7 @@ const ExpertsListPage = () => {
     document.cookie =
       "selectedRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     localStorage.removeItem("userId");
+    setFarmerId(null);
     navigate("/login");
   };
 

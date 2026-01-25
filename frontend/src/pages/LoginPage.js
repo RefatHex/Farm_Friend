@@ -48,7 +48,7 @@ const LoginPage = () => {
   const fetchDetails = async (endpoint, userId) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/${endpoint}/?user=${userId}`
+        `http://127.0.0.1:8000/api/${endpoint}/?user=${userId}`,
       );
       if (response.ok) {
         const data = await response.json();
@@ -132,7 +132,7 @@ const LoginPage = () => {
             if (data.is_agronomist) {
               const agronomistDetails = await fetchDetails(
                 "consultations/agronomists",
-                data.id
+                data.id,
               );
               if (agronomistDetails) {
                 setCookie("agronomistsId", agronomistDetails.id, 7);
@@ -167,7 +167,7 @@ const LoginPage = () => {
             // Single agronomist role - fetch ID and go to agronomist profile setup or dashboard
             const agronomistDetails = await fetchDetails(
               "consultations/agronomists",
-              data.id
+              data.id,
             );
             if (agronomistDetails) {
               setCookie("agronomistsId", agronomistDetails.id, 7);
@@ -195,7 +195,7 @@ const LoginPage = () => {
         showAlert(
           "error",
           "লগ ইন ব্যর্থ!",
-          errorData.error || "অনুগ্রহ করে আবার চেষ্টা করুন।"
+          errorData.error || "অনুগ্রহ করে আবার চেষ্টা করুন।",
         );
       }
     } catch (error) {
@@ -203,7 +203,7 @@ const LoginPage = () => {
       showAlert(
         "error",
         "সংযোগ ত্রুটি!",
-        "সার্ভারের সাথে সংযোগ করতে ব্যর্থ হয়েছে।"
+        "সার্ভারের সাথে সংযোগ করতে ব্যর্থ হয়েছে।",
       );
     } finally {
       setIsLoading(false);
@@ -232,6 +232,7 @@ const LoginPage = () => {
               placeholder="ইউজারনেম"
               value={formData.username}
               onChange={handleChange}
+              autocomplete="username"
               required
             />
             <input
@@ -240,6 +241,7 @@ const LoginPage = () => {
               placeholder="পাসওয়ার্ড"
               value={formData.password}
               onChange={handleChange}
+              autocomplete="current-password"
               required
             />
             <div className="toggle">

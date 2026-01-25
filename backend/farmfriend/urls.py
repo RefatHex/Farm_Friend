@@ -48,6 +48,7 @@ urlpatterns = [
     path('payment/', include('payments.urls')),
     path('api/consultations/', include('consultations.urls')),
     path('api/ai_responses/', include('ai_responses.urls')),
+    path('api/storage/', include('storage.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

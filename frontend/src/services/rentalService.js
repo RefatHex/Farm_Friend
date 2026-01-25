@@ -1,11 +1,6 @@
 // Rental API Service
 const API_BASE_URL = "http://localhost:8000/api/rentals";
 
-// Get token from localStorage
-const getAuthHeaders = () => ({
-  Authorization: `Bearer ${localStorage.getItem("token")}`,
-});
-
 // ===================== RENT ITEMS MANAGEMENT =====================
 
 // Fetch all rent items with user details
@@ -50,9 +45,6 @@ export const createRentItem = async (formData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/rent-items/`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
       body: formData, // FormData with image
     });
     if (!response.ok) {
@@ -73,7 +65,6 @@ export const createRentItemWithData = async (data) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(data),
     });
@@ -95,7 +86,6 @@ export const updateRentItem = async (id, data) => {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(data),
     });
@@ -112,9 +102,6 @@ export const deleteRentItem = async (id) => {
   try {
     const response = await fetch(`${API_BASE_URL}/rent-items/${id}/`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
     });
     if (!response.ok) throw new Error("Failed to delete rent item");
   } catch (error) {
@@ -132,7 +119,6 @@ export const createRentalOrder = async (orderData) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(orderData),
     });
@@ -152,11 +138,6 @@ export const fetchMyRentalOrders = async () => {
   try {
     const response = await fetch(
       `${API_BASE_URL}/rent-item-orders/my_rentals/`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
     );
     if (!response.ok) throw new Error("Failed to fetch rental orders");
     return await response.json();
@@ -167,16 +148,12 @@ export const fetchMyRentalOrders = async () => {
 };
 
 // Fetch rental orders posted by user (as rent owner)
-export const fetchMyPostedRentals = async () => {
+export const fetchMyPostedRentals = async (rentOwnerId) => {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/rent-item-orders/my_posted_orders/`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const url = rentOwnerId
+      ? `${API_BASE_URL}/rent-item-orders/?rent_owner=${rentOwnerId}`
+      : `${API_BASE_URL}/rent-item-orders/my_posted_orders/`;
+    const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch posted rentals");
     return await response.json();
   } catch (error) {
@@ -200,11 +177,7 @@ export const fetchRentalOrders = async (filters = {}) => {
 
     if (params.toString()) url += `?${params.toString()}`;
 
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch rental orders");
     return await response.json();
   } catch (error) {
@@ -222,10 +195,9 @@ export const updateRentalOrderStatus = async (orderId, statusData) => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(statusData),
-      }
+      },
     );
     if (!response.ok) throw new Error("Failed to update rental order status");
     return await response.json();
@@ -240,16 +212,13 @@ export const updateRentalOrderStatus = async (orderId, statusData) => {
 // Fetch rent owner details
 export const fetchRentOwner = async (userId) => {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/rent-owners/?user=${userId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/rent-owners/?user=${userId}`);
     if (!response.ok) throw new Error("Failed to fetch rent owner");
     const data = await response.json();
+    // Handle both paginated and non-paginated responses
+    if (Array.isArray(data)) {
+      return data.length > 0 ? data[0] : null;
+    }
     return data.results ? data.results[0] : null;
   } catch (error) {
     console.error("Error fetching rent owner:", error);
@@ -264,7 +233,6 @@ export const createRentOwner = async (ownerData) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(ownerData),
     });
@@ -285,11 +253,6 @@ export const fetchOwnerRentItems = async (ownerId) => {
   try {
     const response = await fetch(
       `${API_BASE_URL}/rent-items-with-user/?rent_owner=${ownerId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
     );
     if (!response.ok) throw new Error("Failed to fetch owner rent items");
     return await response.json();
@@ -303,7 +266,7 @@ export const fetchOwnerRentItems = async (ownerId) => {
 export const getEquipmentAvailability = async (itemId) => {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/rent-items-with-user/${itemId}/`
+      `${API_BASE_URL}/rent-items-with-user/${itemId}/`,
     );
     if (!response.ok) throw new Error("Failed to fetch equipment availability");
     const data = await response.json();

@@ -1,7 +1,7 @@
 // Storage API Service
-// Note: The backend needs to have storage URLs configured at /storage/
-// If not working, the backend admin needs to add: path('storage/', include('storage.urls')) to farmfriend/urls.py
-const API_BASE_URL = "http://localhost:8000/storage";
+// Note: The backend has storage URLs configured at /api/storage/
+// This matches: path('api/storage/', include('storage.urls')) in farmfriend/urls.py
+const API_BASE_URL = "http://localhost:8000/api/storage";
 
 // Helper to get cookie value
 const getCookie = (name) => {

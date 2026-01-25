@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from farmers.models import Farmer
 from farmers.serializers import FarmerSerializer
 from .models import Agronomist, ConsultationRequest
 
@@ -16,9 +16,10 @@ class ConsultationRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConsultationRequest
         fields = [
-            'id', 'farmer', 'agronomist', 'request_date', 'status','fee',
+            'id', 'farmer', 'agronomist', 'request_date', 'status', 'fee',
             'details', 'resolution', 'meet_link'
         ]
+        read_only_fields = ['id', 'request_date']
 
 class ConsultationRequestWithDetailsSerializer(serializers.ModelSerializer):
     farmer=FarmerSerializer()
@@ -26,6 +27,7 @@ class ConsultationRequestWithDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConsultationRequest
         fields = [
-            'id', 'farmer', 'agronomist', 'request_date', 'status','fee'
+            'id', 'farmer', 'agronomist', 'request_date', 'status', 'fee',
             'details', 'resolution', 'meet_link'
         ]
+        read_only_fields = ['id', 'request_date', 'farmer', 'agronomist']

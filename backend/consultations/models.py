@@ -5,7 +5,7 @@ from users.models import UserInfo
 class Agronomist(models.Model):
     user = models.OneToOneField(UserInfo, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    dob = models.DateField()
+    dob = models.DateField(null=True, blank=True)
     contact = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
