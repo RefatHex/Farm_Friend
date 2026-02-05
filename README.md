@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <em>Developed by <strong>Team ReBuggers</strong> | Software Engineering Lab (Trimester 10)</em>
+  <em>Developed by <strong>Team ReBuggers</strong> | Software Engineering Lab</em>
 </p>
 
 ---
@@ -364,17 +364,6 @@ The weather service supports major cities in Bangladesh:
 
 ---
 
-## 📄 License
-
-This project is licensed under the BSD License - see the LICENSE file for details.
-
----
-
-## 📧 Contact
-
-For support or inquiries, contact: **support@farmfriend.com**
-
----
 
 ## � Team - ReBuggers
 
