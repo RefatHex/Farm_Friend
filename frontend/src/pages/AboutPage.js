@@ -116,44 +116,40 @@ const AboutPage = () => {
       {/* Team Section */}
       <section className="A-team py-5" id="A-team">
         <div className="container py-md-5">
-          <div className="row text-left">
-            <div className="col-md-6 mt-md-5 pe-lg-5">
-              <div className="title-content text-left">
-                <h6 className="title-subw3hny">আমাদের টিম</h6>
-                <h3 className="title-A mb-3">টিম ফার্ম-ফ্রেন্ড</h3>
-                <p style={{ textAlign: 'justify' }}>
-                  আমরা ৩ জন চেয়েছিলাম একটি প্ল্যাটফর্ম তৈরি করতে যা কৃষকদের সাহায্য করবে
-                  প্রযুক্তির সাথে পরিচিত হতে এবং কৃষিতে উদ্ভাবন যোগ করবে। মাসব্যাপী গবেষণা এবং আপনার সমর্থনের মাধ্যমে,
-                  আমরা এই সাফল্য অর্জন করতে সক্ষম হয়েছি।
-                </p>
-                <Link className="btn btn-style btn-primary mt-md-5 mt-4" to="/signup">
-                  আমাদের টিমে যোগ দিন <span className="fas fa-arrow-right ms-2"></span>
-                </Link>
+          <div className="row justify-content-center">
+            <div className="col-12 text-center mb-5">
+              <h6 className="title-subw3hny">আমাদের টিম</h6>
+              <h3 className="title-A mb-3">টিম ফার্ম-ফ্রেন্ড</h3>
+              <p style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
+                আমরা ৩ জন চেয়েছিলাম একটি প্ল্যাটফর্ম তৈরি করতে যা কৃষকদের সাহায্য করবে
+                প্রযুক্তির সাথে পরিচিত হতে এবং কৃষিতে উদ্ভাবন যোগ করবে। মাসব্যাপী গবেষণা এবং আপনার সমর্থনের মাধ্যমে,
+                আমরা এই সাফল্য অর্জন করতে সক্ষম হয়েছি।
+              </p>
+              <Link className="btn btn-style btn-primary mt-4" to="/signup">
+                আমাদের টিমে যোগ দিন <span className="fas fa-arrow-right ms-2"></span>
+              </Link>
+            </div>
+          </div>
+          <div className="row justify-content-center">
+            <div className="col-lg-4 col-md-4 col-sm-12 mb-4 text-center">
+              <div className="team-grids">
+                <img src={team5} className="img-fluid mb-2" alt="Team Member" />
+                <h4>Iftekharul Islam Refat</h4>
+                <h6>Full Stack Developer & Automation Enthusiast</h6>
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="row">
-                <div className="col-md-12 text-center">
-                  <div className="team-grids">
-                    <img src={team5} className="img-fluid mb-3" alt="Team Member" style={{ width: '200px', height: 'auto' }} />
-                    <h4>Iftekharul Islam Refat</h4>
-                    <h6>Full Stack Developer & Automation Enthusiast</h6>
-                  </div>
-                </div>
-                <div className="col-md-12 text-center mt-4">
-                  <div className="team-grids">
-                    <img src={Nabiul_08} className="img-fluid mb-3" alt="Team Member" style={{ width: '200px', height: 'auto' }} />
-                    <h4>S.M. Nabiul Islam</h4>
-                    <h6>Project Manager & Full Stack Developer</h6>
-                  </div>
-                </div>
-                <div className="col-md-12 text-center mt-4">
-                  <div className="team-grids">
-                    <img src={team2} className="img-fluid mb-3" alt="Team Member" style={{ width: '200px', height: 'auto' }} />
-                    <h4>Md. Mezabur Rahman Rasel</h4>
-                    <h6>Front End Developer & Graphics Designer</h6>
-                  </div>
-                </div>
+            <div className="col-lg-4 col-md-4 col-sm-12 mb-4 text-center">
+              <div className="team-grids">
+                <img src={Nabiul_08} className="img-fluid mb-2" alt="Team Member" />
+                <h4>S.M. Nabiul Islam</h4>
+                <h6>Project Manager & Full Stack Developer</h6>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-4 col-sm-12 mb-4 text-center">
+              <div className="team-grids">
+                <img src={team2} className="img-fluid mb-2" alt="Team Member" />
+                <h4>Md. Mezabur Rahman Rasel</h4>
+                <h6>Front End Developer & Graphics Designer</h6>
               </div>
             </div>
           </div>

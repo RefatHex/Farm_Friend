@@ -118,13 +118,13 @@ const LoginPage = () => {
               }
             }
             if (data.is_rent_owner) {
-              const rentDetails = await fetchDetails("rentals", data.id);
+              const rentDetails = await fetchDetails("rentals/rent-owners", data.id);
               if (rentDetails) {
                 setCookie("rent-ownersId", rentDetails.id, 7);
               }
             }
             if (data.is_storage_owner) {
-              const storageDetails = await fetchDetails("storage", data.id);
+              const storageDetails = await fetchDetails("storage/storage-owners", data.id);
               if (storageDetails) {
                 setCookie("storage-ownersId", storageDetails.id, 7);
               }
@@ -141,7 +141,7 @@ const LoginPage = () => {
             navigate("/account-select");
           } else if (data.is_rent_owner && roleCount === 1) {
             // Single rent_owner role - fetch ID and go to rental admin dashboard
-            const rentDetails = await fetchDetails("rentals", data.id);
+            const rentDetails = await fetchDetails("rentals/rent-owners", data.id);
             if (rentDetails) {
               setCookie("rent-ownersId", rentDetails.id, 7);
             }
@@ -156,13 +156,13 @@ const LoginPage = () => {
             setCookie("selectedRole", "farmersId", 7);
             navigate("/farmer-dashboard");
           } else if (data.is_storage_owner && roleCount === 1) {
-            // Single storage owner role - fetch ID and go to profile
-            const storageDetails = await fetchDetails("storage", data.id);
+            // Single storage owner role - fetch ID and go to storage dashboard
+            const storageDetails = await fetchDetails("storage/storage-owners", data.id);
             if (storageDetails) {
               setCookie("storage-ownersId", storageDetails.id, 7);
             }
             setCookie("selectedRole", "storage-ownersId", 7);
-            navigate("/profile");
+            navigate("/storage-dashboard");
           } else if (data.is_agronomist && roleCount === 1) {
             // Single agronomist role - fetch ID and go to agronomist profile setup or dashboard
             const agronomistDetails = await fetchDetails(

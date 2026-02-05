@@ -2,6 +2,88 @@
 const ROOT_API_URL = "http://localhost:8000/api";
 const API_BASE_URL = `${ROOT_API_URL}/consultations`;
 
+// Demo data for when backend is unavailable
+const DEMO_AGRONOMISTS = [
+  {
+    id: 1,
+    name: "ড. মোহাম্মদ আলী",
+    dob: "1970-05-15",
+    contact: "01711234567",
+    address: "ঢাকা বিশ্ববিদ্যালয়, ঢাকা",
+    description: "কৃষি বিজ্ঞানে ৩০ বছরের অভিজ্ঞতা। ধান ও গমের রোগ প্রতিরোধে বিশেষজ্ঞ। বাংলাদেশ কৃষি গবেষণা ইনস্টিটিউটের সাবেক পরিচালক।",
+    specialty: "ফসলের রোগ প্রতিরোধ",
+    fee: "500.00",
+    years_of_experience: 30,
+    availability: true,
+    user: { id: 301, username: "dr_ali", profile_picture: null }
+  },
+  {
+    id: 2,
+    name: "প্রফেসর ফাতেমা বেগম",
+    dob: "1975-08-20",
+    contact: "01812345678",
+    address: "বাংলাদেশ কৃষি বিশ্ববিদ্যালয়, ময়মনসিংহ",
+    description: "মাটি ও সার বিশেষজ্ঞ। জৈব সার ও মাটির স্বাস্থ্য নিয়ে গবেষণা করেন। কৃষকদের জমির উর্বরতা বৃদ্ধিতে সহায়তা করেন।",
+    specialty: "মাটি ও সার ব্যবস্থাপনা",
+    fee: "400.00",
+    years_of_experience: 20,
+    availability: true,
+    user: { id: 302, username: "prof_fatema", profile_picture: null }
+  },
+  {
+    id: 3,
+    name: "ড. কামরুল হাসান",
+    dob: "1980-03-10",
+    contact: "01912345678",
+    address: "শেরেবাংলা কৃষি বিশ্ববিদ্যালয়, ঢাকা",
+    description: "সবজি চাষ ও বালাই দমনে বিশেষজ্ঞ। আধুনিক কৃষি প্রযুক্তি ও জৈবিক বালাইনাশক নিয়ে কাজ করেন।",
+    specialty: "সবজি চাষ ও বালাই দমন",
+    fee: "350.00",
+    years_of_experience: 15,
+    availability: true,
+    user: { id: 303, username: "dr_kamrul", profile_picture: null }
+  },
+  {
+    id: 4,
+    name: "ড. রাশেদা খাতুন",
+    dob: "1978-11-25",
+    contact: "01612345678",
+    address: "বরিশাল কৃষি বিশ্ববিদ্যালয়",
+    description: "ফল চাষ বিশেষজ্ঞ। আম, লিচু, কাঁঠাল চাষে দীর্ঘ অভিজ্ঞতা। ফলের রোগ ও পোকামাকড় দমনে পরামর্শ দেন।",
+    specialty: "ফল চাষ ও ব্যবস্থাপনা",
+    fee: "450.00",
+    years_of_experience: 18,
+    availability: true,
+    user: { id: 304, username: "dr_rasheda", profile_picture: null }
+  },
+  {
+    id: 5,
+    name: "মোঃ আবু তালেব",
+    dob: "1982-07-08",
+    contact: "01512345678",
+    address: "রাজশাহী বিভাগ",
+    description: "মাঠ পর্যায়ে ২০ বছরের অভিজ্ঞতা। ধান, পাট, ভুট্টা চাষে বিশেষজ্ঞ। কৃষকদের সাথে সরাসরি কাজ করার অভিজ্ঞতা।",
+    specialty: "শস্য উৎপাদন ও ব্যবস্থাপনা",
+    fee: "300.00",
+    years_of_experience: 20,
+    availability: true,
+    user: { id: 305, username: "abu_taleb", profile_picture: null }
+  },
+  {
+    id: 6,
+    name: "ড. সাইফুল ইসলাম",
+    dob: "1976-04-18",
+    contact: "01712345678",
+    address: "সিলেট কৃষি বিশ্ববিদ্যালয়",
+    description: "সেচ ও পানি ব্যবস্থাপনা বিশেষজ্ঞ। খরা ও বন্যা প্রতিরোধী কৃষি পদ্ধতি নিয়ে গবেষণা করেন।",
+    specialty: "সেচ ও পানি ব্যবস্থাপনা",
+    fee: "400.00",
+    years_of_experience: 22,
+    availability: true,
+    user: { id: 306, username: "dr_saiful", profile_picture: null }
+  }
+];
+
 // ===================== AGRONOMIST MANAGEMENT =====================
 
 // Fetch all agronomists (with optional filters)
@@ -26,8 +108,30 @@ export const fetchAgronomists = async (filters = {}) => {
     // Handle both paginated and non-paginated responses
     return Array.isArray(data) ? data : data.results || data;
   } catch (error) {
-    console.error("Error fetching agronomists:", error);
-    throw error;
+    console.error("Error fetching agronomists, using demo data:", error);
+    // Return demo data with filtering applied
+    let filteredAgronomists = [...DEMO_AGRONOMISTS];
+    
+    if (filters.availability !== undefined) {
+      filteredAgronomists = filteredAgronomists.filter(a => a.availability === filters.availability);
+    }
+    
+    if (filters.specialty) {
+      filteredAgronomists = filteredAgronomists.filter(a => 
+        a.specialty.toLowerCase().includes(filters.specialty.toLowerCase())
+      );
+    }
+    
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      filteredAgronomists = filteredAgronomists.filter(a => 
+        a.name.toLowerCase().includes(searchLower) ||
+        a.specialty.toLowerCase().includes(searchLower) ||
+        a.description.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    return filteredAgronomists;
   }
 };
 
@@ -363,3 +467,6 @@ export const setCookie = (name, value, days = 7) => {
     value || "",
   )}${expires}; path=/`;
 };
+
+// Export demo data for direct access
+export const getDemoAgronomists = () => DEMO_AGRONOMISTS;

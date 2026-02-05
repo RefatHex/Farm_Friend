@@ -1,6 +1,123 @@
 // Rental API Service
 const API_BASE_URL = "http://localhost:8000/api/rentals";
 
+// Demo data for when backend is unavailable
+const DEMO_RENT_OWNERS = [
+  {
+    id: 1,
+    name: "আব্দুল করিম যন্ত্রপাতি ভাড়া",
+    dob: "1975-06-15",
+    contact: "01711111111",
+    address: "গাজীপুর, ঢাকা",
+    no_of_deals: 120,
+    ratings: 4.8,
+    user: { id: 201, username: "karim_rent" }
+  },
+  {
+    id: 2,
+    name: "হাসান এগ্রো মেশিনারি",
+    dob: "1980-03-20",
+    contact: "01822222222",
+    address: "ময়মনসিংহ",
+    no_of_deals: 85,
+    ratings: 4.5,
+    user: { id: 202, username: "hasan_rent" }
+  },
+  {
+    id: 3,
+    name: "রফিক ট্রাক্টর সার্ভিস",
+    dob: "1978-09-10",
+    contact: "01933333333",
+    address: "বগুড়া",
+    no_of_deals: 95,
+    ratings: 4.7,
+    user: { id: 203, username: "rafiq_rent" }
+  }
+];
+
+const DEMO_RENT_ITEMS = [
+  {
+    id: 1,
+    product_name: "পাওয়ার টিলার",
+    description: "১৫ HP পাওয়ার টিলার। জমি চাষের জন্য আদর্শ। জ্বালানি সাশ্রয়ী এবং সহজে চালানো যায়।",
+    image: "https://images.unsplash.com/photo-1592878904946-b3cd8ae243d0?w=400",
+    price: "800.00",
+    quantity: 5,
+    is_available: true,
+    rent_owner: DEMO_RENT_OWNERS[0]
+  },
+  {
+    id: 2,
+    product_name: "ধান কাটার মেশিন (হার্ভেস্টার)",
+    description: "আধুনিক কম্বাইন হার্ভেস্টার। একই সাথে ধান কাটা ও মাড়াই করে। বড় জমির জন্য উপযুক্ত।",
+    image: "https://images.unsplash.com/photo-1591438872952-0d2bd0d9d1c4?w=400",
+    price: "3500.00",
+    quantity: 2,
+    is_available: true,
+    rent_owner: DEMO_RENT_OWNERS[0]
+  },
+  {
+    id: 3,
+    product_name: "ট্রাক্টর (৪৫ HP)",
+    description: "মাহিন্দ্রা ট্রাক্টর ৪৫ HP। ভারী কাজের জন্য উপযুক্ত। চাষ, মাল বহন সব কাজে ব্যবহার করা যায়।",
+    image: "https://images.unsplash.com/photo-1530267981375-f0de937f5f13?w=400",
+    price: "2500.00",
+    quantity: 3,
+    is_available: true,
+    rent_owner: DEMO_RENT_OWNERS[1]
+  },
+  {
+    id: 4,
+    product_name: "স্প্রে মেশিন",
+    description: "ব্যাকপ্যাক স্প্রেয়ার। কীটনাশক ও সার প্রয়োগের জন্য। ২০ লিটার ধারণক্ষমতা।",
+    image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400",
+    price: "200.00",
+    quantity: 15,
+    is_available: true,
+    rent_owner: DEMO_RENT_OWNERS[1]
+  },
+  {
+    id: 5,
+    product_name: "সেচ পাম্প",
+    description: "ডিজেল চালিত সেচ পাম্প। ৫ HP মোটর। ঘণ্টায় ৫০০০ লিটার পানি তোলার ক্ষমতা।",
+    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400",
+    price: "600.00",
+    quantity: 8,
+    is_available: true,
+    rent_owner: DEMO_RENT_OWNERS[2]
+  },
+  {
+    id: 6,
+    product_name: "বীজ বপন যন্ত্র (সিডার)",
+    description: "স্বয়ংক্রিয় বীজ বপন যন্ত্র। সারিবদ্ধভাবে বীজ বপন করে। সময় ও শ্রম সাশ্রয়ী।",
+    image: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400",
+    price: "1200.00",
+    quantity: 4,
+    is_available: true,
+    rent_owner: DEMO_RENT_OWNERS[2]
+  },
+  {
+    id: 7,
+    product_name: "রোটাভেটর",
+    description: "ট্রাক্টর চালিত রোটাভেটর। মাটি ভাঙ্গা ও সমান করার জন্য। দ্রুত কাজ করে।",
+    image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400",
+    price: "1500.00",
+    quantity: 3,
+    is_available: true,
+    rent_owner: DEMO_RENT_OWNERS[0]
+  },
+  {
+    id: 8,
+    product_name: "ধান মাড়াই মেশিন",
+    description: "থ্রেশার মেশিন। ধান থেকে খড় আলাদা করে। দ্রুত ও পরিষ্কার কাজ।",
+    image: "https://images.unsplash.com/photo-1595246140520-1991cca1aaaa?w=400",
+    price: "900.00",
+    quantity: 6,
+    is_available: true,
+    rent_owner: DEMO_RENT_OWNERS[1]
+  }
+];
+
 // ===================== RENT ITEMS MANAGEMENT =====================
 
 // Fetch all rent items with user details
@@ -23,8 +140,23 @@ export const fetchRentItems = async (filters = {}) => {
     if (!response.ok) throw new Error("Failed to fetch rent items");
     return await response.json();
   } catch (error) {
-    console.error("Error fetching rent items:", error);
-    throw error;
+    console.error("Error fetching rent items, using demo data:", error);
+    // Return demo data with filtering applied
+    let filteredItems = [...DEMO_RENT_ITEMS];
+    
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      filteredItems = filteredItems.filter(item => 
+        item.product_name.toLowerCase().includes(searchLower) ||
+        item.description.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    if (filters.is_available !== undefined) {
+      filteredItems = filteredItems.filter(item => item.is_available === filters.is_available);
+    }
+    
+    return { results: filteredItems };
   }
 };
 
@@ -276,3 +408,7 @@ export const getEquipmentAvailability = async (itemId) => {
     throw error;
   }
 };
+
+// Export demo data for direct access
+export const getDemoRentItems = () => DEMO_RENT_ITEMS;
+export const getDemoRentOwners = () => DEMO_RENT_OWNERS;
